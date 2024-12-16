@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    REVISION 33, 16 November 2024
+    REVISION 37, 14 December 2024
 	this is the default/light Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -329,10 +329,10 @@
 	
     <!-- color of normal land unless defined as forest, grass etc -->
     <rule e="way" k="natural" v="nosea">
-        <area fill="#ffffff" stroke="#ffffff" stroke-width="1.0" />
+        <area fill="#f2f2f2" stroke="#f2f2f2" stroke-width="1.0" />
     </rule>
     <rule e="way" k="freizeitkarte" v="land">
-        <area fill="#ffffff" stroke="#ffffff" stroke-width="1.0" />
+        <area fill="#f2f2f2" stroke="#f2f2f2" stroke-width="1.0" />
     </rule>
     <rule e="way" k="natural" v="land">
         <area fill="#BBF8F8F8" stroke="#F8F8F8" stroke-width="0.1" />
@@ -343,7 +343,7 @@
         <area fill="#ffe6e6" stroke="#ff3333" stroke-width="0.4" />
     </rule>
     <rule e="way" k="landuse" v="residential" zoom-min="12">
-        <area fill="#f2f2f2" />
+        <area fill="#e6e6e6" />
     </rule>
     <rule e="way" k="landuse" v="retail" zoom-min="12">
         <area fill="#f8e7d3" />
@@ -613,9 +613,9 @@
     <rule e="way" k="leisure|amenity" v="swimming_pool">
         <area fill="#B3DDFF" stroke="#000080" stroke-width="0.15" />
     </rule>
-    <rule e="way" k="sport|leisure" v="swimming|water_park" zoom-min="15">
+    <!--<rule e="way" k="sport|leisure" v="swimming|water_park" zoom-min="15">
         <line stroke="#806060FF" stroke-width="0.3" />
-    </rule>
+    </rule>-->
     <rule e="way" k="sport" v="tennis">
         <area fill="#adebad" />
     </rule>
@@ -828,9 +828,9 @@
     </rule>
 
     <!-- turning circle casing -->
-    <rule e="node" k="highway" v="turning_circle">
-        <circle fill="#000000" radius="1.45" scale-radius="true" />
-    </rule>
+	<!--<rule e="node" k="highway" v="turning_circle">
+		<circle fill="#000000" radius="1.45" scale-radius="true" />
+    </rule>-->
 
     <!-- highway casings / outlines  - determines the look/visibility of the road edges -->
     <rule e="way" k="tunnel" v="~|no|false">
@@ -857,8 +857,11 @@
                 <line stroke="#66320D" stroke-dasharray="10,12" stroke-linecap="round" stroke-width="0.6" />
             </rule>
             <rule e="way" k="bridge" v="~|no|false">
-                <rule e="way" k="highway" v="service">
-                    <line stroke="#000000" stroke-width="1.2" />
+                <rule e="way" k="highway" v="service" zoom-min="14" zoom-max="14">
+                    <line stroke="#000000" stroke-width="0.7" />
+                </rule>
+                <rule e="way" k="highway" v="service" zoom-min="15">
+                    <line stroke="#000000" stroke-width="1.1" />
                 </rule>
                 <rule e="way" k="highway" v="cycleway" zoom-min="17">
                     <line stroke="#3366FF" stroke-width="1.2" />
@@ -875,7 +878,10 @@
                 <rule e="way" k="highway" v="living_street|residential|road" zoom-min="12" zoom-max="12">
                     <line stroke="#000000" stroke-width="0.5" />
                 </rule>
-                <rule e="way" k="highway" v="living_street|residential|road" zoom-min="13">
+                <rule e="way" k="highway" v="living_street|residential|road" zoom-min="13" zoom-max="14">
+                    <line stroke="#000000" stroke-width="0.7" />
+                </rule>
+                <rule e="way" k="highway" v="living_street|residential|road" zoom-min="15">
                     <line stroke="#000000" stroke-width="1.5" />
                 </rule>
                 <rule e="way" k="highway" v="construction" zoom-min="12">
@@ -908,10 +914,11 @@
             </rule>
         </rule>
     </rule>
+
     <!-- turning circle core -->
-    <rule e="node" k="highway" v="turning_circle">
+    <!--<rule e="node" k="highway" v="turning_circle">
         <circle fill="#FFFFFF" radius="1.2" scale-radius="true" />
-    </rule>
+    </rule>-->
 
     <!-- highway cores / road colors - determines the look/visibility of the road fills -->
     <rule e="way" k="tunnel" v="~|no|false">
@@ -962,7 +969,10 @@
             <rule e="way" k="highway" v="cycleway|raceway" zoom-min="16">
                 <line stroke="#F0F0FF" stroke-width="0.8" />
             </rule>
-            <rule e="way" k="highway" v="service">
+            <rule e="way" k="highway" v="service" zoom-min="14" zoom-max="14">
+                <line stroke="#FFFFFF" stroke-width="0.6" />
+            </rule>
+            <rule e="way" k="highway" v="service" zoom-min="15">
                 <line stroke="#FFFFFF" stroke-width="1.0" />
             </rule>
             <rule e="way" k="highway" v="construction">
@@ -978,7 +988,10 @@
             <rule e="way" k="highway" v="residential|living_street|road" zoom-min="12" zoom-max="12">
                 <line stroke="#FFFFFF" stroke-width="0.4" />
             </rule>
-            <rule e="way" k="highway" v="residential|living_street|road" zoom-min="13">
+            <rule e="way" k="highway" v="residential|living_street|road" zoom-min="13" zoom-max="14">
+                <line stroke="#FFFFFF" stroke-width="0.6" />
+            </rule>
+            <rule e="way" k="highway" v="residential|living_street|road" zoom-min="15">
                 <line stroke="#FFFFFF" stroke-width="1.4" />
             </rule>
             <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="11">
@@ -1323,8 +1336,8 @@
                 priority="30" stroke="#FFFFFF" stroke-width="0.1" />
         </rule>
         <rule e="node" k="place" v="suburb" zoom-min="13">
-            <caption fill="#4d4d4d" font-size="12" font-style="bold_italic"
-                k="name" priority="20" stroke="#FFFFFF" stroke-width="2.0" />
+            <caption fill="#4d4d4d" font-size="12" font-style="italic"
+                k="name" priority="50" stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
         <rule e="node" k="place" v="isolated_dwelling|neighbourhood" zoom-min="15">
             <caption fill="#000000" font-size="12" font-style="bold" k="name" priority="20"
