@@ -321,3 +321,6 @@ A simple SVG symbol for a cemetery can look like this:
     <g transform="translate(30,140)"><use xlink:href="#cross"/></g>
 </svg>
 ```
+## Known Pitfalls
+
+- There is a potential issue with tile grid artifacts inside areas at zoom levels 12-13, specially if they have stroke or semi-transparent fill. To solve this you can try a non-transparent fill without stroke or a pattern.
