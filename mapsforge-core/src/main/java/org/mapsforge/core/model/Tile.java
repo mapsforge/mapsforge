@@ -110,7 +110,7 @@ public class Tile implements Serializable {
 
     private volatile BoundingBox boundingBox;
     private volatile Point origin;
-    private transient final Object mSync = new Object();
+    private transient final Object mySync = new Object();
 
     /**
      * @param tileX     the X number of the tile.
@@ -172,7 +172,7 @@ public class Tile implements Serializable {
     public BoundingBox getBoundingBox() {
         BoundingBox myBoundingBox = this.boundingBox;
         if (myBoundingBox == null) {
-            synchronized (mSync) {
+            synchronized (mySync) {
                 myBoundingBox = this.boundingBox;
                 if (myBoundingBox == null) {
                     double minLatitude = Math.max(MercatorProjection.LATITUDE_MIN, MercatorProjection.tileYToLatitude(tileY + 1, zoomLevel));
@@ -235,7 +235,7 @@ public class Tile implements Serializable {
     public Point getOrigin() {
         Point myOrigin = this.origin;
         if (myOrigin == null) {
-            synchronized (mSync) {
+            synchronized (mySync) {
                 myOrigin = this.origin;
                 if (myOrigin == null) {
                     double x = MercatorProjection.tileToPixel(this.tileX, this.tileSize);

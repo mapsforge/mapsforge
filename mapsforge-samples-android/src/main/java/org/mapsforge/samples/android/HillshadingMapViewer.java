@@ -39,6 +39,7 @@ public class HillshadingMapViewer extends DefaultTheme {
     private static final String demUseFiles = "demFolderFiles";
     private static final int SELECT_DEM_FOLDER = 0;
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void createLayers() {
 
@@ -85,7 +86,6 @@ public class HillshadingMapViewer extends DefaultTheme {
         if (anyDems != null) {
             // minimum setup for hillshading
             MemoryCachingHgtReaderTileSource hillTileSource = new MemoryCachingHgtReaderTileSource(anyDems, new AdaptiveClasyHillShading(), AndroidGraphicFactory.INSTANCE);
-            customizeConfig(hillTileSource);
 
             hillsConfig = new HillsRenderConfig(hillTileSource);
             hillsConfig.setMagnitudeScaleFactor(1);
@@ -96,9 +96,6 @@ public class HillshadingMapViewer extends DefaultTheme {
         }
 
         super.createLayers();
-    }
-
-    private void customizeConfig(MemoryCachingHgtReaderTileSource hillTileSource) {
     }
 
     @Override

@@ -213,7 +213,6 @@ public final class MercatorProjection {
         double sinLatitude = Math.sin(Math.toRadians(latitude));
         // FIXME improve this formula so that it works correctly without the clipping
         double pixelY = (0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI)) * mapSize;
-//        double pixelY = (0.5 - Math.log(Math.tan(Math.toRadians(45 + latitude / 2))) / (2 * Math.PI)) * mapSize;
         return Math.min(Math.max(0, pixelY), mapSize);
     }
 

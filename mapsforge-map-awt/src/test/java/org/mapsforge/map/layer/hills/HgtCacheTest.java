@@ -45,8 +45,8 @@ public class HgtCacheTest {
                 13, 13, 15, 17, 17,
                 0, 13, 15, 17, 0
         };
-        AwtHillshadingBitmap evens = factory.createMonoBitmap(3, 3, even, 1, new BoundingBox(0, 1, 0, 1), Parameters.HILLSHADING_COLOR_DEFAULT);
-        AwtHillshadingBitmap odds = factory.createMonoBitmap(3, 3, odd, 1, new BoundingBox(0, 1, 0, 1), Parameters.HILLSHADING_COLOR_DEFAULT);
+        AwtHillshadingBitmap evens = factory.createMonoBitmap(3, 3, even, 1, new BoundingBox(0, 1, 0, 1), Parameters.Constants.HILLSHADING_COLOR_DEFAULT);
+        AwtHillshadingBitmap odds = factory.createMonoBitmap(3, 3, odd, 1, new BoundingBox(0, 1, 0, 1), Parameters.Constants.HILLSHADING_COLOR_DEFAULT);
         Canvas canvas = factory.createCanvas();
 
         HgtCache.mergeSameSized(evens, odds, HillshadingBitmap.Border.EAST, 1, canvas);

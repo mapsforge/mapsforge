@@ -17,7 +17,7 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import org.mapsforge.core.graphics.ABitmap;
+import org.mapsforge.core.graphics.BaseBitmap;
 import org.mapsforge.core.graphics.Bitmap;
 
 import java.awt.AlphaComposite;
@@ -31,7 +31,7 @@ import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
-public class AwtBitmap extends ABitmap implements Bitmap {
+public class AwtBitmap extends BaseBitmap implements Bitmap {
     volatile BufferedImage bufferedImage;
 
     public AwtBitmap(InputStream inputStream) throws IOException {

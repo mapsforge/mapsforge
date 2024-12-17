@@ -333,11 +333,6 @@
         </xs:attribute>
         <!-- customization unlikely to make any sense -->
         <xs:attribute name="layer" default="5" type="xs:unsignedByte" use="optional" />
-        <xs:attribute name="always" default="false" type="xs:boolean" use="optional">
-            <xs:annotation>
-                <xs:documentation>Deprecated, no-op, do not use</xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
     </xs:complexType>
 
     <!-- rendertheme element -->

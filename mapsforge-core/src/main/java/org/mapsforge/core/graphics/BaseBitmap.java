@@ -14,12 +14,12 @@
  */
 package org.mapsforge.core.graphics;
 
-public abstract class ABitmap implements Bitmap {
+public abstract class BaseBitmap implements Bitmap {
 
-   protected final Object Mutex = new Object();
+   protected final Object mutex = new Object();
 
    @Override
    public Object getMutex() {
-      return this.Mutex;
+      return this.mutex;
    }
 }

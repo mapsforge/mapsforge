@@ -56,7 +56,7 @@ public final class RenderThemeHandler {
     private static XmlPullParserFactory xmlPullParserFactory = null;
 
     // Override hillshading values
-    public static short HILLSHADING_MAGNITUDE = -1;
+    public static int HILLSHADING_MAGNITUDE = -1;
     public static byte HILLSHADING_ZOOM_MIN = -1;
     public static byte HILLSHADING_ZOOM_MAX = -1;
 
@@ -284,8 +284,8 @@ public final class RenderThemeHandler {
                 byte minZoom = 9;
                 byte maxZoom = 17;
                 byte layer = 5;
-                int magnitude = Parameters.HILLSHADING_MAGNITUDE_DEFAULT;
-                int color = Parameters.HILLSHADING_COLOR_DEFAULT;
+                int magnitude = Parameters.Constants.HILLSHADING_MAGNITUDE_DEFAULT;
+                int color = Parameters.Constants.HILLSHADING_COLOR_DEFAULT;
 
                 for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
                     String name = pullParser.getAttributeName(i);

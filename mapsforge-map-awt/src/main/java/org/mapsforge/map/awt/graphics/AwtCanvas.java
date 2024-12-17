@@ -77,7 +77,7 @@ class AwtCanvas implements Canvas {
      * might be a bit slow and/or inconsistent with the android implementation)
      */
     private static Composite selectHillShadingComposite(float magnitude) {
-        if (Parameters.LUMINANCE_COMPOSITE) {
+        if (Parameters.Constants.LUMINANCE_COMPOSITE) {
             return new AwtLuminanceShadingComposite(magnitude);
         } else {
             return AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, magnitude);

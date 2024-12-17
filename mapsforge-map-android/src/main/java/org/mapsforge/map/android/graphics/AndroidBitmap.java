@@ -22,7 +22,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 
-import org.mapsforge.core.graphics.ABitmap;
+import org.mapsforge.core.graphics.BaseBitmap;
 import org.mapsforge.core.graphics.Bitmap;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-public class AndroidBitmap extends ABitmap implements Bitmap {
+public class AndroidBitmap extends BaseBitmap implements Bitmap {
     private static final List<AndroidBitmap> BITMAP_LIST;
 
     private static final AtomicInteger BITMAP_INSTANCES;

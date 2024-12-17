@@ -49,15 +49,6 @@ public final class Parameters {
     public static boolean LAYER_SCROLL_EVENT = false;
 
     /**
-     * Use AwtLuminanceShadingComposite or AlphaComposite.
-     * (2024: Deprecated, should not be used)
-     */
-    public static final boolean LUMINANCE_COMPOSITE = false;
-
-    public static final int HILLSHADING_MAGNITUDE_DEFAULT = 128;
-    public static final int HILLSHADING_COLOR_DEFAULT = 0xff000000;
-
-    /**
      * Maximum buffer size for map files.
      */
     public static int MAXIMUM_BUFFER_SIZE = 10000000;
@@ -68,8 +59,6 @@ public final class Parameters {
      * implementation, maybe one that also takes the available memory into account would be good.
      */
     public static int NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors() + 1;
-
-    public static final long MAX_MEMORY_MB = Runtime.getRuntime().maxMemory() / 1000 / 1000;
 
     /**
      * Parent tiles rendering mode.
@@ -116,6 +105,19 @@ public final class Parameters {
 
         POLYGON_EXCEPTIONS.add(new Tag("freizeitkarte", "meer"));
         POLYGON_EXCEPTIONS.add(new Tag("freizeitkarte", "land"));
+    }
+
+    public static final class Constants {
+
+        public static final int HILLSHADING_MAGNITUDE_DEFAULT = 128;
+        public static final int HILLSHADING_COLOR_DEFAULT = 0xff000000;
+        public static final long MAX_MEMORY_MB = Runtime.getRuntime().maxMemory() / 1000 / 1000;
+
+        /**
+         * Use AwtLuminanceShadingComposite or AlphaComposite.
+         * (2024: Deprecated, should not be used)
+         */
+        public static final boolean LUMINANCE_COMPOSITE = false;
     }
 
     private Parameters() {

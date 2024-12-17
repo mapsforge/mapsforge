@@ -37,7 +37,7 @@ public class HillshadingContainer implements ShapeContainer {
     }
 
     public HillshadingContainer(HillshadingBitmap bitmap, float magnitude, Rectangle hillsRect, Rectangle tileRect) {
-        this(bitmap, magnitude, Parameters.HILLSHADING_COLOR_DEFAULT, hillsRect, tileRect);
+        this(bitmap, magnitude, Parameters.Constants.HILLSHADING_COLOR_DEFAULT, hillsRect, tileRect);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
 
     // One 1" HGT file converted to a same-sized bitmap is about 13 MB, for high-quality this is 52 MB.
     // For ultra-low-quality while rendering wide zoom in adaptive mode, bitmap size per 1" HGT file can be as low as a few hundred bytes.
-    protected final long CacheMaxBytes = Parameters.MAX_MEMORY_MB * 1000 * 1000 / 10;
+    protected final long CacheMaxBytes = Parameters.Constants.MAX_MEMORY_MB * 1000 * 1000 / 10;
 
     private final GraphicFactory graphicsFactory;
     private HgtCache currentCache;
