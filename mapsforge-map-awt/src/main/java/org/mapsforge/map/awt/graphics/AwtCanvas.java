@@ -59,7 +59,7 @@ class AwtCanvas implements Canvas {
             return existing.getValue();
         }
 
-        Composite selected = selectHillShadingComposite(magnitude);
+        Composite selected = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, magnitude);
 
         if (sizeOneShadingCompositeCache == null) {
             // only cache the first magnitude value, in the rare instance that more than one
@@ -69,19 +69,6 @@ class AwtCanvas implements Canvas {
         }
 
         return selected;
-    }
-
-    /**
-     * Composite selection, select between {@link AlphaComposite} (fast, squashes saturation at high magnitude)
-     * and {@link AwtLuminanceShadingComposite} (per-pixel rgb->hsv->rgb conversion to keep saturation at high magnitude,
-     * might be a bit slow and/or inconsistent with the android implementation)
-     */
-    private static Composite selectHillShadingComposite(float magnitude) {
-        if (Parameters.Constants.LUMINANCE_COMPOSITE) {
-            return new AwtLuminanceShadingComposite(magnitude);
-        } else {
-            return AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, magnitude);
-        }
     }
 
     AwtCanvas() {

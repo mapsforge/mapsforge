@@ -18,7 +18,7 @@ package org.mapsforge.map.layer.renderer;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.HillshadingBitmap;
 import org.mapsforge.core.model.Rectangle;
-import org.mapsforge.core.util.Parameters;
+import org.mapsforge.core.util.Constants;
 
 public class HillshadingContainer implements ShapeContainer {
 
@@ -37,7 +37,7 @@ public class HillshadingContainer implements ShapeContainer {
     }
 
     public HillshadingContainer(HillshadingBitmap bitmap, float magnitude, Rectangle hillsRect, Rectangle tileRect) {
-        this(bitmap, magnitude, Parameters.Constants.HILLSHADING_COLOR_DEFAULT, hillsRect, tileRect);
+        this(bitmap, magnitude, Constants.HILLSHADING_COLOR_DEFAULT, hillsRect, tileRect);
     }
 
     @Override
