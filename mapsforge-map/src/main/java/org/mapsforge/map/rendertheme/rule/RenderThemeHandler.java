@@ -21,8 +21,8 @@
 package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.util.Constants;
 import org.mapsforge.core.util.IOUtils;
-import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
@@ -284,8 +284,8 @@ public final class RenderThemeHandler {
                 byte minZoom = 9;
                 byte maxZoom = 17;
                 byte layer = 5;
-                int magnitude = Parameters.Constants.HILLSHADING_MAGNITUDE_DEFAULT;
-                int color = Parameters.Constants.HILLSHADING_COLOR_DEFAULT;
+                int magnitude = Constants.HILLSHADING_MAGNITUDE_DEFAULT;
+                int color = Constants.HILLSHADING_COLOR_DEFAULT;
 
                 for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
                     String name = pullParser.getAttributeName(i);
