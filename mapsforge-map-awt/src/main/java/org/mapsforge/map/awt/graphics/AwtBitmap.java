@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2016 devemux86
  * Copyright 2014 Develar
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,6 +17,7 @@
  */
 package org.mapsforge.map.awt.graphics;
 
+import org.mapsforge.core.graphics.BaseBitmap;
 import org.mapsforge.core.graphics.Bitmap;
 
 import java.awt.AlphaComposite;
@@ -29,13 +31,13 @@ import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
-public class AwtBitmap implements Bitmap {
-    BufferedImage bufferedImage;
+public class AwtBitmap extends BaseBitmap implements Bitmap {
+    volatile BufferedImage bufferedImage;
 
     public AwtBitmap(InputStream inputStream) throws IOException {
         this.bufferedImage = ImageIO.read(inputStream);
         if (this.bufferedImage == null) {
-            throw new IOException("ImageIO filed to read inputStream");
+            throw new IOException("ImageIO failed to read inputStream");
         }
     }
 
@@ -98,10 +100,11 @@ public class AwtBitmap implements Bitmap {
 
     @Override
     public void setBackgroundColor(int color) {
-        Graphics2D graphics = bufferedImage.createGraphics();
+        final BufferedImage myBufImage = bufferedImage;
+
+        Graphics2D graphics = myBufImage.createGraphics();
         graphics.setColor(new Color(color, true));
-        graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+        graphics.fillRect(0, 0, myBufImage.getWidth(), myBufImage.getHeight());
         graphics.dispose();
     }
-
 }

@@ -22,6 +22,7 @@
 package org.mapsforge.map.android.graphics;
 
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.os.Build;
@@ -318,10 +319,13 @@ class AndroidCanvas implements Canvas {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude) {
+    public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude, int color) {
         this.canvas.save();
 
         shadePaint.setAlpha((int) (255 * magnitude));
+        if (color != 0) {
+            shadePaint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
+        }
 
         if (bitmap != null && tileRect != null) {
             final android.graphics.Bitmap hillsBitmap = AndroidGraphicFactory.getBitmap(bitmap);
@@ -419,7 +423,7 @@ class AndroidCanvas implements Canvas {
         private final Rect asr = new Rect(0, 0, 0, 0);
         private final Rect adr = new Rect(0, 0, 0, 0);
 
-        private final android.graphics.Bitmap neutralShadingPixel = AndroidGraphicFactory.INSTANCE.createMonoBitmap(1, 1, new byte[]{0}, 0, null).bitmap;
+        private final android.graphics.Bitmap neutralShadingPixel = AndroidGraphicFactory.INSTANCE.createMonoBitmap(1, 1, new byte[]{0}, 0, null, AndroidGraphicFactory.getColor(Color.TRANSPARENT)).bitmap;
 
         private HillshadingTemps() {
         }

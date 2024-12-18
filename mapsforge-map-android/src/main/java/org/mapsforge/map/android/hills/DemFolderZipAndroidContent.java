@@ -16,6 +16,7 @@ package org.mapsforge.map.android.hills;
 
 import android.content.ContentResolver;
 
+import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.hills.DemFile;
 import org.mapsforge.map.layer.hills.DemFolder;
 
@@ -57,14 +58,16 @@ public class DemFolderZipAndroidContent implements DemFolder {
         ZipInputStream zipInputStream = null;
         try {
             zipInputStream = new ZipInputStream(new BufferedInputStream(contentResolver.openInputStream(contentResolverEntry.uri)));
+
+            final List<ZipEntry> zipEntries = listZipInputStreamFiles(zipInputStream);
+
+            for (ZipEntry zipEntry : zipEntries) {
+                items.add(new DemFileZipEntryAndroidContent(zipEntry.getName(), zipEntry.getSize(), contentResolverEntry, contentResolver));
+            }
         } catch (FileNotFoundException e) {
             LOGGER.log(Level.WARNING, e.toString());
-        }
-
-        final List<ZipEntry> zipEntries = listZipInputStreamFiles(zipInputStream);
-
-        for (ZipEntry zipEntry : zipEntries) {
-            items.add(new DemFileZipEntryAndroidContent(zipEntry, contentResolverEntry, contentResolver));
+        } finally {
+            IOUtils.closeQuietly(zipInputStream);
         }
 
         return items;

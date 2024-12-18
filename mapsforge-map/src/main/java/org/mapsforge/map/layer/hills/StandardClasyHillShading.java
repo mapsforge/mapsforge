@@ -31,15 +31,24 @@ import static org.mapsforge.map.layer.hills.HillShadingUtils.SqrtTwo;
  * For performance reasons, azimuthal asymmetry is also a linear function of the azimuth angle cosine.
  * </p>
  * <p>
- * This is currently the algorithm of choice, as it provides the best results with excellent performance.
- * It is also more accurate than {@link SimpleClasyHillShading}.
+ * Standard 1" DEM file containing 1° square data will be processed to an output bitmap of about 3600px by 3600px and 13 MB in size.
  * </p>
  * <p>
- * High resolution version is also available: {@link HiResStandardClasyHillShading}.
+ * This algorithm is more accurate than {@link SimpleClasyHillShading}, and should be preferred.
+ * </p>
+ * <p>
+ * High resolution version is also available: {@link HiResClasyHillShading}.
  * It provides high quality output using bicubic interpolation, use it when you are not limited by memory or processing performance.
  * </p>
+ * <p>
+ * To greatly improve efficiency at wider zoom levels, you should consider using the adaptive quality version instead: {@link AdaptiveClasyHillShading}.
+ * It provides the best results with excellent performance throughout the zoom level range.
+ * </p>
  *
- * @see HiResStandardClasyHillShading
+ * @see AdaptiveClasyHillShading
+ * @see HiResClasyHillShading
+ * @see HalfResClasyHillShading
+ * @see QuarterResClasyHillShading
  */
 public class StandardClasyHillShading extends AClasyHillShading {
 
@@ -53,7 +62,7 @@ public class StandardClasyHillShading extends AClasyHillShading {
      *
      * @param clasyParams Parameters to use while constructing this.
      * @see AClasyHillShading#AClasyHillShading(ClasyParams)
-     * @see AClasyHillShading.ClasyParams
+     * @see ClasyParams
      */
     public StandardClasyHillShading(final ClasyParams clasyParams) {
         super(clasyParams);

@@ -1,5 +1,6 @@
 /*
  * Copyright 2017 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,19 +18,26 @@ package org.mapsforge.map.layer.renderer;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.HillshadingBitmap;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.util.Parameters;
 
 public class HillshadingContainer implements ShapeContainer {
 
     public final float magnitude;
+    public final int color;
     public final Bitmap bitmap;
     public final Rectangle hillsRect;
     public final Rectangle tileRect;
 
-    public HillshadingContainer(HillshadingBitmap bitmap, float magnitude, Rectangle hillsRect, Rectangle tileRect) {
+    public HillshadingContainer(HillshadingBitmap bitmap, float magnitude, int color, Rectangle hillsRect, Rectangle tileRect) {
         this.magnitude = magnitude;
+        this.color = color;
         this.bitmap = bitmap;
         this.hillsRect = hillsRect;
         this.tileRect = tileRect;
+    }
+
+    public HillshadingContainer(HillshadingBitmap bitmap, float magnitude, Rectangle hillsRect, Rectangle tileRect) {
+        this(bitmap, magnitude, Parameters.Constants.HILLSHADING_COLOR_DEFAULT, hillsRect, tileRect);
     }
 
     @Override

@@ -15,19 +15,42 @@
  */
 package org.mapsforge.map.layer.hills;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
 public interface DemFile {
-    Logger LOGGER = Logger.getLogger(AbsShadingAlgorithmDefaults.class.getName());
+    Logger LOGGER = Logger.getLogger(DemFile.class.getName());
+
+    /**
+     * Buffer size is relatively small to reduce wasteful read-ahead (buffer fill) during multi-threaded processing
+     */
+    int BufferSize = 512;
+
+    /**
+     * Buffer size for "raw" streams, when reading one Short at a time, skipping between
+     */
+    int BufferSizeRaw = Short.SIZE / Byte.SIZE;
 
     String getName();
 
+    /**
+     * @return Size in bytes.
+     */
     long getSize();
 
-    InputStream openInputStream() throws FileNotFoundException;
+    /**
+     * @return Buffered stream.
+     */
+    InputStream openInputStream() throws IOException;
 
+    /**
+     * @return Buffered stream.
+     */
     InputStream asStream() throws IOException;
+
+    /**
+     * @return Raw stream (i.e. unbuffered if possible).
+     */
+    InputStream asRawStream() throws IOException;
 }

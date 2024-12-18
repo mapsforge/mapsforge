@@ -25,7 +25,7 @@ import java.util.logging.Level;
 /**
  * <p>
  * Simulates diffuse lighting to some degree, while leaving horizontal surfaces unshaded (desired property).
- * Note: For better results and greater flexibility consider using the newer algorithms, {@link StandardClasyHillShading} or {@link HiResStandardClasyHillShading}.
+ * Note: For better results and greater flexibility consider using the newer algorithms, e.g. {@link AdaptiveClasyHillShading}, {@link StandardClasyHillShading} or {@link HiResClasyHillShading}.
  * </p>
  * <em>(2024) The original description from 2017, which is no longer entirely accurate:</em>
  * Simulates diffuse lighting (without self-shadowing) except for scaling the light values below horizontal and above horizontal
@@ -34,10 +34,13 @@ import java.util.logging.Level;
  * <p>
  * <p>More accurate than {@link SimpleShadingAlgorithm}, but maybe not as useful for visualizing both softly rolling hills and dramatic mountain ranges at the same time.</p>
  *
+ * @see AdaptiveClasyHillShading
+ * @see HiResClasyHillShading
  * @see StandardClasyHillShading
- * @see HiResStandardClasyHillShading
+ * @see HalfResClasyHillShading
+ * @see QuarterResClasyHillShading
  */
-public class DiffuseLightShadingAlgorithm extends AbsShadingAlgorithmDefaults {
+public class DiffuseLightShadingAlgorithm extends AShadingAlgorithm {
 
     protected final float heightAngle;
     protected final double ast2;
@@ -72,8 +75,8 @@ public class DiffuseLightShadingAlgorithm extends AbsShadingAlgorithmDefaults {
     }
 
     @Override
-    public RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo source, int padding) {
-        final int axisLength = getOutputAxisLen(source);
+    public RawShadingResult transformToByteBuffer(HgtFileInfo source, int padding, int zoomLevel, double pxPerLat, double pxPerLon) {
+        final int axisLength = getOutputAxisLen(source, zoomLevel, pxPerLat, pxPerLon);
         final int rowLen = axisLength + 1;
 
         InputStream map = null;
@@ -84,7 +87,7 @@ public class DiffuseLightShadingAlgorithm extends AbsShadingAlgorithmDefaults {
 
             final byte[] bytes;
             if (map != null) {
-                bytes = convert(map, axisLength, rowLen, padding, source);
+                bytes = convert(map, axisLength, rowLen, padding, zoomLevel, pxPerLat, pxPerLon, source);
             } else {
                 // If stream could not be opened, simply return zeros
                 final int bitmapWidth = axisLength + 2 * padding;
@@ -99,7 +102,7 @@ public class DiffuseLightShadingAlgorithm extends AbsShadingAlgorithmDefaults {
         }
     }
 
-    protected byte[] convert(InputStream din, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo fileInfo) throws IOException {
+    protected byte[] convert(InputStream din, int axisLength, int rowLen, int padding, int zoomLevel, double pxPerLat, double pxPerLon, HgtFileInfo fileInfo) throws IOException {
         final byte[] bytes = new byte[(axisLength + 2 * padding) * (axisLength + 2 * padding)];
         final short[] ringbuffer = new short[rowLen];
 

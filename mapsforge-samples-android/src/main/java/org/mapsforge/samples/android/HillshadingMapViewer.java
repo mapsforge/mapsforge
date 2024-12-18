@@ -1,6 +1,7 @@
 /*
  * Copyright 2017-2022 usrusr
  * Copyright 2017-2019 devemux86
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -84,19 +85,17 @@ public class HillshadingMapViewer extends DefaultTheme {
         }
         if (anyDems != null) {
             // minimum setup for hillshading
-            MemoryCachingHgtReaderTileSource hillTileSource = new MemoryCachingHgtReaderTileSource(anyDems, new StandardClasyHillShading(), AndroidGraphicFactory.INSTANCE);
-            customizeConfig(hillTileSource);
+            MemoryCachingHgtReaderTileSource hillTileSource = new MemoryCachingHgtReaderTileSource(anyDems, new AdaptiveClasyHillShading(), AndroidGraphicFactory.INSTANCE);
+
             hillsConfig = new HillsRenderConfig(hillTileSource);
+            hillsConfig.setMagnitudeScaleFactor(1);
+            hillsConfig.setColor(0xff000000);
 
             // call after setting/changing parameters, walks filesystem for DEM metadata
             hillsConfig.indexOnThread();
         }
 
         super.createLayers();
-    }
-
-    private void customizeConfig(MemoryCachingHgtReaderTileSource hillTileSource) {
-        hillTileSource.setEnableInterpolationOverlap(true);
     }
 
     @Override

@@ -35,7 +35,7 @@ public class DemFolderFS implements DemFolder {
         final File[] files = file.listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
-                return file.isDirectory() || HgtCache.isFileZip(file);
+                return HgtCache.isFileZip(file) || file.isDirectory();
             }
         });
         if (files == null) return Collections.emptyList();
@@ -84,7 +84,7 @@ public class DemFolderFS implements DemFolder {
         final File[] files = file.listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
-                return file.isFile() && HgtCache.isFileHgt(file) && false == HgtCache.isFileZip(file);
+                return HgtCache.isFileHgt(file) && false == HgtCache.isFileZip(file) && file.isFile();
             }
         });
         if (files == null) return Collections.emptyList();

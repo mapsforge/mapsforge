@@ -41,7 +41,7 @@ public interface GraphicFactory {
     /**
      * Create a single channel bitmap for hillshading, may include a buffer.
      */
-    HillshadingBitmap createMonoBitmap(int width, int height, byte[] buffer, int padding, BoundingBox area);
+    HillshadingBitmap createMonoBitmap(int width, int height, byte[] buffer, int padding, BoundingBox area, int color);
 
     Paint createPaint();
 

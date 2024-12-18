@@ -49,9 +49,9 @@ public final class MercatorProjection {
     private static final double LOG_2 = Math.log(2);
 
     // TODO some operations actually do not rely on the tile size, but are composited
-    // from operations that require a tileSize parameter (which is effectively cancelled
-    // out). A shortcut version of those operations should be implemented and then this
-    // variable be removed.
+    //  from operations that require a tileSize parameter (which is effectively cancelled
+    //  out). A shortcut version of those operations should be implemented and then this
+    //  variable be removed.
     private static final int DUMMY_TILE_SIZE = 256;
 
     /**
@@ -186,11 +186,8 @@ public final class MercatorProjection {
      * @return the pixel Y coordinate of the latitude value.
      */
     public static double latitudeToPixelYWithScaleFactor(double latitude, double scaleFactor, int tileSize) {
-        double sinLatitude = Math.sin(latitude * (Math.PI / 180));
         long mapSize = getMapSizeWithScaleFactor(scaleFactor, tileSize);
-        // FIXME improve this formula so that it works correctly without the clipping
-        double pixelY = (0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI)) * mapSize;
-        return Math.min(Math.max(0, pixelY), mapSize);
+        return latitudeToPixelY(latitude, mapSize);
     }
 
     /**
@@ -201,11 +198,8 @@ public final class MercatorProjection {
      * @return the pixel Y coordinate of the latitude value.
      */
     public static double latitudeToPixelY(double latitude, byte zoomLevel, int tileSize) {
-        double sinLatitude = Math.sin(latitude * (Math.PI / 180));
         long mapSize = getMapSize(zoomLevel, tileSize);
-        // FIXME improve this formula so that it works correctly without the clipping
-        double pixelY = (0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI)) * mapSize;
-        return Math.min(Math.max(0, pixelY), mapSize);
+        return latitudeToPixelY(latitude, mapSize);
     }
 
     /**
@@ -216,7 +210,7 @@ public final class MercatorProjection {
      * @return the pixel Y coordinate of the latitude value.
      */
     public static double latitudeToPixelY(double latitude, long mapSize) {
-        double sinLatitude = Math.sin(latitude * (Math.PI / 180));
+        double sinLatitude = Math.sin(Math.toRadians(latitude));
         // FIXME improve this formula so that it works correctly without the clipping
         double pixelY = (0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI)) * mapSize;
         return Math.min(Math.max(0, pixelY), mapSize);

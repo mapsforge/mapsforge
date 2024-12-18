@@ -15,7 +15,6 @@
 package org.mapsforge.map.layer.hills;
 
 import org.mapsforge.core.util.IOUtils;
-import org.mapsforge.map.layer.hills.HgtCache.HgtFileInfo;
 import org.mapsforge.map.layer.hills.HillShadingUtils.HillShadingThreadPool;
 import org.mapsforge.map.layer.hills.HillShadingUtils.ShortArraysPool;
 import org.mapsforge.map.layer.hills.HillShadingUtils.SilentFutureTask;
@@ -52,9 +51,9 @@ import java.util.logging.Level;
  * <br />
  * Default max memory usage:
  * <br />
- * For a system with 8 processors, N = 2 and M = 8, about 544000 * 2 bytes (cca 1.1 MB);
+ * For a system with 8 processors, N = 8 and M = 8, about 544000 * 2 bytes (cca 1.1 MB);
  * <br />
- * For a system with 4 processors, N = 1 and M = 4, about 288000 * 2 bytes (cca 600 kB);
+ * For a system with 4 processors, N = 4 and M = 4, about 288000 * 2 bytes (cca 600 kB);
  * <br />
  * For a system with 1 processor, N = 1 and M = 1, about 96000 * 2 bytes (cca 200 kB).
  * <br />
@@ -93,7 +92,7 @@ import java.util.logging.Level;
  * </pre>
  * </p>
  */
-public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
+public abstract class AThreadedHillShading extends AShadingAlgorithm {
 
     /**
      * The number of processors available to the Java runtime.
@@ -107,7 +106,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
      * Number N (>=1) means there will be N threads that will do the reading.
      * Zero (0) is not permitted.
      */
-    public static final int ReadingThreadsCountDefault = Math.max(1, AvailableProcessors / 3);
+    public static final int ReadingThreadsCountDefault = Math.max(1, AvailableProcessors);
 
     /**
      * Default number of computing threads ("consumer" threads).
@@ -121,6 +120,12 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
      * The actual number is calculated during execution and can be slightly different.
      */
     protected final int ElementsPerComputingTask = 32000;
+
+    /**
+     * Decides when to use full buffered streams and when to use "raw" streams.
+     * Raw streams are useful to avoid wasteful buffering when skipping a lot.
+     */
+    protected final int StrideFactorRawStreamLimit = 10;
 
     /**
      * When high quality, a unit element is 4x4 data points in size; otherwise it is 2x2.
@@ -153,11 +158,6 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
     protected final int mComputingThreadsCount;
 
     /**
-     * When high quality, a unit element is 4x4 data points in size; otherwise it is 2x2.
-     */
-    protected final boolean mIsHighQuality;
-
-    /**
      * Whether input data preprocessing is enabled, to remove invalid values.
      */
     protected final boolean mIsPreprocess;
@@ -172,8 +172,8 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
     /**
      * Static thread pools shared by all tasks.
      */
-    protected static final AtomicReference<HillShadingThreadPool> mReadThreadPool = new AtomicReference<>(null);
-    protected static final AtomicReference<HillShadingThreadPool> mCompThreadPool = new AtomicReference<>(null);
+    protected final AtomicReference<HillShadingThreadPool> mReadThreadPool = new AtomicReference<>(null);
+    protected final AtomicReference<HillShadingThreadPool> mCompThreadPool = new AtomicReference<>(null);
 
     /**
      * Stop signal flag, indicating that processing should be stopped as soon as possible (not used by default).
@@ -193,60 +193,34 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
      *                              Zero (0) is not permitted.
      *                              The only time you'd want to set this to 1 is when your data source does not support skipping,
      *                              i.e. the data source is not a file and/or its {@link InputStream#skip(long)} is inefficient.
-     *                              The default is computed as {@code Math.max(1,} {@link #AvailableProcessors} {@code / 3)}.
+     *                              The default is computed as {@code Math.max(1,} {@link #AvailableProcessors}{@code )}.
      * @param computingThreadsCount Number of "consumer" threads that will do the computations, >= 0.
      *                              Number M (>=0) means there will be M threads that will do the computing.
      *                              Zero (0) means that producer thread(s) will also do the computing.
      *                              The only times you'd want to set this to zero are when memory conservation is a top priority
      *                              or when you're running on a single-threaded system.
      *                              The default is {@link #AvailableProcessors}, the number of processors available to the Java runtime.
-     * @param highQuality           When {@code true}, a unit element is 4x4 data points in size instead of 2x2, for better interpolation possibilities.
-     *                              The default is {@code false}.
      * @param preprocess            When {@code true}, input data will be preprocessed to remove possible invalid values.
      *                              The default is {@code true}.
      */
-    public AThreadedHillShading(final int readingThreadsCount, final int computingThreadsCount, final boolean highQuality, final boolean preprocess) {
+    public AThreadedHillShading(final int readingThreadsCount, final int computingThreadsCount, final boolean preprocess) {
         super();
 
         mReadingThreadsCount = Math.max(1, readingThreadsCount);
         mComputingThreadsCount = Math.max(0, computingThreadsCount);
         mActiveTasksCountMax = 1 + 2 * mComputingThreadsCount;
-        mIsHighQuality = highQuality;
         mIsPreprocess = preprocess;
     }
 
     /**
-     * Preprocessing will be enabled by default.
+     * Employs preprocessing by default.
      *
      * @param readingThreadsCount   Number of "producer" threads that will do the reading, >= 1.
      *                              Number N (>=1) means there will be N threads that will do the reading.
      *                              Zero (0) is not permitted.
      *                              The only time you'd want to set this to 1 is when your data source does not support skipping,
      *                              i.e. the data source is not a file and/or its {@link InputStream#skip(long)} is inefficient.
-     *                              The default is computed as {@code Math.max(1,} {@link #AvailableProcessors} {@code / 3)}.
-     * @param computingThreadsCount Number of "consumer" threads that will do the computations, >= 0.
-     *                              Number M (>=0) means there will be M threads that will do the computing.
-     *                              Zero (0) means that producer thread(s) will also do the computing.
-     *                              The only times you'd want to set this to zero are when memory conservation is a top priority
-     *                              or when you're running on a single-threaded system.
-     *                              The default is {@link #AvailableProcessors}, the number of processors available to the Java runtime.
-     * @param highQuality           When {@code true}, a unit element is 4x4 data points in size instead of 2x2, for better interpolation possibilities.
-     *                              The default is {@code false}.
-     */
-    public AThreadedHillShading(final int readingThreadsCount, final int computingThreadsCount, final boolean highQuality) {
-        this(readingThreadsCount, computingThreadsCount, highQuality, IsPreprocessDefault);
-    }
-
-    /**
-     * Employs standard quality unit elements (2x2 in size), and preprocessing enabled by default.
-     * Use {@link #AThreadedHillShading(int, int, boolean)} if you need high-quality unit elements (4x4 in size), for better interpolation possibilities.
-     *
-     * @param readingThreadsCount   Number of "producer" threads that will do the reading, >= 1.
-     *                              Number N (>=1) means there will be N threads that will do the reading.
-     *                              Zero (0) is not permitted.
-     *                              The only time you'd want to set this to 1 is when your data source does not support skipping,
-     *                              i.e. the data source is not a file and/or its {@link InputStream#skip(long)} is inefficient.
-     *                              The default is computed as {@code Math.max(1,} {@link #AvailableProcessors} {@code / 3)}.
+     *                              The default is computed as {@code Math.max(1,} {@link #AvailableProcessors}{@code )}.
      * @param computingThreadsCount Number of "consumer" threads that will do the computations, >= 0.
      *                              Number M (>=0) means there will be M threads that will do the computing.
      *                              Zero (0) means that producer thread(s) will also do the computing.
@@ -255,7 +229,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
      *                              The default is {@link #AvailableProcessors}, the number of processors available to the Java runtime.
      */
     public AThreadedHillShading(final int readingThreadsCount, final int computingThreadsCount) {
-        this(readingThreadsCount, computingThreadsCount, IsHighQualityDefault);
+        this(readingThreadsCount, computingThreadsCount, IsPreprocessDefault);
     }
 
     /**
@@ -299,7 +273,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
      * @see ComputingParams
      */
     protected int processRow_4x4(short[] input, int firstLineIx, int secondLineOffset, int thirdLineOffset, int fourthLineOffset, double dsf, int outputIx, ComputingParams computingParams) {
-        throw new IllegalArgumentException("Please implement the processRow_4x4(short[], int, int, int, int, double, int, ComputingParams) method!");
+        throw new IllegalStateException("Please implement the processRow_4x4(short[], int, int, int, int, double, int, ComputingParams) method!");
     }
 
     /**
@@ -395,7 +369,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
      * @see ComputingParams
      */
     protected int processUnitElement_4x4(double nw, double sw, double se, double ne, double nwnw, double wnw, double wsw, double swsw, double ssw, double sse, double sese, double ese, double ene, double nene, double nne, double nnw, double dsf, int outputIx, ComputingParams computingParams) {
-        throw new IllegalArgumentException("Please implement the processUnitElement_4x4() method!");
+        throw new IllegalStateException("Please implement the processUnitElement_4x4() method!");
     }
 
     /**
@@ -427,7 +401,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
      * @see ComputingParams
      */
     protected int processUnitElement_2x2(double nw, double sw, double se, double ne, double dsf, int outputIx, ComputingParams computingParams) {
-        throw new IllegalArgumentException("Please implement the processUnitElement_2x2() method!");
+        throw new IllegalStateException("Please implement the processUnitElement_2x2() method!");
     }
 
     /**
@@ -538,6 +512,13 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
     }
 
     /**
+     * @return Whether the zoom level is supported or not (possibly depending on the HGT file properties).
+     */
+    public boolean isZoomLevelSupported(int zoomLevel, HgtFileInfo hgtFileInfo) {
+        return zoomLevel <= getZoomMax(hgtFileInfo) && zoomLevel >= getZoomMin(hgtFileInfo);
+    }
+
+    /**
      * <p>
      * Computes a "distance scale factor" or dsf, as a half the length of one side of the standard 2x2 unit element inverted, i.e. {@code dsf = 0.5 / length}.
      * Dsf is a concept that anticipates "average normal" calculations like it's being done in
@@ -545,70 +526,116 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
      * and by its very nature it simplifies the calculations there.
      * </p>
      * <p>
+     * It takes into account the stride factor to heuristically amplify slope magnitudes when skipping through the data,
+     * as slopes naturally tend to get smaller as the run gets larger (Slope=Rise/Run; Run ~ StrideFactor).
+     * </p>
+     * <p>
      * To get a more intuitive measure of "meters per unit element" from dsf, if you ever need it, simply do this:
      * {@code mpe = length = 0.5 / dsf}
      * </p>
      *
-     * @param line
-     * @param computingParams
-     * @return
+     * @param line            Current row being processed.
+     * @param computingParams Various parameters that are to be used during computations.
+     * @return Computed dsf (distance scale factor)
      */
     protected double computeDistanceScaleFactor(int line, ComputingParams computingParams) {
-        return 0.5 / (computingParams.mSouthUnitDistancePerLine * line + computingParams.mNorthUnitDistancePerLine * (computingParams.mInputAxisLen - line));
+        // The purpose of the amplification factor is to amplify slope magnitudes when skipping through the data,
+        // to counteract the tendency for hills to become fainter as more terrain data is discarded.
+        // This is just a heuristic. The more data we discard, the less we worry about accuracy anyway.
+        final double amplification = computingParams.mStrideFactor <= 4 ? 1 : Math.max(1, 0.5 * Math.sqrt(computingParams.mStrideFactor));
+
+        return amplification * 0.5 / (computingParams.mSouthUnitDistancePerLine * line + computingParams.mNorthUnitDistancePerLine * (computingParams.mInputAxisLen - line));
+    }
+
+    protected int getStrideFactor(int inputAxisLen, int outputAxisLen) {
+        return Math.max(1, inputAxisLen / outputAxisLen);
+    }
+
+    @Override
+    protected byte[] convert(InputStream inputStream, int dummyAxisLen, int dummyRowLen, int padding, int zoomLevel, double pxPerLat, double pxPerLon, HgtFileInfo hgtFileInfo) throws IOException {
+        return doTheWork(hgtFileInfo, false, padding, zoomLevel, pxPerLat, pxPerLon);
     }
 
     /**
-     * {@inheritDoc}
+     * @param hgtFileInfo   HGT file info
+     * @param isHighQuality When {@code true}, a unit element is 4x4 data points in size instead of 2x2, for better interpolation possibilities.
+     * @param padding       Padding of the output, useful to minimize border interpolation artifacts (no need to be larger than 1)
+     * @param zoomLevel     Zoom level (to determine shading quality requirements)
+     * @param pxPerLat      Tile pixels per degree of latitude (to determine shading quality requirements)
+     * @param pxPerLon      Tile pixels per degree of longitude (to determine shading quality requirements)
+     * @return
      */
-    @Override
-    protected byte[] convert(InputStream inputStream, int dummyAxisLen, int dummyRowLen, final int padding, HgtFileInfo fileInfo) throws IOException {
-        return doTheWork(padding, fileInfo);
-    }
+    protected byte[] doTheWork(final HgtFileInfo hgtFileInfo, boolean isHighQuality, int padding, int zoomLevel, double pxPerLat, double pxPerLon) {
 
-    protected byte[] doTheWork(final int padding, final HgtFileInfo fileInfo) {
-        final int outputAxisLen = getOutputAxisLen(fileInfo);
-        final int inputAxisLen = getInputAxisLen(fileInfo);
-        final int outputWidth = outputAxisLen + 2 * padding;
+        byte[] output = null;
+
+        final int outputAxisLen = getOutputAxisLen(hgtFileInfo, zoomLevel, pxPerLat, pxPerLon);
+        final int inputAxisLen = getInputAxisLen(hgtFileInfo);
+        final int resolutionFactor = Math.max(1, outputAxisLen / inputAxisLen);
+        final int strideFactor = getStrideFactor(inputAxisLen, outputAxisLen);
+        final int inputAxisLenScaled = inputAxisLen / strideFactor;
+        final int outputWidth = getOutputWidth(hgtFileInfo, padding, zoomLevel, pxPerLat, pxPerLon);
         final int inputWidth = inputAxisLen + 1;
-        final double northUnitDistancePerLine = getLatUnitDistance(fileInfo.northLat(), inputAxisLen) / inputAxisLen;
-        final double southUnitDistancePerLine = getLatUnitDistance(fileInfo.southLat(), inputAxisLen) / inputAxisLen;
-        final int resolutionFactor = outputAxisLen / inputAxisLen;
+        final int inputWidthScaled = inputAxisLenScaled + 1;
+        final double northUnitDistancePerLine = getLatUnitDistance(hgtFileInfo.northLat(), inputAxisLenScaled) / inputAxisLenScaled;
+        final double southUnitDistancePerLine = getLatUnitDistance(hgtFileInfo.southLat(), inputAxisLenScaled) / inputAxisLenScaled;
         final int outputIxInit = outputWidth * padding + padding;
         // Must add two additional paddings (after possibly skipping a line) to get to a starting position of the next line
         final int outputIxIncrement = (resolutionFactor - 1) * outputWidth + 2 * padding;
 
-        final byte[] output = new byte[outputWidth * outputWidth];
+        if (isZoomLevelSupported(zoomLevel, hgtFileInfo) && isNotStopped()) {
 
-        if (isNotStopped()) {
             createThreadPoolsMaybe();
+
+            output = new byte[outputWidth * outputWidth];
 
             final Semaphore activeTasksCount = new Semaphore(mActiveTasksCountMax);
             final ShortArraysPool inputArraysPool = new ShortArraysPool((1 + mActiveTasksCountMax) * mReadingThreadsCount);
 
             final ComputingParams computingParams = new ComputingParams.Builder()
                     .setOutput(output)
-                    .setInputAxisLen(inputAxisLen)
+                    .setInputAxisLen(inputAxisLenScaled)
                     .setOutputAxisLen(outputAxisLen)
                     .setOutputWidth(outputWidth)
                     .setInputWidth(inputWidth)
+                    .setInputWidthScaled(inputWidthScaled)
                     .setPadding(padding)
                     .setResolutionFactor(resolutionFactor)
+                    .setStrideFactor(strideFactor)
                     .setOutputIxInit(outputIxInit)
                     .setOutputIxIncrement(outputIxIncrement)
                     .setNorthUnitDistancePerLine(northUnitDistancePerLine)
                     .setSouthUnitDistancePerLine(southUnitDistancePerLine)
+                    .setIsHighQuality(isHighQuality)
                     .setActiveTasksCount(activeTasksCount)
                     .setInputArraysPool(inputArraysPool)
                     .build();
 
-            final int readingTasksCount = mReadingThreadsCount;
+            final int readingTasksCount;
+            {
+                if (hgtFileInfo.getFile() instanceof DemFileZipEntryFS) {
+                    // 2024: Turns out that it's faster to read ZIP files "not-too-concurrently". (...right?)
+                    if (isHighQuality) {
+                        readingTasksCount = Math.min(2, mReadingThreadsCount);
+                    } else {
+                        readingTasksCount = 1;
+                    }
+                } else {
+                    if (isHighQuality) {
+                        readingTasksCount = mReadingThreadsCount;
+                    } else {
+                        readingTasksCount = Math.min(2, mReadingThreadsCount);
+                    }
+                }
+            }
 
             final int computingTasksCount, linesPerComputeTask;
             {
                 // Note, integer arithmetic and truncations are deliberate here.
                 // We also want to make sure that the last task processes no less than "linesPerComputeTask" lines, and no more than 2x that.
-                final int computingTasksCountCoarse = Math.max(readingTasksCount, determineComputingTasksCount(inputAxisLen));
-                linesPerComputeTask = inputAxisLen / computingTasksCountCoarse;
+                final int computingTasksCountCoarse = Math.max(readingTasksCount, determineComputingTasksCount(inputAxisLen / strideFactor));
+                // Make sure that "linesPerComputeTask" is divisible by the strideFactor
+                linesPerComputeTask = inputAxisLen / computingTasksCountCoarse / strideFactor * strideFactor;
                 computingTasksCount = inputAxisLen / linesPerComputeTask;
             }
 
@@ -630,15 +657,22 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
                 InputStream readStream = null;
                 try {
-                    readStream = fileInfo
-                            .getFile()
-                            .asStream();
+                    if (strideFactor >= StrideFactorRawStreamLimit) {
+                        // We're going to be skipping a lot, so we want to avoid wasteful buffering
+                        readStream = hgtFileInfo
+                                .getFile()
+                                .asRawStream();
+                    } else {
+                        readStream = hgtFileInfo
+                                .getFile()
+                                .asStream();
+                    }
                 } catch (IOException e) {
                     LOGGER.log(Level.SEVERE, e.toString(), e);
                 }
 
                 if (readingTaskIndex > 0) {
-                    final long skipAmount = inputWidth * ((long) linesPerComputeTask * computingTaskFrom - (mIsHighQuality ? 1 : 0));
+                    final long skipAmount = inputWidth * ((long) linesPerComputeTask * computingTaskFrom - (isHighQuality ? 1 : 0));
 
                     try {
                         HillShadingUtils.skipNBytes(readStream, skipAmount * Short.SIZE / Byte.SIZE);
@@ -647,7 +681,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                     }
                 }
 
-                final SilentFutureTask readingTask = getReadingTask(readStream, computingTasksCount, computingTaskFrom, computingTaskTo, linesPerComputeTask, computingParams);
+                final SilentFutureTask readingTask = getReadingTask(readStream, computingTasksCount, computingTaskFrom, computingTaskTo, linesPerComputeTask / strideFactor, computingParams);
                 readingTasks[readingTaskIndex] = readingTask;
 
                 postToThreadPoolOrRun(readingTask, mReadThreadPool);
@@ -705,31 +739,21 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
      * @param code A code to run.
      */
     protected void postToThreadPoolOrRun(final Runnable code, final AtomicReference<HillShadingThreadPool> threadPoolReference) {
-        boolean status = false;
-
         final HillShadingThreadPool threadPool = threadPoolReference.get();
 
         if (threadPool != null) {
-            status = threadPool.execute(code);
-        }
-
-        if (false == status) {
-            if (code != null) {
-                code.run();
-            }
+            threadPool.executeOrRun(code);
         }
     }
 
     protected void createThreadPoolsMaybe() {
-        if (mReadingThreadsCount > 1) {
+        if (mReadingThreadsCount > 0) {
             final AtomicReference<HillShadingThreadPool> threadPoolReference = mReadThreadPool;
 
-            if (threadPoolReference != null) {
-                if (threadPoolReference.get() == null) {
-                    synchronized (threadPoolReference) {
-                        if (threadPoolReference.get() == null) {
-                            threadPoolReference.set(createReadingThreadPool());
-                        }
+            if (threadPoolReference.get() == null) {
+                synchronized (threadPoolReference) {
+                    if (threadPoolReference.get() == null) {
+                        threadPoolReference.set(createReadingThreadPool());
                     }
                 }
             }
@@ -738,12 +762,10 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
         if (mComputingThreadsCount > 0) {
             final AtomicReference<HillShadingThreadPool> threadPoolReference = mCompThreadPool;
 
-            if (threadPoolReference != null) {
-                if (threadPoolReference.get() == null) {
-                    synchronized (threadPoolReference) {
-                        if (threadPoolReference.get() == null) {
-                            threadPoolReference.set(createComputingThreadPool());
-                        }
+            if (threadPoolReference.get() == null) {
+                synchronized (threadPoolReference) {
+                    if (threadPoolReference.get() == null) {
+                        threadPoolReference.set(createComputingThreadPool());
                     }
                 }
             }
@@ -752,12 +774,14 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
     protected HillShadingThreadPool createReadingThreadPool() {
         final int threadCount = mReadingThreadsCount;
-        return new HillShadingThreadPool(threadCount, threadCount, 10, mReadingThreadsCount, ReadingThreadPoolName).start();
+        final int queueSize = Integer.MAX_VALUE;
+        return new HillShadingThreadPool(threadCount, threadCount, queueSize, 10, ReadingThreadPoolName).start();
     }
 
     protected HillShadingThreadPool createComputingThreadPool() {
         final int threadCount = mComputingThreadsCount;
-        return new HillShadingThreadPool(threadCount, threadCount, mActiveTasksCountMax, 10, ComputingThreadPoolName).start();
+        final int queueSize = Integer.MAX_VALUE;
+        return new HillShadingThreadPool(threadCount, threadCount, queueSize, 10, ComputingThreadPoolName).start();
     }
 
     /**
@@ -797,7 +821,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
     }
 
     protected SilentFutureTask getReadingTask(InputStream readStream, int computingTasksCount, int computingTaskFrom, int computingTaskTo, int linesPerComputeTask, ComputingParams computingParams) {
-        if (mIsHighQuality) {
+        if (computingParams.mIsHighQuality) {
             return new SilentFutureTask(new ReadingTask_4x4(readStream, computingTasksCount, computingTaskFrom, computingTaskTo, linesPerComputeTask, computingParams));
         } else {
             return new SilentFutureTask(new ReadingTask_2x2(readStream, computingTasksCount, computingTaskFrom, computingTaskTo, linesPerComputeTask, computingParams));
@@ -805,7 +829,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
     }
 
     protected SilentFutureTask getComputingTask(int lineFrom, int lineTo, short[] input, Semaphore activeTasksCount, ComputingParams computingParams) {
-        if (mIsHighQuality) {
+        if (computingParams.mIsHighQuality) {
             return new SilentFutureTask(new ComputingTask_4x4(lineFrom, lineTo, input, activeTasksCount, computingParams));
         } else {
             return new SilentFutureTask(new ComputingTask_2x2(lineFrom, lineTo, input, activeTasksCount, computingParams));
@@ -840,7 +864,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                     final SilentFutureTask[] computingTasks = new SilentFutureTask[mComputingTaskTo - mComputingTaskFrom];
 
                     final int inputAxisLen = mComputingParams.mInputAxisLen;
-                    final int inputLineLen = mComputingParams.mInputWidth;
+                    final int inputLineLen = mComputingParams.mInputWidthScaled;
                     final Semaphore activeTasksCount = mComputingParams.mActiveTasksCount;
                     final ShortArraysPool inputArraysPool = mComputingParams.mInputArraysPool;
 
@@ -924,10 +948,8 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
                     IOUtils.closeQuietly(mInputStream);
 
-                    if (computingTasks.length > 1) {
-                        for (final SilentFutureTask computingTask : computingTasks) {
-                            computingTask.get();
-                        }
+                    for (final SilentFutureTask computingTask : computingTasks) {
+                        computingTask.get();
                     }
                 }
 
@@ -971,7 +993,9 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                     final SilentFutureTask[] computingTasks = new SilentFutureTask[mComputingTaskTo - mComputingTaskFrom];
 
                     final int inputAxisLen = mComputingParams.mInputAxisLen;
-                    final int inputLineLen = mComputingParams.mInputWidth;
+                    final int inputLineLen = mComputingParams.mInputWidthScaled;
+                    final int inputWidth = mComputingParams.mInputWidth;
+                    final int strideFactor = mComputingParams.mStrideFactor;
                     final Semaphore activeTasksCount = mComputingParams.mActiveTasksCount;
                     final ShortArraysPool inputArraysPool = mComputingParams.mInputArraysPool;
 
@@ -1011,7 +1035,14 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                             // First line is done separately
                             for (int col = 0; col < inputLineLen; col++) {
                                 input[col] = readNext(mInputStream);
+                                if (col < inputLineLen - 1) {
+                                    // Skip stride-1 columns
+                                    HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * Short.SIZE / Byte.SIZE);
+                                }
                             }
+
+                            // Skip stride-1 lines
+                            HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * inputWidth * Short.SIZE / Byte.SIZE);
                         }
 
                         inputNext = inputArraysPool.getArray(inputLineLen * inputNextSize);
@@ -1022,10 +1053,25 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                         // Skip the line already in the array
                         int inputIx = inputLineLen;
 
-                        for (int line = mainLoopFrom; line < mainLoopTo && isNotStopped(); line++) {
-                            // Inner loop, critical for performance
-                            for (int col = 0; col < inputLineLen; col++, inputIx++) {
+                        if (strideFactor <= 1) {
+                            for (int line = mainLoopFrom; line < mainLoopTo && isNotStopped(); line++) {
+                                // Inner loop, critical for performance
+                                for (int col = 0; col < inputLineLen; col++, inputIx++) {
+                                    input[inputIx] = readNext(mInputStream);
+                                }
+                            }
+                        } else {
+                            for (int line = mainLoopFrom; line < mainLoopTo && isNotStopped(); line++) {
+                                // Inner loop, critical for performance
+                                for (int col = 0; col < inputLineLen - 1; col++, inputIx++) {
+                                    input[inputIx] = readNext(mInputStream);
+                                    HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * Short.SIZE / Byte.SIZE);
+                                }
                                 input[inputIx] = readNext(mInputStream);
+                                inputIx++;
+
+                                // Skip stride-1 lines
+                                HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * inputWidth * Short.SIZE / Byte.SIZE);
                             }
                         }
 
@@ -1036,6 +1082,14 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                             final short point = readNext(mInputStream);
                             input[inputIx] = point;
                             inputNext[inputNextIx] = point;
+                            if (col < inputLineLen - 1) {
+                                // Skip stride-1 columns
+                                HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * Short.SIZE / Byte.SIZE);
+                            }
+                        }
+
+                        if (compTaskIndex < mComputingTaskTo - 1) {
+                            HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * inputWidth * Short.SIZE / Byte.SIZE);
                         }
 
                         final SilentFutureTask computingTask = getComputingTask(lineFrom, lineTo, input, activeTasksCount, mComputingParams);
@@ -1050,10 +1104,8 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
                     IOUtils.closeQuietly(mInputStream);
 
-                    if (computingTasks.length > 1) {
-                        for (final SilentFutureTask computingTask : computingTasks) {
-                            computingTask.get();
-                        }
+                    for (final SilentFutureTask computingTask : computingTasks) {
+                        computingTask.get();
                     }
                 }
 
@@ -1071,8 +1123,8 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
     /**
      * A "high quality" computing task which converts part of the input to part of the output, by calling
-     * {@link #processRow_2x2(short[], int, int, int, int, double, int, ComputingParams)}
-     * on all rows of input unit elements of size 4x4 from the given part (except the edges of the input data),
+     * {@link #processRow_4x4(short[], int, int, int, int, double, int, ComputingParams)}
+     * on all lines of input unit elements of size 4x4 from the given part (except the edges of the input data),
      * and {@link #processUnitElement_4x4(double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, int, ComputingParams)}
      * on all input unit elements of size 4x4 that are on the edges of the input data.
      */
@@ -1094,20 +1146,20 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
         public Boolean call() {
             // TODO (2024-10): Uses linear interpolation on the edges of a DEM file data, where there are too few points to use bicubic.
             //  It should be considered whether this can be improved by obtaining edge lines from neighboring DEM files, so we have a bicubic interpolation
-            //  everywhere except at the outer edges of the entire DEM data set.
+            //  everywhere except at the outer edges of the entire DEM data set. (Probably not worth it...)
 
             boolean retVal = false;
 
             try {
                 if (mIsPreprocess) {
-                    preprocess(mInput, mComputingParams.mInputWidth);
+                    preprocess(mInput, mComputingParams.mInputWidthScaled);
                 }
 
                 final int resolutionFactor = mComputingParams.mResolutionFactor;
                 final int outputIxIncrement = mComputingParams.mOutputIxIncrement;
-                final int secondLineOffset = mComputingParams.mInputWidth;
-                final int thirdLineOffset = secondLineOffset + mComputingParams.mInputWidth;
-                final int fourthLineOffset = thirdLineOffset + mComputingParams.mInputWidth;
+                final int secondLineOffset = mComputingParams.mInputWidthScaled;
+                final int thirdLineOffset = secondLineOffset + mComputingParams.mInputWidthScaled;
+                final int fourthLineOffset = thirdLineOffset + mComputingParams.mInputWidthScaled;
 
                 int outputIx = mComputingParams.mOutputIxInit;
                 outputIx += resolutionFactor * mLineFrom * mComputingParams.mOutputWidth;
@@ -1183,8 +1235,8 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
             } catch (Exception e) {
                 LOGGER.log(Level.WARNING, e.toString());
             } finally {
-                mActiveTasksCount.release();
                 mComputingParams.mInputArraysPool.recycleArray(mInput);
+                mActiveTasksCount.release();
             }
 
             return retVal;
@@ -1424,7 +1476,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
     /**
      * A "standard quality" computing task which converts part of the input to part of the output, by calling
-     * {@link #processRow_2x2(short[], int, int, int, int, double, int, ComputingParams)}
+     * {@link #processRow_2x2(short[], int, int, double, int, ComputingParams)}
      * on all lines of input unit elements of size 2x2 from the given part.
      */
     protected class ComputingTask_2x2 implements Callable<Boolean> {
@@ -1447,12 +1499,12 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
             try {
                 if (mIsPreprocess) {
-                    preprocess(mInput, mComputingParams.mInputWidth);
+                    preprocess(mInput, mComputingParams.mInputWidthScaled);
                 }
 
                 final int resolutionFactor = mComputingParams.mResolutionFactor;
                 final int outputIxIncrement = mComputingParams.mOutputIxIncrement;
-                final int secondLineOffset = mComputingParams.mInputWidth;
+                final int secondLineOffset = mComputingParams.mInputWidthScaled;
 
                 int outputIx = mComputingParams.mOutputIxInit;
                 outputIx += resolutionFactor * mLineFrom * mComputingParams.mOutputWidth;
@@ -1466,7 +1518,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                     // Inner loop, critical for performance
                     outputIx = processRow_2x2(mInput, inputIx, secondLineOffset, distanceScaleFactor, outputIx, mComputingParams);
 
-                    inputIx += mComputingParams.mInputWidth;
+                    inputIx += mComputingParams.mInputWidthScaled;
 
                     outputIx += outputIxIncrement;
                 }
@@ -1476,8 +1528,8 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
             } catch (Exception e) {
                 LOGGER.log(Level.WARNING, e.toString());
             } finally {
-                mActiveTasksCount.release();
                 mComputingParams.mInputArraysPool.recycleArray(mInput);
+                mActiveTasksCount.release();
             }
 
             return retVal;
@@ -1493,13 +1545,16 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
         public final int mInputAxisLen;
         public final int mOutputAxisLen;
         public final int mInputWidth;
+        public final int mInputWidthScaled;
         public final int mOutputWidth;
         public final int mPadding;
         public final int mResolutionFactor;
+        public final int mStrideFactor;
         public final int mOutputIxInit;
         public final int mOutputIxIncrement;
         public final double mNorthUnitDistancePerLine;
         public final double mSouthUnitDistancePerLine;
+        public final boolean mIsHighQuality;
         public final Semaphore mActiveTasksCount;
         public final ShortArraysPool mInputArraysPool;
 
@@ -1508,33 +1563,39 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
             mInputAxisLen = builder.mInputAxisLen;
             mOutputAxisLen = builder.mOutputAxisLen;
             mInputWidth = builder.mInputWidth;
+            mInputWidthScaled = builder.mInputWidthScaled;
             mOutputWidth = builder.mOutputWidth;
             mPadding = builder.mPadding;
             mResolutionFactor = builder.mResolutionFactor;
+            mStrideFactor = builder.mStrideFactor;
             mOutputIxInit = builder.mOutputIxInit;
             mOutputIxIncrement = builder.mOutputIxIncrement;
             mNorthUnitDistancePerLine = builder.mNorthUnitDistancePerLine;
             mSouthUnitDistancePerLine = builder.mSouthUnitDistancePerLine;
+            mIsHighQuality = builder.mIsHighQuality;
             mActiveTasksCount = builder.mActiveTasksCount;
             mInputArraysPool = builder.mInputArraysPool;
         }
 
-        public static class Builder {
+        protected static class Builder {
             protected volatile byte[] mOutput;
             protected volatile int mInputAxisLen;
             protected volatile int mOutputAxisLen;
             protected volatile int mInputWidth;
+            protected volatile int mInputWidthScaled;
             protected volatile int mOutputWidth;
             protected volatile int mPadding;
             protected volatile int mResolutionFactor;
+            protected volatile int mStrideFactor;
             protected volatile int mOutputIxInit;
             protected volatile int mOutputIxIncrement;
             protected volatile double mNorthUnitDistancePerLine;
             protected volatile double mSouthUnitDistancePerLine;
+            protected volatile boolean mIsHighQuality;
             protected volatile Semaphore mActiveTasksCount;
             protected volatile ShortArraysPool mInputArraysPool;
 
-            public Builder() {
+            protected Builder() {
             }
 
             /**
@@ -1543,7 +1604,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
              *
              * @return New {@link ComputingParams} instance built using parameter values from this {@link Builder}
              */
-            public ComputingParams build() {
+            protected ComputingParams build() {
                 return new ComputingParams(this);
             }
 
@@ -1564,6 +1625,11 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
             public Builder setInputWidth(int inputWidth) {
                 this.mInputWidth = inputWidth;
+                return this;
+            }
+
+            public Builder setInputWidthScaled(int inputWidthScaled) {
+                this.mInputWidthScaled = inputWidthScaled;
                 return this;
             }
 
@@ -1592,6 +1658,11 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                 return this;
             }
 
+            public Builder setStrideFactor(int strideFactor) {
+                this.mStrideFactor = strideFactor;
+                return this;
+            }
+
             public Builder setNorthUnitDistancePerLine(double northUnitDistancePerLine) {
                 this.mNorthUnitDistancePerLine = northUnitDistancePerLine;
                 return this;
@@ -1599,6 +1670,11 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
             public Builder setSouthUnitDistancePerLine(double southUnitDistancePerLine) {
                 this.mSouthUnitDistancePerLine = southUnitDistancePerLine;
+                return this;
+            }
+
+            public Builder setIsHighQuality(boolean isHighQuality) {
+                this.mIsHighQuality = isHighQuality;
                 return this;
             }
 

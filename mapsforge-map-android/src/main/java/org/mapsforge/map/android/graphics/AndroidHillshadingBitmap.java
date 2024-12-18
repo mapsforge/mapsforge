@@ -1,5 +1,6 @@
 /*
  * Copyright 2017 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -36,5 +37,18 @@ public class AndroidHillshadingBitmap extends AndroidBitmap implements Hillshadi
     @Override
     public int getPadding() {
         return padding;
+    }
+
+    @Override
+    public long getSizeBytes() {
+        long retVal = 0;
+
+        final android.graphics.Bitmap myBitmap = bitmap;
+
+        if (myBitmap != null) {
+            retVal = bitmap.getAllocationByteCount();
+        }
+
+        return retVal;
     }
 }

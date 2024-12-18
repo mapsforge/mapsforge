@@ -2,6 +2,7 @@
  * Copyright 2017-2022 devemux86
  * Copyright 2019 Matthew Egeler
  * Copyright 2020 Lukas Bai
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -46,11 +47,6 @@ public final class Parameters {
      * Process layer scroll events.
      */
     public static boolean LAYER_SCROLL_EVENT = false;
-
-    /**
-     * Use AwtLuminanceShadingComposite or AlphaComposite.
-     */
-    public static boolean LUMINANCE_COMPOSITE = true;
 
     /**
      * Maximum buffer size for map files.
@@ -109,6 +105,19 @@ public final class Parameters {
 
         POLYGON_EXCEPTIONS.add(new Tag("freizeitkarte", "meer"));
         POLYGON_EXCEPTIONS.add(new Tag("freizeitkarte", "land"));
+    }
+
+    public static final class Constants {
+
+        public static final int HILLSHADING_MAGNITUDE_DEFAULT = 128;
+        public static final int HILLSHADING_COLOR_DEFAULT = 0xff000000;
+        public static final long MAX_MEMORY_MB = Runtime.getRuntime().maxMemory() / 1000 / 1000;
+
+        /**
+         * Use AwtLuminanceShadingComposite or AlphaComposite.
+         * (2024: Deprecated, should not be used)
+         */
+        public static final boolean LUMINANCE_COMPOSITE = false;
     }
 
     private Parameters() {

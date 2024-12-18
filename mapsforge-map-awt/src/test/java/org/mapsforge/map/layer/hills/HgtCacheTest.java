@@ -1,5 +1,6 @@
 /*
  * Copyright 2017 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,6 +20,7 @@ import org.junit.Test;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.HillshadingBitmap;
 import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.awt.graphics.AwtHillshadingBitmap;
 
@@ -28,7 +30,7 @@ import java.awt.image.Raster;
 public class HgtCacheTest {
     @Test
     public void testMerge() {
-        AwtGraphicFactory factory = new AwtGraphicFactory();
+        AwtGraphicFactory factory = (AwtGraphicFactory) AwtGraphicFactory.INSTANCE;
         byte[] even = new byte[]{
                 0, 2, 4, 6, 0,
                 2, 2, 4, 6, 6,
@@ -36,8 +38,6 @@ public class HgtCacheTest {
                 14, 14, 16, 18, 18,
                 0, 14, 16, 18, 0
         };
-
-
         byte[] odd = new byte[]{
                 0, 1, 3, 5, 0,
                 1, 1, 3, 5, 5,
@@ -45,8 +45,8 @@ public class HgtCacheTest {
                 13, 13, 15, 17, 17,
                 0, 13, 15, 17, 0
         };
-        AwtHillshadingBitmap evens = factory.createMonoBitmap(3, 3, even, 1, new BoundingBox(0, 1, 0, 1));
-        AwtHillshadingBitmap odds = factory.createMonoBitmap(3, 3, odd, 1, new BoundingBox(0, 1, 0, 1));
+        AwtHillshadingBitmap evens = factory.createMonoBitmap(3, 3, even, 1, new BoundingBox(0, 1, 0, 1), Parameters.Constants.HILLSHADING_COLOR_DEFAULT);
+        AwtHillshadingBitmap odds = factory.createMonoBitmap(3, 3, odd, 1, new BoundingBox(0, 1, 0, 1), Parameters.Constants.HILLSHADING_COLOR_DEFAULT);
         Canvas canvas = factory.createCanvas();
 
         HgtCache.mergeSameSized(evens, odds, HillshadingBitmap.Border.EAST, 1, canvas);

@@ -21,9 +21,15 @@ import static org.mapsforge.map.layer.hills.HillShadingUtils.SqrtTwo;
  * Simplified implementation of {@link StandardClasyHillShading} intended to maximize performance, at the cost of inaccuracy.
  * </p>
  * <p>
- * Note: For better-looking results and greater flexibility consider using {@link StandardClasyHillShading}.
- * This algorithm is mostly useful when performance is of the highest priority.
+ * Note: For better-looking results and greater flexibility consider using {@link AdaptiveClasyHillShading}.
+ * This algorithm is mostly useful when performance is of the highest priority, and you don't care about scaling.
  * </p>
+ *
+ * @see AdaptiveClasyHillShading
+ * @see HiResClasyHillShading
+ * @see StandardClasyHillShading
+ * @see HalfResClasyHillShading
+ * @see QuarterResClasyHillShading
  */
 public class SimpleClasyHillShading extends StandardClasyHillShading {
 

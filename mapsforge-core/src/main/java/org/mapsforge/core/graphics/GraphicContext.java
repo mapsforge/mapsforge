@@ -74,5 +74,5 @@ public interface GraphicContext {
      * Shade tileRect neutral if bitmap is null (and shadeRect).
      * Shade tileRect with bitmap otherwise.
      */
-    void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude);
+    void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude, int color);
 }

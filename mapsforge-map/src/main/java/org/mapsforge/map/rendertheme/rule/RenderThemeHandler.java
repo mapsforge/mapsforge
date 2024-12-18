@@ -5,6 +5,7 @@
  * Copyright 2017 usrusr
  * Copyright 2017 MarcelHeckel
  * Copyright 2021 eddiemuc
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,6 +22,7 @@ package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
@@ -54,7 +56,7 @@ public final class RenderThemeHandler {
     private static XmlPullParserFactory xmlPullParserFactory = null;
 
     // Override hillshading values
-    public static short HILLSHADING_MAGNITUDE = -1;
+    public static int HILLSHADING_MAGNITUDE = -1;
     public static byte HILLSHADING_ZOOM_MIN = -1;
     public static byte HILLSHADING_ZOOM_MAX = -1;
 
@@ -88,14 +90,14 @@ public final class RenderThemeHandler {
     private Set<String> categories;
     private Rule currentRule;
     private final DisplayModel displayModel;
-    private final Stack<Element> elementStack = new Stack<Element>();
+    private final Stack<Element> elementStack = new Stack<>();
     private final GraphicFactory graphicFactory;
     private int level;
     private final XmlPullParser pullParser;
     private String qName;
     private RenderTheme renderTheme;
-    private final Stack<Rule> ruleStack = new Stack<Rule>();
-    private Map<String, Symbol> symbols = new HashMap<String, Symbol>();
+    private final Stack<Rule> ruleStack = new Stack<>();
+    private final Map<String, Symbol> symbols = new HashMap<>();
     private final XmlRenderTheme xmlRenderTheme;
     private XmlRenderThemeStyleMenu renderThemeStyleMenu;
     private XmlRenderThemeStyleLayer currentLayer;
@@ -282,8 +284,8 @@ public final class RenderThemeHandler {
                 byte minZoom = 9;
                 byte maxZoom = 17;
                 byte layer = 5;
-                short magnitude = 128;
-                boolean always = false;
+                int magnitude = Parameters.Constants.HILLSHADING_MAGNITUDE_DEFAULT;
+                int color = Parameters.Constants.HILLSHADING_COLOR_DEFAULT;
 
                 for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
                     String name = pullParser.getAttributeName(i);
@@ -292,17 +294,17 @@ public final class RenderThemeHandler {
                     if ("cat".equals(name)) {
                         category = value;
                     } else if ("zoom-min".equals(name)) {
-                        minZoom = XmlUtils.parseNonNegativeByte("zoom-min", value);
+                        minZoom = XmlUtils.parseNonNegativeByte(name, value);
                     } else if ("zoom-max".equals(name)) {
-                        maxZoom = XmlUtils.parseNonNegativeByte("zoom-max", value);
+                        maxZoom = XmlUtils.parseNonNegativeByte(name, value);
                     } else if ("magnitude".equals(name)) {
-                        magnitude = (short) XmlUtils.parseNonNegativeInteger("magnitude", value);
+                        magnitude = XmlUtils.parseNonNegativeInteger(name, value);
                         if (magnitude > 255)
                             throw new XmlPullParserException("Attribute 'magnitude' must not be > 255");
-                    } else if ("always".equals(name)) {
-                        always = Boolean.valueOf(value);
+                    } else if ("color".equals(name)) {
+                        color = XmlUtils.parseNonNegativeInteger(name, value);
                     } else if ("layer".equals(name)) {
-                        layer = XmlUtils.parseNonNegativeByte("layer", value);
+                        layer = XmlUtils.parseNonNegativeByte(name, value);
                     }
                 }
 
@@ -312,7 +314,7 @@ public final class RenderThemeHandler {
                 magnitude = HILLSHADING_MAGNITUDE != -1 ? HILLSHADING_MAGNITUDE : magnitude;
 
                 int hillShadingLevel = this.level++;
-                Hillshading hillshading = new Hillshading(minZoom, maxZoom, magnitude, layer, always, hillShadingLevel, this.graphicFactory);
+                Hillshading hillshading = new Hillshading(minZoom, maxZoom, magnitude, color, layer, hillShadingLevel, this.graphicFactory);
 
                 if (this.categories == null || category == null
                         || this.categories.contains(category)) {

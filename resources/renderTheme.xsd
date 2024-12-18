@@ -321,11 +321,13 @@
         <xs:attribute name="zoom-min" default="9" type="xs:unsignedByte" use="optional" />
         <xs:attribute name="zoom-max" default="17" type="xs:unsignedByte" use="optional" />
         <xs:attribute name="magnitude" default="128" type="xs:unsignedByte" use="optional" />
-        <xs:attribute name="always" default="false" type="xs:boolean" use="optional">
+        <xs:attribute name="color" default="#ff000000" type="tns:color" use="optional">
             <xs:annotation>
-                <xs:documentation>Apply neutral shading when tiles are missing or shading is
-                    disabled to keep colors consistent (for themes that compensate color intensity
-                    for hillshading desaturation)
+                <xs:documentation>Hill shading color. The alpha component is combined with the
+                    "magnitude" attribute - you can use both to control the opacity of the hill
+                    shading. They are multiplied, so for example a magnitude of 128 and a color of
+                    #ff000000 would result in an opacity of 50%, while a magnitude of 128 and a
+                    color of #80000000 would result in an opacity of 25% (0.5 * 0.5 = 0.25).
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>

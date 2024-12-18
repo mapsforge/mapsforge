@@ -20,13 +20,18 @@ import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class HillShadingUtils {
 
@@ -157,7 +162,24 @@ public class HillShadingUtils {
 
         protected volatile ThreadPoolExecutor mThreadPool = null;
 
-        public static class NormPriorityThreadFactory implements ThreadFactory {
+        public static class MyRejectedExecutionHandler implements RejectedExecutionHandler {
+            public static class MyRejectedException extends Throwable {
+                public MyRejectedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+                    super(message, cause, enableSuppression, writableStackTrace);
+                }
+            }
+
+            @SuppressWarnings("unchecked")
+            private static <T extends Throwable> void throwException(Throwable exception) throws T {
+                throw (T) exception;
+            }
+
+            public void rejectedExecution(Runnable task, ThreadPoolExecutor executor) {
+                throwException(new MyRejectedException("Rejected", null, false, false));
+            }
+        }
+
+        public static class MyThreadFactory implements ThreadFactory {
             protected final ThreadFactory mDefaultThreadFactory = Executors.defaultThreadFactory();
             protected final AtomicInteger mCounter = new AtomicInteger(1);
             protected final String mName;
@@ -166,7 +188,7 @@ public class HillShadingUtils {
              * @param name Name for new threads. A numbered suffix will be appended. May be {@code null},
              *             in which case the threads will have system default names.
              */
-            public NormPriorityThreadFactory(final String name) {
+            public MyThreadFactory(final String name) {
                 mName = name;
             }
 
@@ -190,7 +212,7 @@ public class HillShadingUtils {
          *
          * @param corePoolSize             Number of threads to keep in the pool until they are idle for {@code idleThreadReleaseTimeout} seconds.
          * @param maxPoolSize              Maximum number of threads to allow in the pool.
-         * @param queueSize                The capacity of the execution waiting queue.
+         * @param queueSize                The capacity of the execution waiting queue. Set to {@link Integer#MAX_VALUE} to use an unbounded {@link LinkedBlockingDeque}.
          * @param idleThreadReleaseTimeout How many seconds a thread must be idle before being released.
          *                                 If released, it will be created again the next time it is needed. [seconds]
          * @param name                     Name to give to the threads of this thread pool. A numbered suffix will be appended. May be {@code null},
@@ -212,8 +234,18 @@ public class HillShadingUtils {
         public HillShadingThreadPool start() {
             synchronized (mSync) {
                 if (mThreadPool == null) {
-                    mThreadPool = new ThreadPoolExecutor(mCorePoolSize, mMaxPoolSize, mIdleThreadReleaseTimeout, TimeUnit.SECONDS, new ArrayBlockingQueue<>(mQueueSize), new NormPriorityThreadFactory(mName), new ThreadPoolExecutor.CallerRunsPolicy()) {
-                    };
+                    final BlockingQueue<Runnable> queue;
+                    {
+                        if (mQueueSize <= 0) {
+                            queue = new SynchronousQueue<>();
+                        } else if (mQueueSize < Integer.MAX_VALUE) {
+                            queue = new ArrayBlockingQueue<>(mQueueSize);
+                        } else {
+                            queue = new LinkedBlockingDeque<>();
+                        }
+                    }
+
+                    mThreadPool = new ThreadPoolExecutor(mCorePoolSize, mMaxPoolSize, mIdleThreadReleaseTimeout, TimeUnit.SECONDS, queue, new MyThreadFactory(mName), new MyRejectedExecutionHandler());
 
                     if (mIdleThreadReleaseTimeout > 0) {
                         mThreadPool.allowCoreThreadTimeOut(true);
@@ -241,30 +273,40 @@ public class HillShadingUtils {
         }
 
         /**
-         * Submit a task to the thread pool for execution, or execute in the calling thread if any errors occur.
+         * Submit a task to the thread pool for execution.
          *
-         * @return {@code true} if task was successfully submitted or executed on the calling thread.
+         * @return {@code true} if task was successfully submitted.
          */
-        public boolean execute(final Runnable runnable) {
+        public boolean execute(final Runnable task) {
             boolean retVal = false;
 
-            synchronized (mSync) {
-                if (runnable != null) {
-                    try {
+            if (task != null) {
+                try {
+                    synchronized (mSync) {
                         if (mThreadPool != null) {
-                            mThreadPool.execute(runnable);
+                            mThreadPool.execute(task);
 
                             retVal = true;
                         }
-                    } catch (Exception | OutOfMemoryError e) {
-                        runnable.run();
-
-                        retVal = true;
                     }
+                } catch (Exception ignored) {
                 }
             }
 
             return retVal;
+        }
+
+        /**
+         * Submit a task to the thread pool for execution, or run on the calling thread if submit fails.
+         */
+        public void executeOrRun(final Runnable task) {
+            final boolean status = execute(task);
+
+            if (false == status) {
+                if (task != null) {
+                    task.run();
+                }
+            }
         }
     }
 
@@ -343,6 +385,61 @@ public class HillShadingUtils {
             }
 
             return output;
+        }
+    }
+
+    public static class BlockingSumLimiter {
+        protected final AtomicLong mAtomicLong;
+        protected final long mInitialSumValue;
+
+        public BlockingSumLimiter(long initialSumValue) {
+            mAtomicLong = new AtomicLong(initialSumValue);
+            mInitialSumValue = initialSumValue;
+        }
+
+        public BlockingSumLimiter() {
+            this(0);
+        }
+
+        /**
+         * Adds the given value iff the current sum is less than the limit, blocking until this is fulfilled.
+         *
+         * @param valueToAdd Value to add.
+         * @param limit Limit sum.
+         */
+        public void add(final long valueToAdd, final long limit) {
+            synchronized (mAtomicLong) {
+                while (true) {
+                    final long currValue = mAtomicLong.get();
+
+                    if (currValue > limit) {
+                        try {
+                            mAtomicLong.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else if (mAtomicLong.compareAndSet(currValue, currValue + valueToAdd)) {
+                        return;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Subtracts the given value ensuring that the sum doesn't go below the initial sum value as provided in the constructor (default: 0).
+         *
+         * @param valueToSubtract Value to subtract.
+         */
+        public void subtract(final long valueToSubtract) {
+            synchronized (mAtomicLong) {
+                mAtomicLong.addAndGet(-valueToSubtract);
+
+                if (mAtomicLong.get() < mInitialSumValue) {
+                    mAtomicLong.set(mInitialSumValue);
+                }
+
+                mAtomicLong.notify();
+            }
         }
     }
 }

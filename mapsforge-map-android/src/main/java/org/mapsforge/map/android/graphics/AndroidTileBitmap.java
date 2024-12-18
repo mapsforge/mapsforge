@@ -16,7 +16,6 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -46,7 +45,7 @@ import java.util.logging.Logger;
 
 public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
     private static final Logger LOGGER = Logger.getLogger(AndroidTileBitmap.class.getName());
-    private static Map<Integer, Set<SoftReference<Bitmap>>> reusableTileBitmaps = new HashMap<Integer, Set<SoftReference<Bitmap>>>();
+    private static final Map<Integer, Set<SoftReference<Bitmap>>> reusableTileBitmaps = new HashMap<Integer, Set<SoftReference<Bitmap>>>();
 
     private static AtomicInteger tileInstances;
 
@@ -131,7 +130,6 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     AndroidTileBitmap(int tileSize, boolean isTransparent) {
         super();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -178,7 +176,6 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void destroyBitmap() {
         if (this.bitmap != null) {
@@ -203,7 +200,6 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private BitmapFactory.Options createTileBitmapFactoryOptions(int tileSize, boolean isTransparent) {
         BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
         if (isTransparent) {

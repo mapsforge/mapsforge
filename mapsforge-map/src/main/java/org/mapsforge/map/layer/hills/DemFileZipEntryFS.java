@@ -16,7 +16,6 @@ package org.mapsforge.map.layer.hills;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
@@ -45,20 +44,40 @@ public class DemFileZipEntryFS implements DemFile {
     }
 
     @Override
-    public InputStream openInputStream() throws FileNotFoundException {
-        try {
-            final ZipFile zipFile = new ZipFile(this.zipFile);
-            final ZipEntry zipEntry = zipFile.getEntry(zipEntryName);
+    public InputStream openInputStream() throws IOException {
+        InputStream output = null;
 
-            // Buffer size is relatively small to reduce wasteful read-ahead (buffer fill) during multi-threaded processing
-            return new BufferedInputStream(new DemZipInputStream(zipFile, zipEntry), 512);
-        } catch (IOException e) {
-            throw new FileNotFoundException(zipFile + " (" + zipEntryName + ")");
+        final InputStream rawStream = rawStream();
+
+        if (rawStream != null) {
+            output = new BufferedInputStream(rawStream, BufferSize);
         }
+
+        return output;
     }
 
     @Override
     public InputStream asStream() throws IOException {
         return openInputStream();
+    }
+
+    @Override
+    public InputStream asRawStream() throws IOException {
+        InputStream output = null;
+
+        final InputStream rawStream = rawStream();
+
+        if (rawStream != null) {
+            output = new BufferedInputStream(rawStream, BufferSizeRaw);
+        }
+
+        return output;
+    }
+
+    protected InputStream rawStream() throws IOException {
+        final ZipFile zipFile = new ZipFile(this.zipFile);
+        final ZipEntry zipEntry = zipFile.getEntry(zipEntryName);
+
+        return new DemZipInputStream(zipFile, zipEntry);
     }
 }

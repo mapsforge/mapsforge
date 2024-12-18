@@ -1,5 +1,6 @@
 /*
  * Copyright 2017-2022 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -31,10 +32,16 @@ public interface ShadeTileSource {
     /**
      * main work method
      */
-    HillshadingBitmap getHillshadingBitmap(int latitudeOfSouthWestCorner, int longituedOfSouthWestCorner, double pxPerLat, double pxPerLng) throws ExecutionException, InterruptedException;
+    HillshadingBitmap getHillshadingBitmap(int latitudeOfSouthWestCorner, int longituedOfSouthWestCorner, int zoomLevel, double pxPerLat, double pxPerLon, int color) throws ExecutionException, InterruptedException;
 
     void applyConfiguration(boolean allowParallel);
 
-    void setShadingAlgorithm(ShadingAlgorithm algorithm);
+    ShadingAlgorithm getAlgorithm();
 
+    void setAlgorithm(ShadingAlgorithm algorithm);
+
+    /**
+     * @return Whether the zoom level is supported on the lat/lon coordinates.
+     */
+    boolean isZoomLevelSupported(int zoomLevel, int lat, int lon);
 }
