@@ -4,7 +4,7 @@
 
 - Map rotation: marker billboard option [#1563](https://github.com/mapsforge/mapsforge/pull/1563)
 - Map label improvements [#1579](https://github.com/mapsforge/mapsforge/pull/1579) [#1586](https://github.com/mapsforge/mapsforge/pull/1586) [#1588](https://github.com/mapsforge/mapsforge/pull/1588)
-- Hillshading performance improvements [#1561](https://github.com/mapsforge/mapsforge/pull/1561)
+- Adaptive hillshading and improvements [#1561](https://github.com/mapsforge/mapsforge/pull/1561) [#1592](https://github.com/mapsforge/mapsforge/pull/1592)
 - Multi-map improvements [#1582](https://github.com/mapsforge/mapsforge/pull/1582)
   - `MapDataStore.setPriority`
 - Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
