@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    REVISION 38, 18 December 2024
+    REVISION 39, 23 December 2024
 	this is the default/light Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -866,8 +866,8 @@
                 <rule e="way" k="highway" v="service" zoom-min="15">
                     <line stroke="#000000" stroke-width="1.1" />
                 </rule>
-                <rule e="way" k="highway" v="cycleway" zoom-min="17">
-                    <line stroke="#3366FF" stroke-width="1.2" />
+                <rule e="way" k="highway" v="cycleway" zoom-min="15">
+                    <line stroke="#3366FF" stroke-width="1.0" />
                 </rule>
                 <rule e="way" k="highway" v="unclassified" zoom-min="12" zoom-max="12">
                     <line stroke="#000000" stroke-width="0.4" />
@@ -879,7 +879,7 @@
                     <line stroke="#000000" stroke-width="1.5" />
                 </rule>
                 <rule e="way" k="highway" v="pedestrian" zoom-min="12">
-                    <line stroke="#000000" stroke-width="1.8" />
+                    <line stroke="#000000" stroke-width="1.2" />
                 </rule>
                 <rule e="way" k="highway" v="living_street|residential|road" zoom-min="12" zoom-max="12">
                     <line stroke="#000000" stroke-width="0.4" />
@@ -972,7 +972,7 @@
                 <line stroke="#cbc0b3" stroke-dasharray="10,12" stroke-linecap="round"
                     stroke-width="0.6" />
             </rule>
-            <rule e="way" k="highway" v="cycleway|raceway" zoom-min="16">
+            <rule e="way" k="highway" v="cycleway|raceway" zoom-min="15">
                 <line stroke="#F0F0FF" stroke-width="0.8" />
             </rule>
             <rule e="way" k="highway" v="service" zoom-min="14" zoom-max="14">
@@ -986,7 +986,7 @@
                     stroke-width="1.3" />
             </rule>
             <rule e="way" k="highway" v="pedestrian">
-                <line stroke="#e3e3e8" stroke-width="1.5" />
+                <line stroke="#e3e3e8" stroke-width="1.0" />
             </rule>
             <rule e="way" k="highway" v="unclassified" zoom-min="12" zoom-max="12">
                 <line stroke="#FFFFFF" stroke-width="0.4" />
