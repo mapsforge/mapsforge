@@ -101,6 +101,7 @@ public class MapWorkerPool implements Runnable {
         // Shutdown executors
         this.self.shutdown();
         this.workers.shutdown();
+        this.databaseRenderer.interruptAndDestroy();
 
         try {
             if (!this.self.awaitTermination(100, TimeUnit.MILLISECONDS)) {

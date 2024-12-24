@@ -170,13 +170,13 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
     protected final int mActiveTasksCountMax;
 
     /**
-     * Static thread pools shared by all tasks.
+     * Thread pools.
      */
     protected final AtomicReference<HillShadingThreadPool> mReadThreadPool = new AtomicReference<>(null);
     protected final AtomicReference<HillShadingThreadPool> mCompThreadPool = new AtomicReference<>(null);
 
     /**
-     * Stop signal flag, indicating that processing should be stopped as soon as possible (not used by default).
+     * Stop signal flag, indicating that processing should be stopped as soon as possible.
      *
      * @see #isNotStopped()
      */
@@ -553,7 +553,52 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
 
     @Override
     protected byte[] convert(InputStream inputStream, int dummyAxisLen, int dummyRowLen, int padding, int zoomLevel, double pxPerLat, double pxPerLon, HgtFileInfo hgtFileInfo) throws IOException {
-        return doTheWork(hgtFileInfo, false, padding, zoomLevel, pxPerLat, pxPerLon);
+        return doTheWork_(hgtFileInfo, false, padding, zoomLevel, pxPerLat, pxPerLon);
+    }
+
+    /**
+     * @param hgtFileInfo   HGT file info
+     * @param isHighQuality When {@code true}, a unit element is 4x4 data points in size instead of 2x2, for better interpolation possibilities.
+     * @param padding       Padding of the output, useful to minimize border interpolation artifacts (no need to be larger than 1)
+     * @param zoomLevel     Zoom level (to determine shading quality requirements)
+     * @param pxPerLat      Tile pixels per degree of latitude (to determine shading quality requirements)
+     * @param pxPerLon      Tile pixels per degree of longitude (to determine shading quality requirements)
+     * @return
+     */
+    protected byte[] doTheWork_(final HgtFileInfo hgtFileInfo, boolean isHighQuality, int padding, int zoomLevel, double pxPerLat, double pxPerLon) {
+        final byte[] output;
+
+        if (false == isDebugTiming()) {
+            output = doTheWork(hgtFileInfo, isHighQuality, padding, zoomLevel, pxPerLat, pxPerLon);
+        } else {
+            final long startTs, finishTs;
+
+            if (false == isDebugTimingSequential()) {
+                startTs = System.nanoTime();
+
+                output = doTheWork(hgtFileInfo, isHighQuality, padding, zoomLevel, pxPerLat, pxPerLon);
+
+                finishTs = System.nanoTime();
+            } else {
+                // We want to process one file at a time for more accurate timings
+                synchronized (mDebugSync) {
+                    startTs = System.nanoTime();
+
+                    output = doTheWork(hgtFileInfo, isHighQuality, padding, zoomLevel, pxPerLat, pxPerLon);
+
+                    finishTs = System.nanoTime();
+                }
+            }
+
+            final long delayNano = finishTs - startTs;
+            final double delayMs = Math.round(delayNano / 1e5) / 10.;
+
+            final String debugTag = this.getClass().getSimpleName() + "-R" + mReadingThreadsCount + "-C" + mComputingThreadsCount + "-E" + ElementsPerComputingTask + "-HQ" + (isHighQuality ? 1 : 0) + "-Z" + (zoomLevel < 10 ? "0" : "") + zoomLevel + " T: " + delayMs + " ms";
+
+            System.out.println(debugTag);
+        }
+
+        return output;
     }
 
     /**
@@ -784,21 +829,45 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
         return new HillShadingThreadPool(threadCount, threadCount, queueSize, 10, ComputingThreadPoolName).start();
     }
 
+    protected void destroyReadingThreadPool() {
+        final AtomicReference<HillShadingThreadPool> threadPoolReference = mReadThreadPool;
+
+        synchronized (threadPoolReference) {
+            final HillShadingThreadPool threadPool = threadPoolReference.getAndSet(null);
+
+            if (threadPool != null) {
+                threadPool.shutdownNow();
+            }
+        }
+    }
+
+    protected void destroyComputingThreadPool() {
+        final AtomicReference<HillShadingThreadPool> threadPoolReference = mCompThreadPool;
+
+        synchronized (threadPoolReference) {
+            final HillShadingThreadPool threadPool = threadPoolReference.getAndSet(null);
+
+            if (threadPool != null) {
+                threadPool.shutdownNow();
+            }
+        }
+    }
+
+    public void interruptAndDestroy() {
+        destroyReadingThreadPool();
+        destroyComputingThreadPool();
+    }
+
     /**
-     * Default implementation always returns {@code true}.
-     * Override to return a more meaningful value if needed, e.g. {@code return !}{@link #isStopped()}.
-     *
-     * @return {@code false} to stop processing. Default implementation always returns {@code true}.
+     * @return {@code false} to stop processing. Default implementation checks the thread interrupt state if a call to {@link #isStopped()} returns {@code false}.
      */
     protected boolean isNotStopped() {
-        return true;
+        return !isStopped() && !Thread.currentThread().isInterrupted();
     }
 
     /**
      * Send a "stop" signal: Any active task will finish as soon as possible (possibly without completing),
      * and no new work will be done until a "continue" signal arrives.
-     * Note: You should override {@link #isNotStopped()} if you need the stopping functionality.
-     * Calling this without overriding {@link #isNotStopped()} will have no effect.
      */
     public void stopSignal() {
         mStopSignal = true;
@@ -806,18 +875,34 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
 
     /**
      * Send a "continue" signal: Allow new work to be done.
-     * Note: You should override {@link #isNotStopped()} if you need the stopping functionality.
-     * Calling this without overriding {@link #isNotStopped()} will have no effect.
      */
     public void continueSignal() {
         mStopSignal = false;
     }
 
     /**
-     * Note: You should override {@link #isNotStopped()} if you need the stopping functionality.
+     * Check if the "stop" signal is active.
      */
     public boolean isStopped() {
         return mStopSignal;
+    }
+
+    protected final Object mDebugSync = new Object();
+
+    /**
+     * @return {@code true} to measure and output rendering times per file.
+     * @see #isDebugTimingSequential()
+     */
+    protected boolean isDebugTiming() {
+        return false;
+    }
+
+    /**
+     * @return {@code true} to process one file at a time for more accurate timings. Note: Rendering will be slower.
+     * @see #isDebugTiming()
+     */
+    protected boolean isDebugTimingSequential() {
+        return true;
     }
 
     protected SilentFutureTask getReadingTask(InputStream readStream, int computingTasksCount, int computingTaskFrom, int computingTaskTo, int linesPerComputeTask, ComputingParams computingParams) {
