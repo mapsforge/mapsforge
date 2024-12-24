@@ -23,8 +23,6 @@ import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.labels.LabelLayer;
-import org.mapsforge.map.layer.labels.MapDataStoreLabelStore;
-import org.mapsforge.map.layer.labels.ThreadedLabelLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
 /**
@@ -73,13 +71,11 @@ public class RotationMapViewer extends DefaultTheme {
     @Override
     protected void createLayers() {
         TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCaches.get(0),
-                mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false, false);
+                mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false, true);
         mapView.getLayerManager().getLayers().add(tileRendererLayer);
-
-        MapDataStoreLabelStore labelStore = new MapDataStoreLabelStore(getMapFile(), tileRendererLayer.getRenderThemeFuture(),
-                tileRendererLayer.getTextScale(), tileRendererLayer.getDisplayModel(), AndroidGraphicFactory.INSTANCE);
-        LabelLayer labelLayer = new ThreadedLabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
+        LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
         mapView.getLayerManager().getLayers().add(labelLayer);
+
         // add a grid layer and a layer showing tile coordinates
         mapView.getLayerManager().getLayers()
                 .add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, mapView.getModel().displayModel));
