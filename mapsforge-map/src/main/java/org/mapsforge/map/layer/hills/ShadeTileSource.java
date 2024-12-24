@@ -44,4 +44,6 @@ public interface ShadeTileSource {
      * @return Whether the zoom level is supported on the lat/lon coordinates.
      */
     boolean isZoomLevelSupported(int zoomLevel, int lat, int lon);
+
+    void interruptAndDestroy();
 }

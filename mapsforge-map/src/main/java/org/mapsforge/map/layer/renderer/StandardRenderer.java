@@ -229,6 +229,12 @@ public class StandardRenderer implements RenderCallback {
         }
     }
 
+    public void interruptAndDestroy() {
+        if (hillsRenderConfig != null) {
+            hillsRenderConfig.interruptAndDestroy();
+        }
+    }
+
     private static Point[] getTilePixelCoordinates(int tileSize) {
         Point[] result = new Point[5];
         result[0] = new Point(0, 0);

@@ -74,7 +74,7 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
 
     protected HgtCache latestCache() {
         if (demFolder == null || algorithm == null) {
-            this.currentCache = null;
+            interruptAndDestroy();
             return null;
         }
 
@@ -132,6 +132,16 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
         }
 
         return retVal;
+    }
+
+    @Override
+    public void interruptAndDestroy() {
+        final HgtCache cache = currentCache;
+        this.currentCache = null;
+
+        if (cache != null) {
+            cache.interruptAndDestroy();
+        }
     }
 
     public void setDemFolder(DemFolder demFolder) {

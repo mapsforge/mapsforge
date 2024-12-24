@@ -121,4 +121,8 @@ public class HillsRenderConfig {
     public boolean isZoomLevelSupported(int zoomLevel, int lat, int lon) {
         return tileSource.isZoomLevelSupported(zoomLevel, lat, lon);
     }
+
+    public void interruptAndDestroy() {
+        tileSource.interruptAndDestroy();
+    }
 }

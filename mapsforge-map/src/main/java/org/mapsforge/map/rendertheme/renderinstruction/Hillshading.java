@@ -289,7 +289,7 @@ public class Hillshading {
     protected boolean checkZoomLevelFine(int zoomLevel, HillsRenderConfig hillsRenderConfig, int shadingBottomLat, int shadingLeftLon) {
         boolean retVal = true;
 
-        if (hillsRenderConfig.isWideZoomRange()) {
+        if (hillsRenderConfig.isAdaptiveZoomEnabled()) {
             retVal = hillsRenderConfig.isZoomLevelSupported(zoomLevel, shadingBottomLat, shadingLeftLon);
         }
 

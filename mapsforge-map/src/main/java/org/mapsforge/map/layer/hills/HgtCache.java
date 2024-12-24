@@ -98,7 +98,7 @@ public class HgtCache {
                 }
 
                 // Our thread pool won't be needed any more
-                destroyThreadPool();
+                shutdownThreadPool();
 
                 return myMap;
             }
@@ -252,14 +252,30 @@ public class HgtCache {
         return new HillShadingThreadPool(threadCount, threadCount, queueSize, 1, ThreadPoolName).start();
     }
 
-    protected void destroyThreadPool() {
+    protected void shutdownThreadPool() {
         final AtomicReference<HillShadingThreadPool> threadPoolReference = ThreadPool;
 
         synchronized (threadPoolReference) {
             final HillShadingThreadPool threadPool = threadPoolReference.getAndSet(null);
 
             if (threadPool != null) {
-                threadPool.stop();
+                threadPool.shutdown();
+            }
+        }
+    }
+
+    public void interruptAndDestroy() {
+        if (shadingAlgorithm instanceof AThreadedHillShading) {
+            ((AThreadedHillShading) shadingAlgorithm).interruptAndDestroy();
+        }
+
+        final AtomicReference<HillShadingThreadPool> threadPoolReference = ThreadPool;
+
+        synchronized (threadPoolReference) {
+            final HillShadingThreadPool threadPool = threadPoolReference.getAndSet(null);
+
+            if (threadPool != null) {
+                threadPool.shutdownNow();
             }
         }
     }
