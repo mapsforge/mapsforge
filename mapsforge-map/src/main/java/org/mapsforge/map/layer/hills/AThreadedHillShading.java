@@ -553,7 +553,7 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
 
     @Override
     protected byte[] convert(InputStream inputStream, int dummyAxisLen, int dummyRowLen, int padding, int zoomLevel, double pxPerLat, double pxPerLon, HgtFileInfo hgtFileInfo) throws IOException {
-        return doTheWork_(hgtFileInfo, false, padding, zoomLevel, pxPerLat, pxPerLon);
+        return convert(hgtFileInfo, false, padding, zoomLevel, pxPerLat, pxPerLon);
     }
 
     /**
@@ -565,21 +565,15 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
      * @param pxPerLon      Tile pixels per degree of longitude (to determine shading quality requirements)
      * @return
      */
-    protected byte[] doTheWork_(final HgtFileInfo hgtFileInfo, boolean isHighQuality, int padding, int zoomLevel, double pxPerLat, double pxPerLon) {
+    protected byte[] convert(final HgtFileInfo hgtFileInfo, boolean isHighQuality, int padding, int zoomLevel, double pxPerLat, double pxPerLon) {
         final byte[] output;
 
-        if (false == isDebugTiming()) {
+        if (!isDebugTiming()) {
             output = doTheWork(hgtFileInfo, isHighQuality, padding, zoomLevel, pxPerLat, pxPerLon);
         } else {
             final long startTs, finishTs;
 
-            if (false == isDebugTimingSequential()) {
-                startTs = System.nanoTime();
-
-                output = doTheWork(hgtFileInfo, isHighQuality, padding, zoomLevel, pxPerLat, pxPerLon);
-
-                finishTs = System.nanoTime();
-            } else {
+            if (isDebugTimingSequential()) {
                 // We want to process one file at a time for more accurate timings
                 synchronized (mDebugSync) {
                     startTs = System.nanoTime();
@@ -588,6 +582,12 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
 
                     finishTs = System.nanoTime();
                 }
+            } else {
+                startTs = System.nanoTime();
+
+                output = doTheWork(hgtFileInfo, isHighQuality, padding, zoomLevel, pxPerLat, pxPerLon);
+
+                finishTs = System.nanoTime();
             }
 
             final long delayNano = finishTs - startTs;

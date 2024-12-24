@@ -110,7 +110,7 @@ public class AdaptiveClasyHillShading extends HiResClasyHillShading implements I
     protected byte[] convert(InputStream inputStream, int dummyAxisLen, int dummyRowLen, int padding, int zoomLevel, double pxPerLat, double pxPerLon, HgtFileInfo hgtFileInfo) throws IOException {
         final boolean isHighQuality = isHighQuality(hgtFileInfo, zoomLevel, pxPerLat, pxPerLon);
 
-        return doTheWork_(hgtFileInfo, isHighQuality, padding, zoomLevel, pxPerLat, pxPerLon);
+        return convert(hgtFileInfo, isHighQuality, padding, zoomLevel, pxPerLat, pxPerLon);
     }
 
     @Override

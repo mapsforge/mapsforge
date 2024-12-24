@@ -63,7 +63,7 @@ public class HiResClasyHillShading extends StandardClasyHillShading {
 
     @Override
     protected byte[] convert(InputStream inputStream, int dummyAxisLen, int dummyRowLen, int padding, int zoomLevel, double pxPerLat, double pxPerLon, HgtFileInfo hgtFileInfo) throws IOException {
-        return doTheWork_(hgtFileInfo, true, padding, zoomLevel, pxPerLat, pxPerLon);
+        return convert(hgtFileInfo, true, padding, zoomLevel, pxPerLat, pxPerLon);
     }
 
     @Override
