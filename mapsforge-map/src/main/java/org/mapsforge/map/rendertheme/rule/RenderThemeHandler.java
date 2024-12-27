@@ -302,7 +302,7 @@ public final class RenderThemeHandler {
                         if (magnitude > 255)
                             throw new XmlPullParserException("Attribute 'magnitude' must not be > 255");
                     } else if ("color".equals(name)) {
-                        color = XmlUtils.parseNonNegativeInteger(name, value);
+                        color = XmlUtils.getColor(this.graphicFactory, value);
                     } else if ("layer".equals(name)) {
                         layer = XmlUtils.parseNonNegativeByte(name, value);
                     }
