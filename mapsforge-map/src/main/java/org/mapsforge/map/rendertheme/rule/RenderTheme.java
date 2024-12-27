@@ -143,15 +143,16 @@ public class RenderTheme {
         // check cached instructions
         int matchingCacheKey = computeMatchingCacheKey(poi.tags, renderContext.rendererJob.tile.zoomLevel, Closed.NO);
 
+        final RenderInstruction[] instructions;
         synchronized (this.poiMatchingCache) {
-            RenderInstruction[] instructions = this.poiMatchingCache.get(matchingCacheKey);
-            if (instructions != null) {
-                //noinspection ForLoopReplaceableByForEach
-                for (int i = 0; i < instructions.length; ++i) {
-                    instructions[i].renderNode(renderCallback, renderContext, poi);
-                }
-                return;
+            instructions = this.poiMatchingCache.get(matchingCacheKey);
+        }
+        if (instructions != null) {
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0; i < instructions.length; ++i) {
+                instructions[i].renderNode(renderCallback, renderContext, poi);
             }
+            return;
         }
 
         // cache miss
@@ -227,15 +228,16 @@ public class RenderTheme {
         // check cached instructions
         int matchingCacheKey = computeMatchingCacheKey(way.getTags(), way.getUpperLeft().zoomLevel, closed);
 
+        final RenderInstruction[] instructions;
         synchronized (this.wayMatchingCache) {
-            RenderInstruction[] instructions = this.wayMatchingCache.get(matchingCacheKey);
-            if (instructions != null) {
-                //noinspection ForLoopReplaceableByForEach
-                for (int i = 0; i < instructions.length; ++i) {
-                    instructions[i].renderWay(renderCallback, renderContext, way);
-                }
-                return;
+            instructions = this.wayMatchingCache.get(matchingCacheKey);
+        }
+        if (instructions != null) {
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0; i < instructions.length; ++i) {
+                instructions[i].renderWay(renderCallback, renderContext, way);
             }
+            return;
         }
 
         // cache miss
