@@ -31,5 +31,5 @@ public interface IAdaptiveHillShading {
     /**
      * @param isEnabled {@code true} to let the algorithm decide which zoom levels are supported (default); {@code false} to obey values as set in the render theme.
      */
-    void setAdaptiveZoomEnabled(boolean isEnabled);
+    IAdaptiveHillShading setAdaptiveZoomEnabled(boolean isEnabled);
 }
