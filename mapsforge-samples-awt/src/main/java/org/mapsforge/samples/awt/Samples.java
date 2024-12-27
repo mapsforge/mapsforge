@@ -84,8 +84,8 @@ public final class Samples {
         if (demFolder != null) {
             MemoryCachingHgtReaderTileSource tileSource = new MemoryCachingHgtReaderTileSource(new DemFolderFS(demFolder), new AdaptiveClasyHillShading(), AwtGraphicFactory.INSTANCE);
             hillsConfig = new HillsRenderConfig(tileSource);
-            hillsConfig.setMagnitudeScaleFactor(1);
-            hillsConfig.setColor(0xff000000);
+            //hillsConfig.setMagnitudeScaleFactor(1);
+            //hillsConfig.setColor(0xff000000);
             hillsConfig.indexOnThread();
             args = Arrays.copyOfRange(args, 1, args.length);
         } else {
