@@ -39,14 +39,14 @@ public class GroupLayer extends Layer {
     }
 
     @Override
-    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, Rotation rotation) {
+    public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, Rotation rotation) {
         for (Layer layer : layers) {
             layer.draw(boundingBox, zoomLevel, canvas, topLeftPoint, rotation);
         }
     }
 
     @Override
-    public void onDestroy() {
+    public synchronized void onDestroy() {
         for (Layer layer : layers) {
             layer.onDestroy();
         }
@@ -56,7 +56,7 @@ public class GroupLayer extends Layer {
      * GroupLayer does not have a position, layerXY is null.
      */
     @Override
-    public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
+    public synchronized boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
         for (int i = layers.size() - 1; i >= 0; i--) {
             Layer layer = layers.get(i);
             if (layer.onLongPress(tapLatLong, layerXY, tapXY)) {
@@ -70,7 +70,7 @@ public class GroupLayer extends Layer {
      * GroupLayer does not have a position, layerXY is null.
      */
     @Override
-    public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+    public synchronized boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
         for (int i = layers.size() - 1; i >= 0; i--) {
             Layer layer = layers.get(i);
             if (layer.onTap(tapLatLong, layerXY, tapXY)) {
