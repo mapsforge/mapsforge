@@ -19,6 +19,11 @@ import android.graphics.BitmapFactory;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
@@ -27,12 +32,14 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.android.graphics.AndroidBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.Layers;
-import org.mapsforge.map.layer.overlay.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.mapsforge.map.layer.ZOrderGroupLayer;
+import org.mapsforge.map.layer.overlay.Circle;
+import org.mapsforge.map.layer.overlay.FixedPixelCircle;
+import org.mapsforge.map.layer.overlay.Marker;
+import org.mapsforge.map.layer.overlay.Polygon;
+import org.mapsforge.map.layer.overlay.Polyline;
 
 /**
  * Map viewer with a few overlays added and map rotation.
@@ -56,6 +63,7 @@ public class OverlayMapViewer extends DownloadLayerViewer {
     private final LatLong latLong15 = new LatLong(52.526, 13.4345);
 
     private final LatLong anchorPolygonWithHoles = new LatLong(52.499, 13.430);
+    private final LatLong anchorZOrderObjects = new LatLong(52.499, 13.450);
 
     private float rotationAngle;
 
@@ -219,6 +227,50 @@ public class OverlayMapViewer extends DownloadLayerViewer {
         layers.add(marker1);
         layers.add(fixedPixelCircle);
         layers.add(createPolygonWithHoles(anchorPolygonWithHoles));
+        layers.add(createZOrderObjects(anchorZOrderObjects));
+    }
+
+    private Layer createZOrderObjects(final LatLong anchor) {
+
+        final ZOrderGroupLayer zOrderLayer = new ZOrderGroupLayer();
+
+        //create polygons
+        final int count = 10;
+        for (int i = 0; i < count; i++) {
+            Paint paintFill = Utils.createPaint(
+                AndroidGraphicFactory.INSTANCE.createColor(255, 255 - (255 * i) / count, (255 * i) / count, 0), 2,
+                Style.FILL);
+            Paint paintStroke = Utils.createPaint(
+                    AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 2,
+                    Style.STROKE);
+
+            final Polygon one = new Polygon(paintFill, paintStroke, AndroidGraphicFactory.INSTANCE) {
+                @Override
+                public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                    if (contains(tapXY, mapView)) {
+                        zOrderLayer.remove(this, true);
+                        return true;
+                    }
+                    return false;
+                }
+            };
+            one.addPoints(createPoints(addFraction(anchor, i * 5, i * 5), 0, 0, 10, 0, 10, 10, 0, 10));
+            zOrderLayer.put(one, i, false);
+            final Polygon two = new Polygon(paintFill, paintStroke, AndroidGraphicFactory.INSTANCE) {
+                @Override
+                public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                    if (contains(tapXY, mapView)) {
+                        zOrderLayer.remove(this, true);
+                        return true;
+                    }
+                    return false;
+                }
+            };
+            two.addPoints(createPoints(addFraction(anchor, i * 5, i * 5 + 50), 0, 0, 10, 0, 10, 10, 0, 10));
+            zOrderLayer.put(two, count - i, false);
+        }
+
+        return zOrderLayer;
     }
 
     private Polygon createPolygonWithHoles(final LatLong anchor) {
@@ -269,6 +321,14 @@ public class OverlayMapViewer extends DownloadLayerViewer {
                 addFraction(anchor, 15, 60)));
 
         return polygonWithHoles;
+    }
+
+    private static List<LatLong> createPoints(final LatLong base, final int ... latLonAdds) {
+        final List<LatLong> points = new ArrayList<>(latLonAdds.length / 2);
+        for (int pos = 0; pos < latLonAdds.length - 1; pos += 2) {
+            points.add(addFraction(base, latLonAdds[pos], latLonAdds[pos+1]));
+        }
+        return points;
     }
 
     private static LatLong addFraction(final LatLong latLon, final int latAdd, final int lonAdd) {
