@@ -8,6 +8,7 @@
   - [#1561](https://github.com/mapsforge/mapsforge/pull/1561) [#1592](https://github.com/mapsforge/mapsforge/pull/1592) [#1597](https://github.com/mapsforge/mapsforge/pull/1597)
 - Multi-map improvements [#1582](https://github.com/mapsforge/mapsforge/pull/1582)
   - `MapDataStore.setPriority`
+- Group of layers with z-order `ZOrderGroupLayer` [#1603](https://github.com/mapsforge/mapsforge/pull/1603)
 - Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
 - Remove `IMapViewPosition`, use `MapViewPosition` [#1591](https://github.com/mapsforge/mapsforge/pull/1591)
 - Remove `Filter`, use `ThemeCallback` [#1573](https://github.com/mapsforge/mapsforge/pull/1573)
