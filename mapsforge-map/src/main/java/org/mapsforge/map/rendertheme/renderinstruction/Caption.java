@@ -58,6 +58,8 @@ public class Caption extends RenderInstruction {
     private TextKey textKey;
     private TextTransform textTransform;
 
+    private final Object mySync = new Object();
+
     public Caption(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                    XmlPullParser pullParser, Map<String, Symbol> symbols) throws XmlPullParserException {
         super(graphicFactory, displayModel);
@@ -203,26 +205,28 @@ public class Caption extends RenderInstruction {
             return;
         }
 
-        String caption = this.textKey.getValue(poi.tags);
-        if (caption == null) {
-            return;
+        synchronized (mySync) {
+            String caption = this.textKey.getValue(poi.tags);
+            if (caption == null) {
+                return;
+            }
+
+            float horizontalOffset = 0f;
+
+            Float verticalOffset = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
+            if (verticalOffset == null) {
+                verticalOffset = this.dy;
+            }
+
+            if (this.boundary != null) {
+                horizontalOffset = computeHorizontalOffset();
+                verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
+            }
+
+            renderCallback.renderPointOfInterestCaption(renderContext, this.display, this.priority,
+                    transformText(caption, textTransform), horizontalOffset, verticalOffset,
+                    getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.position, this.maxTextWidth, poi);
         }
-
-        float horizontalOffset = 0f;
-
-        Float verticalOffset = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
-        if (verticalOffset == null) {
-            verticalOffset = this.dy;
-        }
-
-        if (this.boundary != null) {
-            horizontalOffset = computeHorizontalOffset();
-            verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
-        }
-
-        renderCallback.renderPointOfInterestCaption(renderContext, this.display, this.priority,
-                transformText(caption, textTransform), horizontalOffset, verticalOffset,
-                getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.position, this.maxTextWidth, poi);
     }
 
     @Override
@@ -231,25 +235,27 @@ public class Caption extends RenderInstruction {
             return;
         }
 
-        String caption = this.textKey.getValue(way.getTags());
-        if (caption == null) {
-            return;
-        }
+        synchronized (mySync) {
+            String caption = this.textKey.getValue(way.getTags());
+            if (caption == null) {
+                return;
+            }
 
-        float horizontalOffset = 0f;
-        Float verticalOffset = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
-        if (verticalOffset == null) {
-            verticalOffset = this.dy;
-        }
+            float horizontalOffset = 0f;
+            Float verticalOffset = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
+            if (verticalOffset == null) {
+                verticalOffset = this.dy;
+            }
 
-        if (this.boundary != null) {
-            horizontalOffset = computeHorizontalOffset();
-            verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
-        }
+            if (this.boundary != null) {
+                horizontalOffset = computeHorizontalOffset();
+                verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
+            }
 
-        renderCallback.renderAreaCaption(renderContext, this.display, this.priority,
-                transformText(caption, textTransform), horizontalOffset, verticalOffset,
-                getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.position, this.maxTextWidth, way);
+            renderCallback.renderAreaCaption(renderContext, this.display, this.priority,
+                    transformText(caption, textTransform), horizontalOffset, verticalOffset,
+                    getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.position, this.maxTextWidth, way);
+        }
     }
 
     @Override
@@ -259,14 +265,16 @@ public class Caption extends RenderInstruction {
 
     @Override
     public void scaleTextSize(float scaleFactor, byte zoomLevel) {
-        Paint f = graphicFactory.createPaint(this.fill);
-        f.setTextSize(this.fontSize * scaleFactor);
-        this.fills.put(zoomLevel, f);
+        synchronized (mySync) {
+            Paint f = graphicFactory.createPaint(this.fill);
+            f.setTextSize(this.fontSize * scaleFactor);
+            this.fills.put(zoomLevel, f);
 
-        Paint s = graphicFactory.createPaint(this.stroke);
-        s.setTextSize(this.fontSize * scaleFactor);
-        this.strokes.put(zoomLevel, s);
+            Paint s = graphicFactory.createPaint(this.stroke);
+            s.setTextSize(this.fontSize * scaleFactor);
+            this.strokes.put(zoomLevel, s);
 
-        this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
+            this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
+        }
     }
 }

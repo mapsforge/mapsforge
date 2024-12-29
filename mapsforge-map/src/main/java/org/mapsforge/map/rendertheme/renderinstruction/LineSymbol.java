@@ -60,6 +60,8 @@ public class LineSymbol extends RenderInstruction {
     private String src;
     private SymbolOrientation symbolOrientation;
 
+    private final Object mySync = new Object();
+
     public LineSymbol(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                       XmlPullParser pullParser, String relativePathPrefix, XmlThemeResourceProvider resourceProvider) throws IOException, XmlPullParserException {
         super(graphicFactory, displayModel);
@@ -77,8 +79,10 @@ public class LineSymbol extends RenderInstruction {
 
     @Override
     public void destroy() {
-        if (this.bitmap != null) {
-            this.bitmap.decrementRefCount();
+        synchronized (mySync) {
+            if (this.bitmap != null) {
+                this.bitmap.decrementRefCount();
+            }
         }
     }
 
@@ -148,32 +152,36 @@ public class LineSymbol extends RenderInstruction {
             return;
         }
 
-        if (this.bitmap == null && !this.bitmapInvalid) {
-            try {
-                this.bitmap = createBitmap(relativePathPrefix, src, resourceProvider);
-            } catch (IOException ioException) {
-                this.bitmapInvalid = true;
+        synchronized (mySync) {
+            if (this.bitmap == null && !this.bitmapInvalid) {
+                try {
+                    this.bitmap = createBitmap(relativePathPrefix, src, resourceProvider);
+                } catch (IOException ioException) {
+                    this.bitmapInvalid = true;
+                }
             }
-        }
 
-        Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
-        if (dyScale == null) {
-            dyScale = this.dy;
-        }
+            Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
+            if (dyScale == null) {
+                dyScale = this.dy;
+            }
 
-        if (this.bitmap != null) {
-            Rectangle boundary = computeBoundary(this.bitmap.getWidth(), this.bitmap.getHeight(), this.position);
-            renderCallback.renderWaySymbol(renderContext, this.display, this.priority, this.bitmap, dyScale, boundary,
-                    this.repeat, this.repeatGap, this.repeatStart, this.symbolOrientation, way);
+            if (this.bitmap != null) {
+                Rectangle boundary = computeBoundary(this.bitmap.getWidth(), this.bitmap.getHeight(), this.position);
+                renderCallback.renderWaySymbol(renderContext, this.display, this.priority, this.bitmap, dyScale, boundary,
+                        this.repeat, this.repeatGap, this.repeatStart, this.symbolOrientation, way);
+            }
         }
     }
 
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-        if (this.scale == Scale.NONE) {
-            scaleFactor = 1;
+        synchronized (mySync) {
+            if (this.scale == Scale.NONE) {
+                scaleFactor = 1;
+            }
+            this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
         }
-        this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
     }
 
     @Override

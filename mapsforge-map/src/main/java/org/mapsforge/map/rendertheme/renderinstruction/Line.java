@@ -53,6 +53,8 @@ public class Line extends RenderInstruction {
     private float strokeWidth;
     private Curve curve;
 
+    private final Object mySync = new Object();
+
     public Line(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                 XmlPullParser pullParser, int level, String relativePathPrefix, XmlThemeResourceProvider resourceProvider) throws IOException, XmlPullParserException {
         super(graphicFactory, displayModel);
@@ -145,48 +147,52 @@ public class Line extends RenderInstruction {
 
     @Override
     public synchronized void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
-        if (!bitmapCreated) {
-            try {
-                shaderBitmap = createBitmap(relativePathPrefix, src, resourceProvider);
-            } catch (IOException ioException) {
-                // no-op
+        synchronized (mySync) {
+            if (!bitmapCreated) {
+                try {
+                    shaderBitmap = createBitmap(relativePathPrefix, src, resourceProvider);
+                } catch (IOException ioException) {
+                    // no-op
+                }
+                bitmapCreated = true;
             }
-            bitmapCreated = true;
-        }
 
-        Paint strokePaint = getStrokePaint(renderContext.rendererJob.tile.zoomLevel);
+            Paint strokePaint = getStrokePaint(renderContext.rendererJob.tile.zoomLevel);
 
-        if (shaderBitmap != null) {
-            strokePaint.setBitmapShader(shaderBitmap);
-            strokePaint.setBitmapShaderShift(way.getUpperLeft().getOrigin());
-        }
+            if (shaderBitmap != null) {
+                strokePaint.setBitmapShader(shaderBitmap);
+                strokePaint.setBitmapShaderShift(way.getUpperLeft().getOrigin());
+            }
 
-        Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
-        if (dyScale == null) {
-            dyScale = this.dy;
+            Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
+            if (dyScale == null) {
+                dyScale = this.dy;
+            }
+            renderCallback.renderWay(renderContext, strokePaint, dyScale, curve, this.level, way);
         }
-        renderCallback.renderWay(renderContext, strokePaint, dyScale, curve, this.level, way);
     }
 
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-        if (this.scale == Scale.NONE) {
-            scaleFactor = 1;
-        }
-        if (this.stroke != null) {
-            Paint paint = graphicFactory.createPaint(stroke);
-            paint.setStrokeWidth(this.strokeWidth * scaleFactor);
-            if (this.scale == Scale.ALL) {
-                float[] strokeDasharrayScaled = new float[this.strokeDasharray.length];
-                for (int i = 0; i < strokeDasharray.length; i++) {
-                    strokeDasharrayScaled[i] = this.strokeDasharray[i] * scaleFactor;
-                }
-                paint.setDashPathEffect(strokeDasharrayScaled);
+        synchronized (mySync) {
+            if (this.scale == Scale.NONE) {
+                scaleFactor = 1;
             }
-            strokes.put(zoomLevel, paint);
-        }
+            if (this.stroke != null) {
+                Paint paint = graphicFactory.createPaint(stroke);
+                paint.setStrokeWidth(this.strokeWidth * scaleFactor);
+                if (this.scale == Scale.ALL) {
+                    float[] strokeDasharrayScaled = new float[this.strokeDasharray.length];
+                    for (int i = 0; i < strokeDasharray.length; i++) {
+                        strokeDasharrayScaled[i] = this.strokeDasharray[i] * scaleFactor;
+                    }
+                    paint.setDashPathEffect(strokeDasharrayScaled);
+                }
+                strokes.put(zoomLevel, paint);
+            }
 
-        this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
+            this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
+        }
     }
 
     @Override

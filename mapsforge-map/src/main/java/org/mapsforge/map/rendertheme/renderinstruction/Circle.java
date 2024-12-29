@@ -47,6 +47,8 @@ public class Circle extends RenderInstruction {
     private final Map<Byte, Paint> strokes;
     private float strokeWidth;
 
+    private final Object mySync = new Object();
+
     public Circle(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                   XmlPullParser pullParser, int level) throws XmlPullParserException {
         super(graphicFactory, displayModel);
@@ -128,7 +130,9 @@ public class Circle extends RenderInstruction {
 
     @Override
     public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
-        renderCallback.renderPointOfInterestCircle(renderContext, getRenderRadius(renderContext.rendererJob.tile.zoomLevel), getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, poi);
+        synchronized (mySync) {
+            renderCallback.renderPointOfInterestCircle(renderContext, getRenderRadius(renderContext.rendererJob.tile.zoomLevel), getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, poi);
+        }
     }
 
     @Override
@@ -138,12 +142,14 @@ public class Circle extends RenderInstruction {
 
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-        if (this.scaleRadius) {
-            this.renderRadiusScaled.put(zoomLevel, this.radius * scaleFactor);
-            if (this.stroke != null) {
-                Paint paint = graphicFactory.createPaint(stroke);
-                paint.setStrokeWidth(this.strokeWidth * scaleFactor);
-                strokes.put(zoomLevel, paint);
+        synchronized (mySync) {
+            if (this.scaleRadius) {
+                this.renderRadiusScaled.put(zoomLevel, this.radius * scaleFactor);
+                if (this.stroke != null) {
+                    Paint paint = graphicFactory.createPaint(stroke);
+                    paint.setStrokeWidth(this.strokeWidth * scaleFactor);
+                    strokes.put(zoomLevel, paint);
+                }
             }
         }
     }
