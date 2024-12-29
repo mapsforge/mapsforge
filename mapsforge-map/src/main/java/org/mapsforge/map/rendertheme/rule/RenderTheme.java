@@ -50,6 +50,8 @@ public class RenderTheme {
     private final int mapBackgroundOutside;
     private final LRUCache<Integer, RenderInstruction[]> wayMatchingCache;
     private final LRUCache<Integer, RenderInstruction[]> poiMatchingCache;
+
+    // Note: rulesList and hillShadings are not synchronized because it seems they are not being updated once the theme is loaded.
     private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
     private final ArrayList<Hillshading> hillShadings = new ArrayList<>(); // NOPMD specific interface for trimToSize
 
@@ -71,8 +73,14 @@ public class RenderTheme {
      * Must be called when this RenderTheme gets destroyed to clean up and free resources.
      */
     public void destroy() {
-        this.poiMatchingCache.clear();
-        this.wayMatchingCache.clear();
+        synchronized (this.poiMatchingCache) {
+            this.poiMatchingCache.clear();
+        }
+
+        synchronized (this.wayMatchingCache) {
+            this.wayMatchingCache.clear();
+        }
+
         for (Rule r : this.rulesList) {
             r.destroy();
         }
