@@ -274,7 +274,7 @@ public class Hillshading {
         boolean retVal = true;
 
         if (hillsRenderConfig.isAdaptiveZoomEnabled()) {
-            // Pass, wide zoom range algorithms will use finer granulation zoom level support check later
+            // Pass, wide zoom range algorithms will later use finer zoom level support check
         } else {
             if (zoomLevel > maxZoom) {
                 retVal = false;

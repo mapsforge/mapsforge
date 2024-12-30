@@ -43,11 +43,11 @@ public class DemFileAndroidContent implements DemFile {
     }
 
     @Override
-    public InputStream openInputStream() throws IOException {
+    public InputStream openInputStream(int bufferSize) throws IOException {
         InputStream output = rawStream();
 
         if (output != null) {
-            output = new BufferedInputStream(output, BufferSize);
+            output = new BufferedInputStream(output, bufferSize);
         }
 
         return output;
@@ -55,7 +55,7 @@ public class DemFileAndroidContent implements DemFile {
 
     @Override
     public InputStream asStream() throws IOException {
-        return openInputStream();
+        return openInputStream(BufferSizeDefault);
     }
 
     @Override

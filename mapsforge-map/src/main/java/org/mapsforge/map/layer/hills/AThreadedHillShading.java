@@ -27,6 +27,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
+import static org.mapsforge.map.layer.hills.HgtFileInfo.HGT_ELEMENT_SIZE;
+
 /**
  * <p>
  * Special abstract implementation of hill shading algorithm where input data can be divided into parts
@@ -120,17 +122,6 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
      * The actual number is calculated during execution and can be slightly different.
      */
     protected final int ElementsPerComputingTask = 32000;
-
-    /**
-     * Decides when to use full buffered streams and when to use "raw" streams.
-     * Raw streams are useful to avoid wasteful buffering when skipping a lot.
-     */
-    protected final int StrideFactorRawStreamLimit = 10;
-
-    /**
-     * When high quality, a unit element is 4x4 data points in size; otherwise it is 2x2.
-     */
-    public static final boolean IsHighQualityDefault = false;
 
     /**
      * Whether input data preprocessing is enabled, to remove invalid values.
@@ -547,8 +538,49 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
         return amplification * 0.5 / (computingParams.mSouthUnitDistancePerLine * line + computingParams.mNorthUnitDistancePerLine * (computingParams.mInputAxisLen - line));
     }
 
+    /**
+     * Compute a stride factor, which tells how many skips there will be while reading the input data.
+     * This is basically {@code inputAxisLen / outputAxisLen}, a ratio that must give a whole number without truncation or rounding,
+     * so {@code outputAxisLen} must be adjusted accordingly.
+     * <p>
+     * Stride factor cannot be less than 1. A value of 1 means no skipping will be performed, i.e. all data will be read and processed.
+     * <p>
+     * If you want {@code outputAxisLen} larger than {@code inputAxisLen} you should use bicubic upscaling.
+     * Please see {@link AdaptiveClasyHillShading#isHqEnabled()} for more info.
+     *
+     * @param inputAxisLen  Width of one line of the input data (without the padding).
+     * @param outputAxisLen Width of one line of the output data (without the padding).
+     * @return Stride factor, basically {@code inputAxisLen / outputAxisLen}. This ratio must give a whole number without truncation or rounding,
+     * so {@code outputAxisLen} must be adjusted accordingly. Stride factor cannot be less than 1.
+     */
     protected int getStrideFactor(int inputAxisLen, int outputAxisLen) {
         return Math.max(1, inputAxisLen / outputAxisLen);
+    }
+
+    /**
+     * Implementation note: Reading an entire line into a buffer and then performing skips turns out to be faster than directly skipping on an unbuffered (raw) stream.
+     *
+     * @param inputWidth Width of one line of the input data file (padding included).
+     * @return Buffer size to use when reading the input data file. [bytes]
+     */
+    protected int getInputStreamBufferSize(int inputWidth) {
+        // Implementation note: Reading an entire line into a buffer and then performing skips turns out to be faster than directly skipping on an unbuffered (raw) stream.
+        return inputWidth * HGT_ELEMENT_SIZE;
+    }
+
+    /**
+     * Decides when to use raw streams instead of buffered streams.
+     * Raw streams can be useful to avoid wasteful buffering when skipping a lot.
+     * <p>
+     * The default implementation just returns {@code false}, it's up to subclasses to decide if they need different behavior.
+     * <p>
+     * Implementation note: Reading an entire line into a buffer and then performing skips turns out to be faster than directly skipping on an unbuffered (raw) stream.
+     *
+     * @return {@code true} if a raw stream should be used.
+     */
+    protected boolean shouldUseRawStream(int strideFactor, HgtFileInfo hgtFileInfo, int zoomLevel, double pxPerLat, double pxPerLon) {
+        // return strideFactor >= Math.max(StrideFactorRawStreamLimitDefault, hgtFileInfo.getAxisLen() / 4);
+        return false;
     }
 
     @Override
@@ -593,7 +625,11 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
             final long delayNano = finishTs - startTs;
             final double delayMs = Math.round(delayNano / 1e5) / 10.;
 
-            final String debugTag = this.getClass().getSimpleName() + "-R" + mReadingThreadsCount + "-C" + mComputingThreadsCount + "-E" + ElementsPerComputingTask + "-HQ" + (isHighQuality ? 1 : 0) + "-Z" + (zoomLevel < 10 ? "0" : "") + zoomLevel + " T: " + delayMs + " ms";
+            final int outputAxisLen = getOutputAxisLen(hgtFileInfo, zoomLevel, pxPerLat, pxPerLon);
+            final int inputAxisLen = getInputAxisLen(hgtFileInfo);
+            final int strideFactor = getStrideFactor(inputAxisLen, outputAxisLen);
+
+            final String debugTag = this.getClass().getSimpleName() + "-R" + mReadingThreadsCount + "-C" + mComputingThreadsCount + "-E" + ElementsPerComputingTask + "-HQ" + (isHighQuality ? 1 : 0) + "-Z" + (zoomLevel < 10 ? "0" : "") + zoomLevel + "  STRIDE: " + strideFactor + "  T: " + delayMs + " ms ";
 
             System.out.println(debugTag);
         }
@@ -702,15 +738,15 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
 
                 InputStream readStream = null;
                 try {
-                    if (strideFactor >= StrideFactorRawStreamLimit) {
-                        // We're going to be skipping a lot, so we want to avoid wasteful buffering
+                    if (shouldUseRawStream(strideFactor, hgtFileInfo, zoomLevel, pxPerLat, pxPerLon)) {
                         readStream = hgtFileInfo
                                 .getFile()
                                 .asRawStream();
                     } else {
+                        // Implementation note: Reading an entire line into a buffer and then performing skips turns out to be faster than directly skipping on an unbuffered (raw) stream.
                         readStream = hgtFileInfo
                                 .getFile()
-                                .asStream();
+                                .openInputStream(getInputStreamBufferSize(inputWidth));
                     }
                 } catch (IOException e) {
                     LOGGER.log(Level.SEVERE, e.toString(), e);
@@ -720,7 +756,7 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
                     final long skipAmount = inputWidth * ((long) linesPerComputeTask * computingTaskFrom - (isHighQuality ? 1 : 0));
 
                     try {
-                        HillShadingUtils.skipNBytes(readStream, skipAmount * Short.SIZE / Byte.SIZE);
+                        HillShadingUtils.skipNBytes(readStream, skipAmount * HGT_ELEMENT_SIZE);
                     } catch (IOException e) {
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }
@@ -1122,12 +1158,12 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
                                 input[col] = readNext(mInputStream);
                                 if (col < inputLineLen - 1) {
                                     // Skip stride-1 columns
-                                    HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * Short.SIZE / Byte.SIZE);
+                                    HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * HGT_ELEMENT_SIZE);
                                 }
                             }
 
                             // Skip stride-1 lines
-                            HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * inputWidth * Short.SIZE / Byte.SIZE);
+                            HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * inputWidth * HGT_ELEMENT_SIZE);
                         }
 
                         inputNext = inputArraysPool.getArray(inputLineLen * inputNextSize);
@@ -1150,13 +1186,13 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
                                 // Inner loop, critical for performance
                                 for (int col = 0; col < inputLineLen - 1; col++, inputIx++) {
                                     input[inputIx] = readNext(mInputStream);
-                                    HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * Short.SIZE / Byte.SIZE);
+                                    HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * HGT_ELEMENT_SIZE);
                                 }
                                 input[inputIx] = readNext(mInputStream);
                                 inputIx++;
 
                                 // Skip stride-1 lines
-                                HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * inputWidth * Short.SIZE / Byte.SIZE);
+                                HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * inputWidth * HGT_ELEMENT_SIZE);
                             }
                         }
 
@@ -1169,12 +1205,12 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
                             inputNext[inputNextIx] = point;
                             if (col < inputLineLen - 1) {
                                 // Skip stride-1 columns
-                                HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * Short.SIZE / Byte.SIZE);
+                                HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * HGT_ELEMENT_SIZE);
                             }
                         }
 
                         if (compTaskIndex < mComputingTaskTo - 1) {
-                            HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * inputWidth * Short.SIZE / Byte.SIZE);
+                            HillShadingUtils.skipNBytes(mInputStream, (strideFactor - 1) * inputWidth * HGT_ELEMENT_SIZE);
                         }
 
                         final SilentFutureTask computingTask = getComputingTask(lineFrom, lineTo, input, activeTasksCount, mComputingParams);
@@ -1229,9 +1265,9 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
 
         @Override
         public Boolean call() {
-            // TODO (2024-10): Uses linear interpolation on the edges of a DEM file data, where there are too few points to use bicubic.
-            //  It should be considered whether this can be improved by obtaining edge lines from neighboring DEM files, so we have a bicubic interpolation
-            //  everywhere except at the outer edges of the entire DEM data set. (Probably not worth it...)
+            // (2024-10): We use bilinear interpolation on the edges of a DEM file data, where there are too few points to use bicubic.
+            // It should be considered whether this can be improved by obtaining edge lines from neighboring DEM files, so we have a bicubic interpolation
+            // everywhere except at the outer edges of the entire DEM data set. (Probably not worth it...)
 
             boolean retVal = false;
 

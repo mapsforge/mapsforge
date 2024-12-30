@@ -58,13 +58,13 @@ public class DemFileZipEntryAndroidContent implements DemFile {
     }
 
     @Override
-    public InputStream openInputStream() throws IOException {
-        return rawStream(BufferSize);
+    public InputStream openInputStream(int bufferSize) throws IOException {
+        return rawStream(bufferSize);
     }
 
     @Override
     public InputStream asStream() throws IOException {
-        return openInputStream();
+        return openInputStream(BufferSizeDefault);
     }
 
     @Override

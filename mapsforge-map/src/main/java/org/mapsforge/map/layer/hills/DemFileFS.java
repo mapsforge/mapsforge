@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 public class DemFileFS implements DemFile {
 
-    final protected File file;
+    protected final File file;
 
     public DemFileFS(File file) {
         this.file = file;
@@ -40,13 +40,13 @@ public class DemFileFS implements DemFile {
     }
 
     @Override
-    public InputStream openInputStream() throws IOException {
-        return new BufferedInputStream(rawStream(), BufferSize);
+    public InputStream openInputStream(int bufferSize) throws IOException {
+        return new BufferedInputStream(rawStream(), bufferSize);
     }
 
     @Override
     public InputStream asStream() throws IOException {
-        return openInputStream();
+        return openInputStream(BufferSizeDefault);
     }
 
     @Override

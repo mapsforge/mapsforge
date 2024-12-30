@@ -15,6 +15,8 @@
  */
 package org.mapsforge.map.layer.hills;
 
+import static org.mapsforge.map.layer.hills.HgtFileInfo.HGT_ELEMENT_SIZE;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
@@ -23,14 +25,15 @@ public interface DemFile {
     Logger LOGGER = Logger.getLogger(DemFile.class.getName());
 
     /**
-     * Buffer size is relatively small to reduce wasteful read-ahead (buffer fill) during multi-threaded processing
+     * Default buffer size is adjusted to the line size in a 3" HGT file (works well for 1" HGT files too),
+     * to optimize read performance but also reduce wasteful read-ahead (buffer fill) during multi-threaded processing
      */
-    int BufferSize = 512;
+    int BufferSizeDefault = 1201 * HGT_ELEMENT_SIZE;
 
     /**
-     * Buffer size for "raw" streams, when reading one Short at a time, skipping between
+     * Buffer size for emulating "raw" streams, when reading one {@code Short} at a time, skipping between
      */
-    int BufferSizeRaw = Short.SIZE / Byte.SIZE;
+    int BufferSizeRaw = HGT_ELEMENT_SIZE;
 
     String getName();
 
@@ -40,9 +43,10 @@ public interface DemFile {
     long getSize();
 
     /**
+     * @param bufferSize Buffered input stream buffer size, can be useful to optimize I/O read performance
      * @return Buffered stream.
      */
-    InputStream openInputStream() throws IOException;
+    InputStream openInputStream(int bufferSize) throws IOException;
 
     /**
      * @return Buffered stream.

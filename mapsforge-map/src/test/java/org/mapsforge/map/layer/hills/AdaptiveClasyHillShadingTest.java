@@ -31,9 +31,9 @@ public class AdaptiveClasyHillShadingTest extends TestCase {
 
         Assert.assertEquals(2, algorithm.getQualityFactor(hgtFileInfo, 12, 1.5 * tileSizePerLat, 1.5 * tileSizePerLat));
         Assert.assertEquals(1, algorithm.getQualityFactor(hgtFileInfo, 12, tileSizePerLat, tileSizePerLat));
-        Assert.assertEquals(2 * AdaptiveClasyHillShading.QualityFactorPacketBase, algorithm.getQualityFactor(hgtFileInfo, 12, (double) tileSizePerLat / 2, (double) tileSizePerLat / 2));
-        Assert.assertEquals(4 * AdaptiveClasyHillShading.QualityFactorPacketBase, algorithm.getQualityFactor(hgtFileInfo, 12, (double) tileSizePerLat / 4, (double) tileSizePerLat / 4));
-        Assert.assertEquals(100 * AdaptiveClasyHillShading.QualityFactorPacketBase, algorithm.getQualityFactor(hgtFileInfo, 12, (double) tileSizePerLat / 100, (double) tileSizePerLat / 100));
+        Assert.assertEquals(-2, algorithm.getQualityFactor(hgtFileInfo, 12, (double) tileSizePerLat / 2, (double) tileSizePerLat / 2));
+        Assert.assertEquals(-4, algorithm.getQualityFactor(hgtFileInfo, 12, (double) tileSizePerLat / 4, (double) tileSizePerLat / 4));
+        Assert.assertEquals(-100, algorithm.getQualityFactor(hgtFileInfo, 12, (double) tileSizePerLat / 100, (double) tileSizePerLat / 100));
     }
 
     public void testScaleByQualityFactor() {
