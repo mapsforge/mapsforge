@@ -53,6 +53,8 @@ public class PathText extends RenderInstruction {
     private TextTransform textTransform;
     private TextOrientation textOrientation;
 
+    private final Object mySync = new Object();
+
     public PathText(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                     XmlPullParser pullParser) throws XmlPullParserException {
         super(graphicFactory, displayModel);
@@ -170,40 +172,46 @@ public class PathText extends RenderInstruction {
             return;
         }
 
-        String caption = this.textKey.getValue(way.getTags());
-        if (caption == null) {
-            return;
-        }
+        synchronized (mySync) {
+            String caption = this.textKey.getValue(way.getTags());
+            if (caption == null) {
+                return;
+            }
 
-        Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
-        if (dyScale == null) {
-            dyScale = this.dy;
-        }
+            Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
+            if (dyScale == null) {
+                dyScale = this.dy;
+            }
 
-        renderCallback.renderWayText(renderContext, this.display, this.priority,
-                transformText(caption, textTransform), dyScale,
-                getFillPaint(renderContext.rendererJob.tile.zoomLevel),
-                getStrokePaint(renderContext.rendererJob.tile.zoomLevel),
-                this.repeat, this.repeatGap, this.repeatStart, this.textOrientation,
-                way);
+            renderCallback.renderWayText(renderContext, this.display, this.priority,
+                    transformText(caption, textTransform), dyScale,
+                    getFillPaint(renderContext.rendererJob.tile.zoomLevel),
+                    getStrokePaint(renderContext.rendererJob.tile.zoomLevel),
+                    this.repeat, this.repeatGap, this.repeatStart, this.textOrientation,
+                    way);
+        }
     }
 
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-        if (this.scale == Scale.NONE) {
-            scaleFactor = 1;
+        synchronized (mySync) {
+            if (this.scale == Scale.NONE) {
+                scaleFactor = 1;
+            }
+            this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
         }
-        this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
     }
 
     @Override
     public void scaleTextSize(float scaleFactor, byte zoomLevel) {
-        Paint zlPaint = graphicFactory.createPaint(this.fill);
-        zlPaint.setTextSize(this.fontSize * scaleFactor);
-        this.fills.put(zoomLevel, zlPaint);
+        synchronized (mySync) {
+            Paint zlPaint = graphicFactory.createPaint(this.fill);
+            zlPaint.setTextSize(this.fontSize * scaleFactor);
+            this.fills.put(zoomLevel, zlPaint);
 
-        Paint zlStroke = graphicFactory.createPaint(this.stroke);
-        zlStroke.setTextSize(this.fontSize * scaleFactor);
-        this.strokes.put(zoomLevel, zlStroke);
+            Paint zlStroke = graphicFactory.createPaint(this.stroke);
+            zlStroke.setTextSize(this.fontSize * scaleFactor);
+            this.strokes.put(zoomLevel, zlStroke);
+        }
     }
 }

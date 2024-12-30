@@ -34,10 +34,12 @@ public abstract class Rule {
     static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_KEY = new HashMap<>();
     static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_VALUE = new HashMap<>();
 
-    public static class RuleVisitor {
+    public class RuleVisitor {
         public void apply(Rule r) {
-            for (Rule subRule : r.subRules) {
-                this.apply(subRule);
+            synchronized (mySync) {
+                for (Rule subRule : r.subRules) {
+                    this.apply(subRule);
+                }
             }
         }
     }
@@ -51,6 +53,8 @@ public abstract class Rule {
     private final ArrayList<RenderInstruction> renderInstructions; // NOSONAR NOPMD we need specific interface
     private final ArrayList<Rule> subRules; // NOSONAR NOPMD we need specific interface
 
+    private final Object mySync = new Object();
+
     Rule(RuleBuilder ruleBuilder) {
         this.cat = ruleBuilder.cat;
         this.closedMatcher = ruleBuilder.closedMatcher;
@@ -63,11 +67,15 @@ public abstract class Rule {
     }
 
     void addRenderingInstruction(RenderInstruction renderInstruction) {
-        this.renderInstructions.add(renderInstruction);
+        synchronized (mySync) {
+            this.renderInstructions.add(renderInstruction);
+        }
     }
 
     void addSubRule(Rule rule) {
-        this.subRules.add(rule);
+        synchronized (mySync) {
+            this.subRules.add(rule);
+        }
     }
 
     void apply(RuleVisitor v) {
@@ -75,11 +83,13 @@ public abstract class Rule {
     }
 
     void destroy() {
-        for (RenderInstruction ri : this.renderInstructions) {
-            ri.destroy();
-        }
-        for (Rule sr : this.subRules) {
-            sr.destroy();
+        synchronized (mySync) {
+            for (RenderInstruction ri : this.renderInstructions) {
+                ri.destroy();
+            }
+            for (Rule sr : this.subRules) {
+                sr.destroy();
+            }
         }
     }
 
@@ -88,26 +98,30 @@ public abstract class Rule {
     abstract boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed);
 
     void matchNode(RenderCallback renderCallback, final RenderContext renderContext, List<RenderInstruction> matchingList, PointOfInterest pointOfInterest) {
-        if (matchesNode(pointOfInterest.tags, renderContext.rendererJob.tile.zoomLevel)) {
-            for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
-                this.renderInstructions.get(i).renderNode(renderCallback, renderContext, pointOfInterest);
-                matchingList.add(this.renderInstructions.get(i));
-            }
-            for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-                this.subRules.get(i).matchNode(renderCallback, renderContext, matchingList, pointOfInterest);
+        synchronized (mySync) {
+            if (matchesNode(pointOfInterest.tags, renderContext.rendererJob.tile.zoomLevel)) {
+                for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
+                    this.renderInstructions.get(i).renderNode(renderCallback, renderContext, pointOfInterest);
+                    matchingList.add(this.renderInstructions.get(i));
+                }
+                for (int i = 0, n = this.subRules.size(); i < n; ++i) {
+                    this.subRules.get(i).matchNode(renderCallback, renderContext, matchingList, pointOfInterest);
+                }
             }
         }
     }
 
     void matchWay(RenderCallback renderCallback, PolylineContainer way, Tile tile, Closed closed,
                   List<RenderInstruction> matchingList, final RenderContext renderContext) {
-        if (matchesWay(way.getTags(), tile.zoomLevel, closed)) {
-            for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
-                this.renderInstructions.get(i).renderWay(renderCallback, renderContext, way);
-                matchingList.add(this.renderInstructions.get(i));
-            }
-            for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-                this.subRules.get(i).matchWay(renderCallback, way, tile, closed, matchingList, renderContext);
+        synchronized (mySync) {
+            if (matchesWay(way.getTags(), tile.zoomLevel, closed)) {
+                for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
+                    this.renderInstructions.get(i).renderWay(renderCallback, renderContext, way);
+                    matchingList.add(this.renderInstructions.get(i));
+                }
+                for (int i = 0, n = this.subRules.size(); i < n; ++i) {
+                    this.subRules.get(i).matchWay(renderCallback, way, tile, closed, matchingList, renderContext);
+                }
             }
         }
     }
@@ -116,28 +130,34 @@ public abstract class Rule {
         MATCHERS_CACHE_KEY.clear();
         MATCHERS_CACHE_VALUE.clear();
 
-        this.renderInstructions.trimToSize();
-        this.subRules.trimToSize();
-        for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-            this.subRules.get(i).onComplete();
+        synchronized (mySync) {
+            this.renderInstructions.trimToSize();
+            this.subRules.trimToSize();
+            for (int i = 0, n = this.subRules.size(); i < n; ++i) {
+                this.subRules.get(i).onComplete();
+            }
         }
     }
 
     void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-        for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
-            this.renderInstructions.get(i).scaleStrokeWidth(scaleFactor, zoomLevel);
-        }
-        for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-            this.subRules.get(i).scaleStrokeWidth(scaleFactor, zoomLevel);
+        synchronized (mySync) {
+            for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
+                this.renderInstructions.get(i).scaleStrokeWidth(scaleFactor, zoomLevel);
+            }
+            for (int i = 0, n = this.subRules.size(); i < n; ++i) {
+                this.subRules.get(i).scaleStrokeWidth(scaleFactor, zoomLevel);
+            }
         }
     }
 
     void scaleTextSize(float scaleFactor, byte zoomLevel) {
-        for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
-            this.renderInstructions.get(i).scaleTextSize(scaleFactor, zoomLevel);
-        }
-        for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-            this.subRules.get(i).scaleTextSize(scaleFactor, zoomLevel);
+        synchronized (mySync) {
+            for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
+                this.renderInstructions.get(i).scaleTextSize(scaleFactor, zoomLevel);
+            }
+            for (int i = 0, n = this.subRules.size(); i < n; ++i) {
+                this.subRules.get(i).scaleTextSize(scaleFactor, zoomLevel);
+            }
         }
     }
 }

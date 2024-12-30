@@ -49,6 +49,8 @@ public class Area extends RenderInstruction {
     private final Map<Byte, Paint> strokes;
     private float strokeWidth;
 
+    private final Object mySync = new Object();
+
     public Area(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                 XmlPullParser pullParser, int level, String relativePathPrefix, XmlThemeResourceProvider resourceProvider) throws IOException, XmlPullParserException {
         super(graphicFactory, displayModel);
@@ -128,7 +130,7 @@ public class Area extends RenderInstruction {
 
     @Override
     public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
-        synchronized (this) {
+        synchronized (mySync) {
             // this needs to be synchronized as we potentially set a shift in the shader and
             // the shift is particular to the tile when rendered in multi-thread mode
             Paint fillPaint = getFillPaint();
@@ -154,13 +156,15 @@ public class Area extends RenderInstruction {
 
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-        if (this.stroke != null) {
-            if (this.scale == Scale.NONE) {
-                scaleFactor = 1;
+        synchronized (mySync) {
+            if (this.stroke != null) {
+                if (this.scale == Scale.NONE) {
+                    scaleFactor = 1;
+                }
+                Paint paint = graphicFactory.createPaint(this.stroke);
+                paint.setStrokeWidth(this.strokeWidth * scaleFactor);
+                this.strokes.put(zoomLevel, paint);
             }
-            Paint paint = graphicFactory.createPaint(this.stroke);
-            paint.setStrokeWidth(this.strokeWidth * scaleFactor);
-            this.strokes.put(zoomLevel, paint);
         }
     }
 

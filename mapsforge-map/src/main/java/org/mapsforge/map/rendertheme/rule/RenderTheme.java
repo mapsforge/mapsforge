@@ -50,6 +50,8 @@ public class RenderTheme {
     private final int mapBackgroundOutside;
     private final LRUCache<Integer, RenderInstruction[]> wayMatchingCache;
     private final LRUCache<Integer, RenderInstruction[]> poiMatchingCache;
+
+    // Note: rulesList and hillShadings are not synchronized because it seems they are not being updated once the theme is loaded.
     private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
     private final ArrayList<Hillshading> hillShadings = new ArrayList<>(); // NOPMD specific interface for trimToSize
 
@@ -71,8 +73,14 @@ public class RenderTheme {
      * Must be called when this RenderTheme gets destroyed to clean up and free resources.
      */
     public void destroy() {
-        this.poiMatchingCache.clear();
-        this.wayMatchingCache.clear();
+        synchronized (this.poiMatchingCache) {
+            this.poiMatchingCache.clear();
+        }
+
+        synchronized (this.wayMatchingCache) {
+            this.wayMatchingCache.clear();
+        }
+
         for (Rule r : this.rulesList) {
             r.destroy();
         }
@@ -139,10 +147,14 @@ public class RenderTheme {
      * @param renderContext
      * @param poi            the point of interest.
      */
-    public synchronized void matchNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
+    public void matchNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
         // check cached instructions
         int matchingCacheKey = computeMatchingCacheKey(poi.tags, renderContext.rendererJob.tile.zoomLevel, Closed.NO);
-        RenderInstruction[] instructions = this.poiMatchingCache.get(matchingCacheKey);
+
+        final RenderInstruction[] instructions;
+        synchronized (this.poiMatchingCache) {
+            instructions = this.poiMatchingCache.get(matchingCacheKey);
+        }
         if (instructions != null) {
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < instructions.length; ++i) {
@@ -158,7 +170,10 @@ public class RenderTheme {
         }
         RenderInstruction[] matchingListA = new RenderInstruction[matchingList.size()];
         matchingList.toArray(matchingListA);
-        this.poiMatchingCache.put(matchingCacheKey, matchingListA);
+
+        synchronized (this.poiMatchingCache) {
+            this.poiMatchingCache.put(matchingCacheKey, matchingListA);
+        }
     }
 
     /**
@@ -167,15 +182,17 @@ public class RenderTheme {
      * @param scaleFactor the factor by which the stroke width should be scaled.
      * @param zoomLevel   the zoom level to which this is applied.
      */
-    public synchronized void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-        if (!strokeScales.containsKey(zoomLevel) || scaleFactor != strokeScales.get(zoomLevel)) {
-            for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-                Rule rule = this.rulesList.get(i);
-                if (rule.zoomMin <= zoomLevel && rule.zoomMax >= zoomLevel) {
-                    rule.scaleStrokeWidth(scaleFactor * this.baseStrokeWidth * DisplayModel.lineScale, zoomLevel);
+    public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+        synchronized (this.strokeScales) {
+            if (!strokeScales.containsKey(zoomLevel) || scaleFactor != strokeScales.get(zoomLevel)) {
+                for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
+                    Rule rule = this.rulesList.get(i);
+                    if (rule.zoomMin <= zoomLevel && rule.zoomMax >= zoomLevel) {
+                        rule.scaleStrokeWidth(scaleFactor * this.baseStrokeWidth * DisplayModel.lineScale, zoomLevel);
+                    }
                 }
+                strokeScales.put(zoomLevel, scaleFactor);
             }
-            strokeScales.put(zoomLevel, scaleFactor);
         }
     }
 
@@ -185,15 +202,17 @@ public class RenderTheme {
      * @param scaleFactor the factor by which the text size should be scaled.
      * @param zoomLevel   the zoom level to which this is applied.
      */
-    public synchronized void scaleTextSize(float scaleFactor, byte zoomLevel) {
-        if (!textScales.containsKey(zoomLevel) || scaleFactor != textScales.get(zoomLevel)) {
-            for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-                Rule rule = this.rulesList.get(i);
-                if (rule.zoomMin <= zoomLevel && rule.zoomMax >= zoomLevel) {
-                    rule.scaleTextSize(scaleFactor * this.baseTextSize * DisplayModel.textScale, zoomLevel);
+    public void scaleTextSize(float scaleFactor, byte zoomLevel) {
+        synchronized (this.textScales) {
+            if (!textScales.containsKey(zoomLevel) || scaleFactor != textScales.get(zoomLevel)) {
+                for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
+                    Rule rule = this.rulesList.get(i);
+                    if (rule.zoomMin <= zoomLevel && rule.zoomMax >= zoomLevel) {
+                        rule.scaleTextSize(scaleFactor * this.baseTextSize * DisplayModel.textScale, zoomLevel);
+                    }
                 }
+                textScales.put(zoomLevel, scaleFactor);
             }
-            textScales.put(zoomLevel, scaleFactor);
         }
     }
 
@@ -213,10 +232,14 @@ public class RenderTheme {
         }
     }
 
-    private synchronized void matchWay(RenderCallback renderCallback, final RenderContext renderContext, Closed closed, PolylineContainer way) {
+    private void matchWay(RenderCallback renderCallback, final RenderContext renderContext, Closed closed, PolylineContainer way) {
         // check cached instructions
         int matchingCacheKey = computeMatchingCacheKey(way.getTags(), way.getUpperLeft().zoomLevel, closed);
-        RenderInstruction[] instructions = this.wayMatchingCache.get(matchingCacheKey);
+
+        final RenderInstruction[] instructions;
+        synchronized (this.wayMatchingCache) {
+            instructions = this.wayMatchingCache.get(matchingCacheKey);
+        }
         if (instructions != null) {
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < instructions.length; ++i) {
@@ -232,7 +255,10 @@ public class RenderTheme {
         }
         RenderInstruction[] matchingListA = new RenderInstruction[matchingList.size()];
         matchingList.toArray(matchingListA);
-        this.wayMatchingCache.put(matchingCacheKey, matchingListA);
+
+        synchronized (this.wayMatchingCache) {
+            this.wayMatchingCache.put(matchingCacheKey, matchingListA);
+        }
     }
 
     public void traverseRules(Rule.RuleVisitor visitor) {

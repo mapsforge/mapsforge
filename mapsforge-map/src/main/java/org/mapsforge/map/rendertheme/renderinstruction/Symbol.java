@@ -40,7 +40,7 @@ import java.io.IOException;
 public class Symbol extends RenderInstruction {
     private Bitmap bitmap;
     private boolean bitmapInvalid;
-    private Rectangle boundary;
+    private final Rectangle boundary;
     private Display display;
     private String id;
     private Position position;
@@ -48,6 +48,8 @@ public class Symbol extends RenderInstruction {
     private final String relativePathPrefix;
     private final XmlThemeResourceProvider resourceProvider;
     private String src;
+
+    private final Object mySync = new Object();
 
     public Symbol(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                   XmlPullParser pullParser, String relativePathPrefix, XmlThemeResourceProvider resourceProvider) throws IOException, XmlPullParserException {
@@ -61,13 +63,17 @@ public class Symbol extends RenderInstruction {
         Bitmap bitmap = getBitmap();
         if (bitmap != null) {
             this.boundary = computeBoundary(bitmap.getWidth(), bitmap.getHeight(), this.position);
+        } else {
+            this.boundary = null;
         }
     }
 
     @Override
     public void destroy() {
-        if (this.bitmap != null) {
-            this.bitmap.decrementRefCount();
+        synchronized (mySync) {
+            if (this.bitmap != null) {
+                this.bitmap.decrementRefCount();
+            }
         }
     }
 
@@ -103,14 +109,16 @@ public class Symbol extends RenderInstruction {
     }
 
     public Bitmap getBitmap() {
-        if (this.bitmap == null && !bitmapInvalid) {
-            try {
-                this.bitmap = createBitmap(relativePathPrefix, src, resourceProvider);
-            } catch (IOException ioException) {
-                this.bitmapInvalid = true;
+        synchronized (mySync) {
+            if (this.bitmap == null && !bitmapInvalid) {
+                try {
+                    this.bitmap = createBitmap(relativePathPrefix, src, resourceProvider);
+                } catch (IOException ioException) {
+                    this.bitmapInvalid = true;
+                }
             }
+            return this.bitmap;
         }
-        return this.bitmap;
     }
 
     public Rectangle getBoundary() {
@@ -127,8 +135,10 @@ public class Symbol extends RenderInstruction {
             return;
         }
 
-        if (getBitmap() != null) {
-            renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.boundary, this.bitmap, poi);
+        synchronized (mySync) {
+            if (getBitmap() != null) {
+                renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.boundary, this.bitmap, poi);
+            }
         }
     }
 
@@ -138,8 +148,10 @@ public class Symbol extends RenderInstruction {
             return;
         }
 
-        if (this.getBitmap() != null) {
-            renderCallback.renderAreaSymbol(renderContext, this.display, this.priority, this.bitmap, way);
+        synchronized (mySync) {
+            if (this.getBitmap() != null) {
+                renderCallback.renderAreaSymbol(renderContext, this.display, this.priority, this.bitmap, way);
+            }
         }
     }
 
