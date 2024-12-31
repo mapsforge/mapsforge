@@ -3,9 +3,10 @@
 ## Next version
 
 - Map rotation: marker billboard option [#1563](https://github.com/mapsforge/mapsforge/pull/1563)
-- Map label improvements [#1579](https://github.com/mapsforge/mapsforge/pull/1579) [#1586](https://github.com/mapsforge/mapsforge/pull/1586) [#1588](https://github.com/mapsforge/mapsforge/pull/1588)
+- Map label / symbol improvements [#1579](https://github.com/mapsforge/mapsforge/pull/1579) [#1586](https://github.com/mapsforge/mapsforge/pull/1586) [#1588](https://github.com/mapsforge/mapsforge/pull/1588)
 - Adaptive hillshading and improvements
-  - [#1561](https://github.com/mapsforge/mapsforge/pull/1561) [#1592](https://github.com/mapsforge/mapsforge/pull/1592) [#1597](https://github.com/mapsforge/mapsforge/pull/1597)
+  - [#1561](https://github.com/mapsforge/mapsforge/pull/1561) [#1592](https://github.com/mapsforge/mapsforge/pull/1592) [#1597](https://github.com/mapsforge/mapsforge/pull/1597) [#1605](https://github.com/mapsforge/mapsforge/pull/1605)
+- Map rendering performance improvements [#1599](https://github.com/mapsforge/mapsforge/pull/1599)
 - Multi-map improvements [#1582](https://github.com/mapsforge/mapsforge/pull/1582)
   - `MapDataStore.setPriority`
 - Group of layers with z-order `ZOrderGroupLayer` [#1603](https://github.com/mapsforge/mapsforge/pull/1603)
