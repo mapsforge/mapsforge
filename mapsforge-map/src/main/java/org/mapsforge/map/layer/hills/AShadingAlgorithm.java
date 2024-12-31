@@ -35,10 +35,10 @@ public abstract class AShadingAlgorithm implements ShadingAlgorithm {
         final int read1 = is.read();
         final int read2 = is.read();
 
-        if (read1 != -1 && read2 != -1) {
-            return (short) ((read1 << 8) | read2);
-        } else {
+        if (read1 < 0 || read2 < 0) {
             return Short.MIN_VALUE;
+        } else {
+            return (short) ((read1 << 8) | read2);
         }
     }
 
@@ -61,13 +61,7 @@ public abstract class AShadingAlgorithm implements ShadingAlgorithm {
 
     @Override
     public int getInputAxisLen(HgtFileInfo hgtFileInfo) {
-        long size = hgtFileInfo.getSize();
-        long elements = size / 2;
-        int rowLen = (int) Math.ceil(Math.sqrt(elements));
-        if (rowLen * rowLen * 2L != size) {
-            return 0;
-        }
-        return rowLen - 1;
+        return hgtFileInfo.getAxisLen();
     }
 
     @Override

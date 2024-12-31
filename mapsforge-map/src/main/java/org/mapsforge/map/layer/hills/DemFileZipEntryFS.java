@@ -44,13 +44,13 @@ public class DemFileZipEntryFS implements DemFile {
     }
 
     @Override
-    public InputStream openInputStream() throws IOException {
+    public InputStream openInputStream(int bufferSize) throws IOException {
         InputStream output = null;
 
         final InputStream rawStream = rawStream();
 
         if (rawStream != null) {
-            output = new BufferedInputStream(rawStream, BufferSize);
+            output = new BufferedInputStream(rawStream, bufferSize);
         }
 
         return output;
@@ -58,7 +58,7 @@ public class DemFileZipEntryFS implements DemFile {
 
     @Override
     public InputStream asStream() throws IOException {
-        return openInputStream();
+        return openInputStream(BufferSizeDefault);
     }
 
     @Override

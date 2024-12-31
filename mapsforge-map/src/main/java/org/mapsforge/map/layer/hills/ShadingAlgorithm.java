@@ -112,6 +112,8 @@ public interface ShadingAlgorithm {
     interface RawHillTileSource {
         long getSize();
 
+        int getAxisLen();
+
         DemFile getFile();
 
         /**

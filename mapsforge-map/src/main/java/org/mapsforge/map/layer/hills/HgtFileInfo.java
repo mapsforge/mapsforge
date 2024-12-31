@@ -25,14 +25,18 @@ import java.util.Map;
 import java.util.Objects;
 
 public class HgtFileInfo extends BoundingBox implements ShadingAlgorithm.RawHillTileSource {
+    public static final int HGT_ELEMENT_SIZE = (Short.SIZE / Byte.SIZE);
+
     protected final DemFile file;
     protected final long fileSize;
+    protected final int axisLen;
     protected final Map<Long, SoftReference<HgtFileLoadFuture>> map = new HashMap<>();
 
     protected HgtFileInfo(DemFile file, double minLatitude, double minLongitude, double maxLatitude, double maxLongitude, long fileSize) {
         super(minLatitude, minLongitude, maxLatitude, maxLongitude);
         this.file = file;
         this.fileSize = fileSize;
+        this.axisLen = computeAxisLen(fileSize);
     }
 
     protected HgtFileLoadFuture getBitmapFuture(HgtCache hgtCache, ShadingAlgorithm shadingAlgorithm, int padding, int zoomLevel, double pxPerLat, double pxPerLon, int color) {
@@ -54,6 +58,11 @@ public class HgtFileInfo extends BoundingBox implements ShadingAlgorithm.RawHill
     @Override
     public long getSize() {
         return fileSize;
+    }
+
+    @Override
+    public int getAxisLen() {
+        return axisLen;
     }
 
     @Override
@@ -110,5 +119,14 @@ public class HgtFileInfo extends BoundingBox implements ShadingAlgorithm.RawHill
         int result = super.hashCode();
         result = 31 * result + Objects.hashCode(getFile().getName());
         return result;
+    }
+
+    public static int computeAxisLen(final long fileSize) {
+        long elements = fileSize / HGT_ELEMENT_SIZE;
+        long rowLen = (long) Math.ceil(Math.sqrt(elements));
+        if (rowLen * rowLen * HGT_ELEMENT_SIZE != fileSize) {
+            return 0;
+        }
+        return (int) (rowLen - 1);
     }
 }
