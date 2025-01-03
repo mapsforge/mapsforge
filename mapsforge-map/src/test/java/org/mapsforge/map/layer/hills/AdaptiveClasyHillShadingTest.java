@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,12 +22,17 @@ import java.io.File;
 
 public class AdaptiveClasyHillShadingTest extends TestCase {
 
+    /**
+     * This is the length of one side of a 1" HGT file.
+     */
+    public static final int HGTFILE_WIDTH_BASE = 3600;
+
     final AdaptiveClasyHillShading algorithm = new AdaptiveClasyHillShading();
-    final long hgtFileSize = (long) 2 * (1 + AdaptiveClasyHillShading.HGTFILE_WIDTH_BASE) * (1 + AdaptiveClasyHillShading.HGTFILE_WIDTH_BASE);
+    final long hgtFileSize = (long) 2 * (1 + HGTFILE_WIDTH_BASE) * (1 + HGTFILE_WIDTH_BASE);
     final HgtFileInfo hgtFileInfo = new HgtFileInfo(new DemFileFS(new File("dummy")), 0, 0, 1, 1, hgtFileSize);
 
     public void testGetQualityFactor() {
-        final int tileSizePerLat = AdaptiveClasyHillShading.HGTFILE_WIDTH_BASE;
+        final int tileSizePerLat = HGTFILE_WIDTH_BASE;
 
         Assert.assertEquals(2, algorithm.getQualityFactor(hgtFileInfo, 12, 1.5 * tileSizePerLat, 1.5 * tileSizePerLat));
         Assert.assertEquals(1, algorithm.getQualityFactor(hgtFileInfo, 12, tileSizePerLat, tileSizePerLat));
@@ -37,7 +42,7 @@ public class AdaptiveClasyHillShadingTest extends TestCase {
     }
 
     public void testScaleByQualityFactor() {
-        final int value = AdaptiveClasyHillShading.HGTFILE_WIDTH_BASE;
+        final int value = HGTFILE_WIDTH_BASE;
 
         Assert.assertEquals(value * 2, AdaptiveClasyHillShading.scaleByQualityFactor(value, algorithm.getQualityFactor(hgtFileInfo, 12, 1.5 * value, 1.5 * value)));
         Assert.assertEquals(value, AdaptiveClasyHillShading.scaleByQualityFactor(value, algorithm.getQualityFactor(hgtFileInfo, 12, value, value)));
@@ -47,15 +52,15 @@ public class AdaptiveClasyHillShadingTest extends TestCase {
     }
 
     public void testIsHighQuality() {
-        final int tileSizePerLat = 2 * AdaptiveClasyHillShading.HGTFILE_WIDTH_BASE;
+        final int tileSizePerLat = 2 * HGTFILE_WIDTH_BASE;
 
         Assert.assertTrue(algorithm.isHighQuality(hgtFileInfo, 12, tileSizePerLat, tileSizePerLat));
     }
 
     public void testStrideDivisibility() {
-        final int inputLen = AdaptiveClasyHillShading.HGTFILE_WIDTH_BASE;
+        final int inputLen = HGTFILE_WIDTH_BASE;
 
-        for (int value = AdaptiveClasyHillShading.HGTFILE_WIDTH_BASE / 2; value > 1; value--) {
+        for (int value = HGTFILE_WIDTH_BASE / 2; value > 1; value--) {
             final int stride = algorithm.getStrideFactor(inputLen, algorithm.getOutputAxisLen(hgtFileInfo, 12, value, value));
             Assert.assertEquals(inputLen, inputLen / stride * stride);
         }
