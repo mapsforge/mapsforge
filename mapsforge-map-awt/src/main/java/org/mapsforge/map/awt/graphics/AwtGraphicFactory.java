@@ -6,7 +6,7 @@
  * Copyright 2015-2017 devemux86
  * Copyright 2017 usrusr
  * Copyright 2018 Adrian Batzill
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,6 +22,7 @@
 package org.mapsforge.map.awt.graphics;
 
 import com.kitfox.svg.SVGCache;
+
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
@@ -44,7 +45,7 @@ public class AwtGraphicFactory implements GraphicFactory {
     public static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
 
     protected ColorModel monoColorModel = null;
-    protected final AtomicInteger hillshadingColor = new AtomicInteger(Integer.MAX_VALUE);
+    protected final AtomicInteger hillshadingColor = new AtomicInteger(0);
 
     private AwtGraphicFactory() {
     }
@@ -141,28 +142,30 @@ public class AwtGraphicFactory implements GraphicFactory {
 
     @Override
     public AwtHillshadingBitmap createMonoBitmap(int width, int height, byte[] buffer, int padding, BoundingBox area, int color) {
-        synchronized (this.hillshadingColor) {
-            if (color != hillshadingColor.getAndSet(color) || monoColorModel == null) {
-                final java.awt.Color awtColor = new java.awt.Color(color, true);
+        if (color != hillshadingColor.get() || monoColorModel == null) {
+            synchronized (this.hillshadingColor) {
+                if (color != hillshadingColor.getAndSet(color) || monoColorModel == null) {
+                    final java.awt.Color awtColor = new java.awt.Color(color, true);
 
-                final int alpha = awtColor.getAlpha();
+                    final int alpha = awtColor.getAlpha();
 
-                byte[] reds = new byte[256];
-                byte[] greens = new byte[256];
-                byte[] blues = new byte[256];
-                byte[] alphas = new byte[256];
+                    byte[] reds = new byte[256];
+                    byte[] greens = new byte[256];
+                    byte[] blues = new byte[256];
+                    byte[] alphas = new byte[256];
 
-                Arrays.fill(reds, (byte) awtColor.getRed());
-                Arrays.fill(greens, (byte) awtColor.getGreen());
-                Arrays.fill(blues, (byte) awtColor.getBlue());
+                    Arrays.fill(reds, (byte) awtColor.getRed());
+                    Arrays.fill(greens, (byte) awtColor.getGreen());
+                    Arrays.fill(blues, (byte) awtColor.getBlue());
 
-                // use a lookup color model on the AWT side so that the android implementation can take the bytes without any twiddling
-                // (the only 8 bit bitmaps android knows are alpha masks, so we have to define our mono bitmap bytes in a way that are easy for android to understand)
-                for (int i = 0; i < 256; i++) {
-                    alphas[i] = (byte) (i * alpha / 255);
+                    // use a lookup color model on the AWT side so that the android implementation can take the bytes without any twiddling
+                    // (the only 8 bit bitmaps android knows are alpha masks, so we have to define our mono bitmap bytes in a way that are easy for android to understand)
+                    for (int i = 0; i < 256; i++) {
+                        alphas[i] = (byte) (i * alpha / 255);
+                    }
+
+                    monoColorModel = new IndexColorModel(8, 256, reds, greens, blues, alphas);
                 }
-
-                monoColorModel = new IndexColorModel(8, 256, reds, greens, blues, alphas);
             }
         }
 
