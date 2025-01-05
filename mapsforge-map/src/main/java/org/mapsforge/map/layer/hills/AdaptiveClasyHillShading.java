@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -42,15 +42,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AdaptiveClasyHillShading extends HiResClasyHillShading implements IAdaptiveHillShading {
 
-    /**
-     * This is the length of one side of a 1" HGT file.
-     */
-    public static final int HGTFILE_WIDTH_BASE = 3600;
-
-    /**
-     * Default max zoom level when using a 1" HGT file and high quality (bicubic) algorithm is enabled.
-     */
-    public static final int ZoomLevelMaxBaseDefault = 17;
     public static final boolean IsHqEnabledDefault = true;
     public static final boolean IsAdaptiveZoomEnabledDefault = true;
 
@@ -146,25 +137,7 @@ public class AdaptiveClasyHillShading extends HiResClasyHillShading implements I
         if (mZoomMaxOverride >= 0) {
             return mZoomMaxOverride;
         } else {
-            int retVal = ZoomLevelMaxBaseDefault;
-
-            if (false == isHqEnabled()) {
-                retVal -= 1;
-            }
-
-            final int inputAxisLen = getInputAxisLen(hgtFileInfo);
-
-            if (inputAxisLen < HGTFILE_WIDTH_BASE) {
-                for (int len = HGTFILE_WIDTH_BASE; inputAxisLen < len; len /= 2) {
-                    retVal -= 1;
-                }
-            } else if (inputAxisLen > HGTFILE_WIDTH_BASE) {
-                for (int len = HGTFILE_WIDTH_BASE; inputAxisLen > len; len *= 2) {
-                    retVal += 1;
-                }
-            }
-
-            return retVal;
+            return super.getZoomMax(hgtFileInfo);
         }
     }
 
