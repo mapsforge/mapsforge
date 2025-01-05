@@ -4,7 +4,6 @@
  * Copyright 2015-2020 devemux86
  * Copyright 2015 Andreas Schildbach
  * Copyright 2016 mikes222
- * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,9 +27,6 @@ import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.util.PausableThread;
 
 public class MapViewPosition extends Observable implements Persistable {
-
-    public static final int ZOOM_MIN_DEFAULT = 0;
-    public static final int ZOOM_MAX_DEFAULT = 22;
 
     private class Animator extends PausableThread {
 
@@ -327,8 +323,8 @@ public class MapViewPosition extends Observable implements Persistable {
         }
 
         this.zoomLevel = preferencesFacade.getByte(ZOOM_LEVEL, (byte) 0);
-        this.zoomLevelMax = preferencesFacade.getByte(ZOOM_LEVEL_MAX, (byte) ZOOM_MAX_DEFAULT);
-        this.zoomLevelMin = preferencesFacade.getByte(ZOOM_LEVEL_MIN, (byte) ZOOM_MIN_DEFAULT);
+        this.zoomLevelMax = preferencesFacade.getByte(ZOOM_LEVEL_MAX, Byte.MAX_VALUE);
+        this.zoomLevelMin = preferencesFacade.getByte(ZOOM_LEVEL_MIN, (byte) 0);
         this.scaleFactor = Math.pow(2, this.zoomLevel);
     }
 
