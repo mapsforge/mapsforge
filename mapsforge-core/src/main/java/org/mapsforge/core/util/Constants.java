@@ -17,9 +17,6 @@ package org.mapsforge.core.util;
 
 public final class Constants {
 
-    public static final int HILLSHADING_COLOR_DEFAULT = 0xff000000;
-    public static final int HILLSHADING_MAGNITUDE_DEFAULT = 128;
-
     public static final long MAX_MEMORY_MB = Runtime.getRuntime().maxMemory() / 1000 / 1000;
 
     private Constants() {
