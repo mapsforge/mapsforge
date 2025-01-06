@@ -20,7 +20,6 @@ import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.android.util.MapViewerTemplate;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
