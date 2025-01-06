@@ -20,11 +20,12 @@ package org.mapsforge.samples.android;
 import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.IdRes;
-import org.mapsforge.map.android.util.AndroidPreferences;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.model.common.PreferencesFacade;
+import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
@@ -36,7 +37,7 @@ import java.io.File;
 public class DualMapViewer extends DefaultTheme {
 
     protected MapView mapView2;
-    protected PreferencesFacade preferencesFacade2;
+    protected AndroidPreferences preferences2;
 
     @Override
     protected void createLayers() {
@@ -50,16 +51,19 @@ public class DualMapViewer extends DefaultTheme {
     protected void createLayers2() {
         this.mapView2.getLayerManager()
                 .getLayers().add(AndroidUtil.createTileRendererLayer(this.tileCaches.get(1),
-                this.mapView2.getModel().mapViewPosition, getMapFile2(),
-                getRenderTheme2(), false, true, false));
+                        this.mapView2.getModel().mapViewPosition, getMapFile2(),
+                        getRenderTheme2(), false, true, false));
     }
 
     @Override
     protected void createMapViews() {
         super.createMapViews();
         // second mapView is defined in layout
-        this.mapView2 = (MapView) this.findViewById(R.id.mapView2);
-        this.mapView2.getModel().init(this.preferencesFacade2);
+        this.mapView2 = this.findViewById(R.id.mapView2);
+        double latitude = this.preferences2.getDouble(LATITUDE, 0);
+        double longitude = this.preferences2.getDouble(LONGITUDE, 0);
+        byte zoomLevel = this.preferences2.getByte(ZOOM_LEVEL, (byte) 0);
+        this.mapView2.getModel().mapViewPosition.setMapPosition(new MapPosition(new LatLong(latitude, longitude), zoomLevel));
         this.mapView2.getMapScaleBar().setVisible(true);
         this.mapView2.setBuiltInZoomControls(hasZoomControls());
         this.mapView2.getMapZoomControls().setZoomLevelMin(getZoomLevelMin());
@@ -83,7 +87,7 @@ public class DualMapViewer extends DefaultTheme {
     @Override
     protected void createSharedPreferences() {
         super.createSharedPreferences();
-        this.preferencesFacade2 = new AndroidPreferences(this.getSharedPreferences(getPersistableId2(), MODE_PRIVATE));
+        this.preferences2 = new AndroidPreferences(this.getSharedPreferences(getPersistableId2(), MODE_PRIVATE));
     }
 
     @Override
@@ -142,8 +146,11 @@ public class DualMapViewer extends DefaultTheme {
 
     @Override
     protected void onPause() {
-        this.mapView2.getModel().save(this.preferencesFacade2);
-        this.preferencesFacade2.save();
+        final MapViewPosition mapViewPosition = this.mapView2.getModel().mapViewPosition;
+        this.preferences2.putDouble(LATITUDE, mapViewPosition.getCenter().latitude);
+        this.preferences2.putDouble(LONGITUDE, mapViewPosition.getCenter().longitude);
+        this.preferences2.putByte(ZOOM_LEVEL, mapViewPosition.getZoomLevel());
+        this.preferences2.save();
         super.onPause();
     }
 

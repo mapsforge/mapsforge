@@ -28,7 +28,6 @@ import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.awt.util.AwtUtil;
-import org.mapsforge.map.awt.util.JavaPreferences;
 import org.mapsforge.map.awt.view.MapView;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MultiMapDataStore;
@@ -47,7 +46,6 @@ import org.mapsforge.map.layer.labels.LabelLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
-import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
 
@@ -68,6 +66,10 @@ public final class Samples {
 
     private static final String MESSAGE = "Are you sure you want to exit the application?";
     private static final String TITLE = "Confirm close";
+
+    private static final String LATITUDE = "latitude";
+    private static final String LONGITUDE = "longitude";
+    private static final String ZOOM_LEVEL = "zoomLevel";
 
     /**
      * Starts the {@code Samples}.
@@ -106,7 +108,7 @@ public final class Samples {
         final List<File> mapFiles = SHOW_RASTER_MAP ? null : getMapFiles(args);
         final MapView mapView = createMapView();
 
-        final PreferencesFacade preferencesFacade = new JavaPreferences(Preferences.userNodeForPackage(Samples.class));
+        final JavaPreferences preferences = new JavaPreferences(Preferences.userNodeForPackage(Samples.class));
 
         final JFrame frame = new JFrame();
         frame.setTitle("Mapsforge Samples");
@@ -120,7 +122,10 @@ public final class Samples {
             public void windowClosing(WindowEvent e) {
                 int result = JOptionPane.showConfirmDialog(frame, MESSAGE, TITLE, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
-                    mapView.getModel().save(preferencesFacade);
+                    final MapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
+                    preferences.putDouble(LATITUDE, mapViewPosition.getCenter().latitude);
+                    preferences.putDouble(LONGITUDE, mapViewPosition.getCenter().longitude);
+                    preferences.putByte(ZOOM_LEVEL, mapViewPosition.getZoomLevel());
                     mapView.destroyAll();
                     AwtGraphicFactory.clearResourceMemoryCache();
                     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -131,10 +136,13 @@ public final class Samples {
             public void windowOpened(WindowEvent e) {
                 final BoundingBox boundingBox = addLayers(mapView, mapFiles, hillsConfig);
                 final Model model = mapView.getModel();
-                model.init(preferencesFacade);
+                double latitude = preferences.getDouble(LATITUDE, 0);
+                double longitude = preferences.getDouble(LONGITUDE, 0);
+                byte zoomLevel = preferences.getByte(ZOOM_LEVEL, (byte) 0);
+                mapView.getModel().mapViewPosition.setMapPosition(new MapPosition(new LatLong(latitude, longitude), zoomLevel));
                 if (model.mapViewPosition.getZoomLevel() == 0 || !boundingBox.contains(model.mapViewPosition.getCenter())) {
-                    byte zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox, model.displayModel.getTileSize());
-                    model.mapViewPosition.setMapPosition(new MapPosition(boundingBox.getCenterPoint(), zoomLevel));
+                    byte zoomForBounds = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox, model.displayModel.getTileSize());
+                    model.mapViewPosition.setMapPosition(new MapPosition(boundingBox.getCenterPoint(), zoomForBounds));
                 }
             }
         });
