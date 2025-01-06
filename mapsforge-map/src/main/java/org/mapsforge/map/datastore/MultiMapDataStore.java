@@ -55,6 +55,10 @@ public class MultiMapDataStore extends MapDataStore {
     private LatLong startPosition;
     private byte startZoomLevel;
 
+    public MultiMapDataStore() {
+        this(DataPolicy.RETURN_ALL);
+    }
+
     public MultiMapDataStore(DataPolicy dataPolicy) {
         this.dataPolicy = dataPolicy;
         this.mapDatabases = new ArrayList<>();
