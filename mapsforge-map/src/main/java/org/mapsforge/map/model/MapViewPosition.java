@@ -22,11 +22,9 @@ import org.mapsforge.core.model.*;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.model.common.Observable;
-import org.mapsforge.map.model.common.Persistable;
-import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.util.PausableThread;
 
-public class MapViewPosition extends Observable implements Persistable {
+public class MapViewPosition extends Observable {
 
     private class Animator extends PausableThread {
 
@@ -125,29 +123,6 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     private static final double LOG_2 = Math.log(2);
-
-    private static final String LATITUDE = "latitude";
-    private static final String LATITUDE_MAX = "latitudeMax";
-    private static final String LATITUDE_MIN = "latitudeMin";
-    private static final String LONGITUDE = "longitude";
-    private static final String LONGITUDE_MAX = "longitudeMax";
-    private static final String LONGITUDE_MIN = "longitudeMin";
-    private static final String ROTATION_ANGLE = "rotationAngle";
-    private static final String ROTATION_PX = "rotationPx";
-    private static final String ROTATION_PY = "rotationPy";
-    private static final String ZOOM_LEVEL = "zoomLevel";
-    private static final String ZOOM_LEVEL_MAX = "zoomLevelMax";
-    private static final String ZOOM_LEVEL_MIN = "zoomLevelMin";
-
-    private static boolean isNan(double... values) {
-        for (double value : values) {
-            if (Double.isNaN(value)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     private final Animator animator;
     private final DisplayModel displayModel;
@@ -298,37 +273,6 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
-     * Initializes the class.
-     * <p>
-     * Needed by mapsforge core classes.
-     */
-    @Override
-    public synchronized void init(PreferencesFacade preferencesFacade) {
-        this.latitude = preferencesFacade.getDouble(LATITUDE, 0);
-        this.longitude = preferencesFacade.getDouble(LONGITUDE, 0);
-        float rotationAngle = preferencesFacade.getFloat(ROTATION_ANGLE, 0);
-        float rotationPx = preferencesFacade.getFloat(ROTATION_PX, 0);
-        float rotationPy = preferencesFacade.getFloat(ROTATION_PY, 0);
-        this.rotation = new Rotation(rotationAngle, rotationPx, rotationPy);
-
-        double maxLatitude = preferencesFacade.getDouble(LATITUDE_MAX, Double.NaN);
-        double minLatitude = preferencesFacade.getDouble(LATITUDE_MIN, Double.NaN);
-        double maxLongitude = preferencesFacade.getDouble(LONGITUDE_MAX, Double.NaN);
-        double minLongitude = preferencesFacade.getDouble(LONGITUDE_MIN, Double.NaN);
-
-        if (isNan(maxLatitude, minLatitude, maxLongitude, minLongitude)) {
-            this.mapLimit = null;
-        } else {
-            this.mapLimit = new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude);
-        }
-
-        this.zoomLevel = preferencesFacade.getByte(ZOOM_LEVEL, (byte) 0);
-        this.zoomLevelMax = preferencesFacade.getByte(ZOOM_LEVEL_MAX, Byte.MAX_VALUE);
-        this.zoomLevelMin = preferencesFacade.getByte(ZOOM_LEVEL_MIN, (byte) 0);
-        this.scaleFactor = Math.pow(2, this.zoomLevel);
-    }
-
-    /**
      * Animates the center position of the map by the given amount of pixels.
      * <p>
      * Used by TouchGestureHandler.
@@ -398,36 +342,6 @@ public class MapViewPosition extends Observable implements Persistable {
             }
         }
         notifyObservers();
-    }
-
-    /**
-     * Saves the current state.
-     * <p>
-     * Needed by mapsforge core classes.
-     */
-    @Override
-    public synchronized void save(PreferencesFacade preferencesFacade) {
-        preferencesFacade.putDouble(LATITUDE, this.latitude);
-        preferencesFacade.putDouble(LONGITUDE, this.longitude);
-        preferencesFacade.putFloat(ROTATION_ANGLE, this.rotation.degrees);
-        preferencesFacade.putFloat(ROTATION_PX, this.rotation.px);
-        preferencesFacade.putFloat(ROTATION_PY, this.rotation.py);
-
-        if (this.mapLimit == null) {
-            preferencesFacade.putDouble(LATITUDE_MAX, Double.NaN);
-            preferencesFacade.putDouble(LATITUDE_MIN, Double.NaN);
-            preferencesFacade.putDouble(LONGITUDE_MAX, Double.NaN);
-            preferencesFacade.putDouble(LONGITUDE_MIN, Double.NaN);
-        } else {
-            preferencesFacade.putDouble(LATITUDE_MAX, this.mapLimit.maxLatitude);
-            preferencesFacade.putDouble(LATITUDE_MIN, this.mapLimit.minLatitude);
-            preferencesFacade.putDouble(LONGITUDE_MAX, this.mapLimit.maxLongitude);
-            preferencesFacade.putDouble(LONGITUDE_MIN, this.mapLimit.minLongitude);
-        }
-
-        preferencesFacade.putByte(ZOOM_LEVEL, this.zoomLevel);
-        preferencesFacade.putByte(ZOOM_LEVEL_MAX, this.zoomLevelMax);
-        preferencesFacade.putByte(ZOOM_LEVEL_MIN, this.zoomLevelMin);
     }
 
     /**

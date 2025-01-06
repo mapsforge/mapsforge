@@ -12,119 +12,91 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.android.util;
+package org.mapsforge.samples.awt;
 
-import android.content.SharedPreferences;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
-import org.mapsforge.map.model.common.PreferencesFacade;
+public class JavaPreferences {
+    private final Preferences preferences;
 
-public class AndroidPreferences implements PreferencesFacade {
-    private SharedPreferences.Editor editor;
-    private final SharedPreferences sharedPreferences;
-
-    public AndroidPreferences(SharedPreferences sharedPreferences) {
-        this.sharedPreferences = sharedPreferences;
+    public JavaPreferences(Preferences preferences) {
+        this.preferences = preferences;
     }
 
-    @Override
     public synchronized void clear() {
-        createEditor();
-        this.editor.clear();
+        try {
+            this.preferences.clear();
+        } catch (BackingStoreException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
-    @Override
     public synchronized boolean getBoolean(String key, boolean defaultValue) {
-        return this.sharedPreferences.getBoolean(key, defaultValue);
+        return this.preferences.getBoolean(key, defaultValue);
     }
 
-    @Override
     public synchronized byte getByte(String key, byte defaultValue) {
-        int intValue = this.sharedPreferences.getInt(key, defaultValue);
+        int intValue = this.preferences.getInt(key, defaultValue);
         if (intValue < Byte.MIN_VALUE || intValue > Byte.MAX_VALUE) {
             throw new IllegalStateException("byte value out of range: " + intValue);
         }
         return (byte) intValue;
     }
 
-    @Override
     public synchronized double getDouble(String key, double defaultValue) {
-        long longValue = this.sharedPreferences.getLong(key, Double.doubleToLongBits(defaultValue));
-        return Double.longBitsToDouble(longValue);
+        return this.preferences.getDouble(key, defaultValue);
     }
 
-    @Override
     public synchronized float getFloat(String key, float defaultValue) {
-        return this.sharedPreferences.getFloat(key, defaultValue);
+        return this.preferences.getFloat(key, defaultValue);
     }
 
-    @Override
     public synchronized int getInt(String key, int defaultValue) {
-        return this.sharedPreferences.getInt(key, defaultValue);
+        return this.preferences.getInt(key, defaultValue);
     }
 
-    @Override
     public synchronized long getLong(String key, long defaultValue) {
-        return this.sharedPreferences.getLong(key, defaultValue);
+        return this.preferences.getLong(key, defaultValue);
     }
 
-    @Override
     public synchronized String getString(String key, String defaultValue) {
-        return this.sharedPreferences.getString(key, defaultValue);
+        return this.preferences.get(key, defaultValue);
     }
 
-    @Override
     public synchronized void putBoolean(String key, boolean value) {
-        createEditor();
-        this.editor.putBoolean(key, value);
+        this.preferences.putBoolean(key, value);
     }
 
-    @Override
     public synchronized void putByte(String key, byte value) {
-        createEditor();
-        this.editor.putInt(key, value);
+        this.preferences.putInt(key, value);
     }
 
-    @Override
     public synchronized void putDouble(String key, double value) {
-        createEditor();
-        this.editor.putLong(key, Double.doubleToLongBits(value));
+        this.preferences.putDouble(key, value);
     }
 
-    @Override
     public synchronized void putFloat(String key, float value) {
-        createEditor();
-        this.editor.putFloat(key, value);
+        this.preferences.putFloat(key, value);
     }
 
-    @Override
     public synchronized void putInt(String key, int value) {
-        createEditor();
-        this.editor.putInt(key, value);
+        this.preferences.putInt(key, value);
     }
 
-    @Override
     public synchronized void putLong(String key, long value) {
-        createEditor();
-        this.editor.putLong(key, value);
+        this.preferences.putLong(key, value);
     }
 
-    @Override
     public synchronized void putString(String key, String value) {
-        createEditor();
-        this.editor.putString(key, value);
+        this.preferences.put(key, value);
     }
 
-    @Override
     public synchronized void save() {
-        if (this.editor != null) {
-            this.editor.apply();
-            this.editor = null;
-        }
-    }
-
-    private void createEditor() {
-        if (this.editor == null) {
-            this.editor = this.sharedPreferences.edit();
+        try {
+            this.preferences.flush();
+        } catch (BackingStoreException e) {
+            throw new IllegalStateException(e);
         }
     }
 }
