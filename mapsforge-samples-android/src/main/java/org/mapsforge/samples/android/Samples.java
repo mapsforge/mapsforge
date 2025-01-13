@@ -161,6 +161,7 @@ public class Samples extends Activity {
         }));
 
         linearLayout.addView(createLabel("Experiments"));
+        linearLayout.addView(createButton(ColorFilterMapViewer.class));
         linearLayout.addView(createButton(ReverseGeocodeViewer.class));
         linearLayout.addView(createButton(ClusterMapActivity.class));
         linearLayout.addView(createButton(GroupMarkerExample.class));

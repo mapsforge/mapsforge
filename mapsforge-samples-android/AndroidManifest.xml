@@ -52,6 +52,9 @@
             android:name=".ClusterMapActivity"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
+            android:name=".ColorFilterMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
             android:name=".DiagnosticsMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
