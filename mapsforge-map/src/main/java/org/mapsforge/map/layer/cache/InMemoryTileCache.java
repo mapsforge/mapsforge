@@ -78,7 +78,7 @@ public class InMemoryTileCache implements TileCache {
     }
 
     @Override
-    public void purge() {
+    public synchronized void purge() {
         for (TileBitmap bitmap : this.lruCache.values()) {
             bitmap.decrementRefCount();
         }
