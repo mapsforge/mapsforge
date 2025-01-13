@@ -14,12 +14,18 @@
  */
 package org.mapsforge.map.rendertheme;
 
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 
 /**
  * Callback methods for render theme.
  */
 public interface ThemeCallback {
+    /**
+     * @return the resource {@link Bitmap}
+     */
+    Bitmap getBitmap(Bitmap bitmap);
+
     /**
      * @return the color-int
      */

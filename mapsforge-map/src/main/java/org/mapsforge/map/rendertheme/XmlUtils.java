@@ -18,8 +18,8 @@
  */
 package org.mapsforge.map.rendertheme;
 
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 import org.xmlpull.v1.XmlPullParserException;
@@ -46,9 +46,9 @@ public final class XmlUtils {
         }
     }
 
-    public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel,
-                                              String relativePathPrefix, String src, XmlThemeResourceProvider resourceProvider,
-                                              int width, int height, int percent) throws IOException {
+    public static Bitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel,
+                                      String relativePathPrefix, String src, XmlThemeResourceProvider resourceProvider,
+                                      int width, int height, int percent) throws IOException {
         if (src == null || src.length() == 0) {
             // no image source defined
             return null;
@@ -66,13 +66,21 @@ public final class XmlUtils {
             int hash = sb.toString().hashCode();
             if (src.toLowerCase(Locale.ENGLISH).endsWith(".svg")) {
                 try {
-                    return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), width, height, percent, hash);
+                    Bitmap bitmap = graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), width, height, percent, hash);
+                    if (displayModel.getThemeCallback() != null) {
+                        bitmap = displayModel.getThemeCallback().getBitmap(bitmap);
+                    }
+                    return bitmap;
                 } catch (IOException e) {
                     throw new IOException("SVG render failed " + src, e);
                 }
             }
             try {
-                return graphicFactory.createResourceBitmap(inputStream, displayModel.getScaleFactor(), width, height, percent, hash);
+                Bitmap bitmap = graphicFactory.createResourceBitmap(inputStream, displayModel.getScaleFactor(), width, height, percent, hash);
+                if (displayModel.getThemeCallback() != null) {
+                    bitmap = displayModel.getThemeCallback().getBitmap(bitmap);
+                }
+                return bitmap;
             } catch (IOException e) {
                 throw new IOException("Reading bitmap file failed " + src, e);
             }
