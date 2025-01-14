@@ -27,9 +27,9 @@
 
 ## Version 0.22.0 (2024-10-10)
 
-- Map rotation [#7](https://github.com/mapsforge/mapsforge/issues/7)
+- Map rotation [#1491](https://github.com/mapsforge/mapsforge/pull/1491) [#1493](https://github.com/mapsforge/mapsforge/pull/1493)
 - Rotation gesture [#1495](https://github.com/mapsforge/mapsforge/issues/1495)
-- Fractional zoom [#75](https://github.com/mapsforge/mapsforge/issues/75)
+- Fractional zoom [#1492](https://github.com/mapsforge/mapsforge/pull/1492)
   - `Parameters.FRACTIONAL_ZOOM`
 - Pre-cache map tiles (+-zoom, margin) [#1507](https://github.com/mapsforge/mapsforge/issues/1507)
 - Hillshading new algorithms and improvements
