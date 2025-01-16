@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015-2022 devemux86
+ * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -78,12 +79,16 @@ public class LatLong implements Comparable<LatLong> {
      */
     @Override
     public int compareTo(LatLong latLong) {
-        if (this.latitude > latLong.latitude || this.longitude > latLong.longitude) {
+        if (this.latitude > latLong.latitude) {
             return 1;
-        } else if (this.latitude < latLong.latitude
-                || this.longitude < latLong.longitude) {
+        } else if (this.latitude < latLong.latitude) {
+            return -1;
+        } else if (this.longitude > latLong.longitude) {
+            return 1;
+        } else if (this.longitude < latLong.longitude) {
             return -1;
         }
+
         return 0;
     }
 
