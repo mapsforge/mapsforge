@@ -5,11 +5,11 @@
 
 This article describes how to integrate the library in your project with Maven and [JitPack](https://jitpack.io/#mapsforge/mapsforge) repositories.
 
-## Maven
+### Maven
 
 Package: `org.mapsforge`
 
-## JitPack
+### JitPack
  
 Package: `com.github.mapsforge.mapsforge`
 
