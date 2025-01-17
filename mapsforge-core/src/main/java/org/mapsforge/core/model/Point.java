@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,6 +16,7 @@
 package org.mapsforge.core.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A Point represents an immutable pair of double coordinates.
@@ -43,51 +45,27 @@ public class Point implements Comparable<Point>, Serializable {
 
     @Override
     public int compareTo(Point point) {
-        if (this.x > point.x) {
-            return 1;
-        } else if (this.x < point.x) {
-            return -1;
-        } else if (this.y > point.y) {
-            return 1;
-        } else if (this.y < point.y) {
-            return -1;
-        }
-        return 0;
-    }
-
-    /**
-     * @return the euclidian distance from this point to the given point.
-     */
-    public double distance(Point point) {
-        return Math.hypot(this.x - point.x, this.y - point.y);
+        return compareCoord(this.x, this.y, point.x, point.y);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        } else if (!(obj instanceof Point)) {
-            return false;
-        }
-        Point other = (Point) obj;
-        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
-            return false;
-        } else if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Point)) return false;
+        Point point = (Point) o;
+        return Double.compare(x, point.x) == 0 && Double.compare(y, point.y) == 0;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        long temp;
-        temp = Double.doubleToLongBits(this.x);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.y);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        return result;
+        return Objects.hash(x, y);
+    }
+
+    /**
+     * @return the euclidean distance from this point to the given point.
+     */
+    public double distance(Point point) {
+        return Math.hypot(this.x - point.x, this.y - point.y);
     }
 
     public Point offset(double dx, double dy) {
@@ -116,5 +94,18 @@ public class Point implements Comparable<Point>, Serializable {
         stringBuilder.append(", y=");
         stringBuilder.append(this.y);
         return stringBuilder.toString();
+    }
+
+    public static int compareCoord(double x1, double y1, double x2, double y2) {
+        if (x1 > x2) {
+            return 1;
+        } else if (x1 < x2) {
+            return -1;
+        } else if (y1 > y2) {
+            return 1;
+        } else if (y1 < y2) {
+            return -1;
+        }
+        return 0;
     }
 }
