@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2015-2022 devemux86
+ * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,7 +18,9 @@
 package org.mapsforge.map.datastore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +33,6 @@ public class MapReadResult {
      * Hash codes.
      */
     private final Set<Integer> hashPois = new HashSet<>();
-    private final Set<Integer> hashWays = new HashSet<>();
 
     /**
      * True if the read area is completely covered by water, false otherwise.
@@ -44,12 +46,14 @@ public class MapReadResult {
 
     /**
      * The read ways.
+     * LinkedHashSet is used to: 1) maintain element order, 2) maximize element removal performance when deduplicating.
      */
-    public List<Way> ways;
+    public final Set<Way> ways;
 
     public MapReadResult() {
         this.pointOfInterests = new ArrayList<>();
-        this.ways = new ArrayList<>();
+        // LinkedHashSet is used to: 1) maintain element order, 2) maximize element removal performance when deduplicating.
+        this.ways = new LinkedHashSet<>();
     }
 
     public void add(PoiWayBundle poiWayBundle) {
@@ -71,14 +75,35 @@ public class MapReadResult {
                     this.pointOfInterests.add(poi);
                 }
             }
-            for (Way way : other.ways) {
-                if (this.hashWays.add(way.hashCode())) {
-                    this.ways.add(way);
-                }
-            }
         } else {
             this.pointOfInterests.addAll(other.pointOfInterests);
-            this.ways.addAll(other.ways);
         }
+
+        this.ways.addAll(other.ways);
+    }
+
+    public MapReadResult deduplicate()
+    {
+        if (!this.ways.isEmpty()) {
+
+            final ArrayList<Way> list = new ArrayList<>(this.ways);
+
+            Collections.sort(list);
+
+            Way current = list.get(0);
+
+            for (int i = 1; i < list.size(); i++) {
+                Way way = list.get(i);
+                if (current.compareTo(way) == 0) {
+                    // Removing instead of building a new list because the expected number of duplicates is usually (much) less than 50%.
+                    this.ways.remove(way);
+                    continue;
+                }
+
+                current = way;
+            }
+        }
+
+        return this;
     }
 }

@@ -26,6 +26,7 @@ import org.mapsforge.map.datastore.Way;
 import org.mapsforge.map.reader.header.MapFileInfo;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class MapFileWithDataTest {
     private static final File MAP_FILE = new File("src/test/resources/with_data/output.map");
@@ -93,7 +94,7 @@ public class MapFileWithDataTest {
             Assert.assertEquals(1, mapReadResult.ways.size());
 
             checkPointOfInterest(mapReadResult.pointOfInterests.get(0));
-            checkWay(mapReadResult.ways.get(0));
+            checkWay(new ArrayList<>(mapReadResult.ways).get(0));
         }
 
         mapFile.close();
