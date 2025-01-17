@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015-2022 devemux86
+ * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,6 +19,7 @@ package org.mapsforge.core.model;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.Parameters;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -78,13 +80,20 @@ public class LatLong implements Comparable<LatLong> {
      */
     @Override
     public int compareTo(LatLong latLong) {
-        if (this.latitude > latLong.latitude || this.longitude > latLong.longitude) {
-            return 1;
-        } else if (this.latitude < latLong.latitude
-                || this.longitude < latLong.longitude) {
-            return -1;
-        }
-        return 0;
+        return Point.compareCoord(this.longitude, this.latitude, latLong.longitude, latLong.latitude);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LatLong)) return false;
+        LatLong latLong = (LatLong) o;
+        return Double.compare(getLatitude(), latLong.getLatitude()) == 0 && Double.compare(getLongitude(), latLong.getLongitude()) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getLatitude(), getLongitude());
     }
 
     /**
@@ -108,23 +117,6 @@ public class LatLong implements Comparable<LatLong> {
      */
     public double distance(LatLong other) {
         return LatLongUtils.distance(this, other);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        } else if (!(obj instanceof LatLong)) {
-            return false;
-        } else {
-            LatLong other = (LatLong) obj;
-            if (this.latitude != other.latitude) {
-                return false;
-            } else if (this.longitude != other.longitude) {
-                return false;
-            }
-            return true;
-        }
     }
 
     /**
@@ -193,18 +185,6 @@ public class LatLong implements Comparable<LatLong> {
      */
     public int getLongitudeE6() {
         return LatLongUtils.degreesToMicrodegrees(this.longitude);
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        long temp;
-        temp = Double.doubleToLongBits(this.latitude);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.longitude);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        return result;
     }
 
     /**

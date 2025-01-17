@@ -3,6 +3,7 @@
  * Copyright 2010, 2011, 2012 Patrick Jungermann
  * Copyright 2010, 2011, 2012 Eike Send
  * Copyright 2015 devemux86
+ * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -61,6 +62,17 @@ public class LatLongTest {
 
         assertEquals(52.52235, alex.getLatitude(), 0d);
         assertEquals(13.4125, alex.getLongitude(), 0d);
+    }
+
+    @Test
+    public void testCompareTo() {
+        LatLong oneZero = new LatLong(1, 0);
+        LatLong zeroOne = new LatLong(0, 1);
+        LatLong zeroOneTwo = new LatLong(0, 1);
+
+        assertEquals(zeroOne.compareTo(oneZero), 1);
+        assertEquals(oneZero.compareTo(zeroOne), -1);
+        assertEquals(zeroOne.compareTo(zeroOneTwo), 0);
     }
 
     @Test
