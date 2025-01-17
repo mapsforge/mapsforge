@@ -70,8 +70,8 @@ public class LatLongTest {
         LatLong zeroOne = new LatLong(0, 1);
         LatLong zeroOneTwo = new LatLong(0, 1);
 
-        assertEquals(oneZero.compareTo(zeroOne), 1);
-        assertEquals(zeroOne.compareTo(oneZero), -1);
+        assertEquals(zeroOne.compareTo(oneZero), 1);
+        assertEquals(oneZero.compareTo(zeroOne), -1);
         assertEquals(zeroOne.compareTo(zeroOneTwo), 0);
     }
 
