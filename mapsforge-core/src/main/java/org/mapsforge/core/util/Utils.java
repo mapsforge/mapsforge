@@ -18,6 +18,7 @@ package org.mapsforge.core.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 public final class Utils {
@@ -62,9 +63,9 @@ public final class Utils {
      * from the original collection without changing the order of the remaining elements.
      * <p>
      * The strategy is efficient for unsorted collections with fast find-and-remove operations, like
-     * {@link java.util.LinkedHashMap}, and/or for collections containing small fraction of duplicates.
+     * {@link HashSet}, and/or for collections containing small fraction of duplicates.
      *
-     * @param collection A collection with fast find-and-remove operations and/or expected small fraction of duplicates. {@code null}-s are permitted.
+     * @param collection A {@link Collection} with fast find-and-remove operations and/or expected small fraction of duplicates. {@code null}-s are permitted.
      * @param <T>        A type implementing the {@link Comparable} interface.
      * @return The original collection without duplicate elements. Order of the remaining elements is not changed.
      */
