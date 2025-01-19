@@ -69,7 +69,7 @@ public class MapDataStoreLabelStore implements LabelStore {
             RendererJob rendererJob = new RendererJob(upperLeft, this.standardRenderer.mapDataStore, this.renderThemeFuture, this.displayModel, this.textScale, true, true);
             RenderContext renderContext = new RenderContext(rendererJob, standardRenderer.graphicFactory);
 
-            MapReadResult mapReadResult = standardRenderer.mapDataStore.readLabels(upperLeft, lowerRight);
+            MapReadResult mapReadResult = standardRenderer.mapDataStore.readMapData(upperLeft, lowerRight);
 
             if (mapReadResult == null) {
                 return new ArrayList<>();
