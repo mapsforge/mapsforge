@@ -37,7 +37,7 @@ public class MapFileEmptyTest {
 
             MapReadResult mapReadResult = mapFile.readMapData(tile);
 
-            Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
+            Assert.assertTrue(mapReadResult.pois.isEmpty());
             Assert.assertTrue(mapReadResult.ways.isEmpty());
         }
 

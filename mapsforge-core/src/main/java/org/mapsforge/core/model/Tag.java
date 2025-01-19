@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 devemux86
+ * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -73,18 +74,36 @@ public class Tag implements Comparable<Tag>, Serializable {
      * Compares this tag to the specified tag.
      * The tag comparison is based on a comparison of key and value in that order.
      *
-     * @param tag The tag to compare to.
+     * @param other The tag to compare to.
      * @return 0 if equal, &lt; 0 if considered "smaller", and &gt; 0 if considered "bigger".
      */
     @Override
-    public int compareTo(Tag tag) {
-        int keyResult = this.key.compareTo(tag.key);
+    public int compareTo(Tag other) {
+        int retVal = 0;
 
-        if (keyResult != 0) {
-            return keyResult;
+        if (this.key != null && other.key != null) {
+            retVal = this.key.compareTo(other.key);
+            if (retVal != 0) {
+                return retVal;
+            }
+        } else if (this.key != null) {
+            return -1;
+        } else if (other.key != null) {
+            return 1;
         }
 
-        return this.value.compareTo(tag.value);
+        if (this.value != null && other.value != null) {
+            retVal = this.value.compareTo(other.value);
+            if (retVal != 0) {
+                return retVal;
+            }
+        } else if (this.value != null) {
+            return -1;
+        } else if (other.value != null) {
+            return 1;
+        }
+
+        return retVal;
     }
 
     @Override

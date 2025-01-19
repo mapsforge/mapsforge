@@ -75,7 +75,7 @@ public class MapDataStoreLabelStore implements LabelStore {
                 return new ArrayList<>();
             }
 
-            for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
+            for (PointOfInterest pointOfInterest : mapReadResult.pois) {
                 renderContext.setDrawingLayer(pointOfInterest.layer);
                 renderContext.rendererJob.renderThemeFuture.get().matchNode(standardRenderer.getRenderCallback(), renderContext, pointOfInterest);
             }

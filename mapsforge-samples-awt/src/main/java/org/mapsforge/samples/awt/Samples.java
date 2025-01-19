@@ -176,7 +176,7 @@ public final class Samples {
         } else {
             // Vector
             mapView.getModel().displayModel.setFixedTileSize(tileSize);
-            final MultiMapDataStore multiMapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
+            final MultiMapDataStore multiMapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE);
             for (File file : mapFiles) {
                 final MapFile mapFileDataStore = new MapFile(file);
 

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,13 +19,12 @@ package org.mapsforge.map.datastore;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * An immutable container for all data associated with a single way or area (closed way).
  */
-public class Way {
+public class Way implements Comparable<Way> {
     /**
      * The position of the area label (may be null).
      */
@@ -53,50 +53,73 @@ public class Way {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        } else if (!(obj instanceof Way)) {
-            return false;
-        }
-        Way other = (Way) obj;
-        if (this.layer != other.layer) {
-            return false;
-        } else if (!this.tags.equals(other.tags)) {
-            return false;
-        } else if (this.labelPosition == null && other.labelPosition != null) {
-            return false;
-        } else if (this.labelPosition != null && !this.labelPosition.equals(other.labelPosition)) {
-            return false;
-        } else if (this.latLongs.length != other.latLongs.length) {
-            return false;
-        } else {
-            for (int i = 0; i < this.latLongs.length; i++) {
-                if (this.latLongs[i].length != other.latLongs[i].length) {
-                    return false;
-                } else {
-                    for (int j = 0; j < this.latLongs[i].length; j++) {
-                        if (!latLongs[i][j].equals(other.latLongs[i][j])) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-        return true;
+    public int hashCode() {
+        return System.identityHashCode(this);
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + layer;
-        result = prime * result + tags.hashCode();
-        result = prime * result + Arrays.deepHashCode(latLongs);
-        if (labelPosition != null) {
-            result = prime * result + labelPosition.hashCode();
-        }
-        return result;
+    public boolean equals(Object o) {
+        return this == o;
     }
 
+    @Override
+    public int compareTo(Way other) {
+        if (this == other) {
+            return 0;
+        }
+        if (null == other) {
+            return -1;
+        }
+
+        int retVal = 0;
+
+        retVal = Byte.compare(this.layer, other.layer);
+        if (retVal != 0) {
+            return retVal;
+        }
+
+        retVal = Integer.compare(this.latLongs.length, other.latLongs.length);
+        if (retVal != 0) {
+            return retVal;
+        }
+
+        retVal = Integer.compare(this.tags.size(), other.tags.size());
+        if (retVal != 0) {
+            return retVal;
+        }
+
+        if (this.labelPosition != null && other.labelPosition != null) {
+            retVal = this.labelPosition.compareTo(other.labelPosition);
+            if (retVal != 0) {
+                return retVal;
+            }
+        } else if (this.labelPosition != null) {
+            return -1;
+        } else if (other.labelPosition != null) {
+            return 1;
+        }
+
+        for (int i = 0; i < this.tags.size(); i++) {
+            retVal = this.tags.get(i).compareTo(other.tags.get(i));
+            if (retVal != 0) {
+                return retVal;
+            }
+        }
+
+        for (int i = 0; i < this.latLongs.length; i++) {
+            retVal = Integer.compare(this.latLongs[i].length, other.latLongs[i].length);
+            if (retVal != 0) {
+                return retVal;
+            }
+
+            for (int j = 0; j < this.latLongs[i].length; j++) {
+                retVal = this.latLongs[i][j].compareTo(other.latLongs[i][j]);
+                if (retVal != 0) {
+                    return retVal;
+                }
+            }
+        }
+
+        return retVal;
+    }
 }
