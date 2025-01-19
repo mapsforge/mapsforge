@@ -63,13 +63,13 @@ public class MapDataStoreLabelStore implements LabelStore {
     }
 
     @Override
-    public synchronized List<MapElementContainer> getVisibleItems(Tile upperLeft, Tile lowerRight) {
+    public List<MapElementContainer> getVisibleItems(Tile upperLeft, Tile lowerRight) {
 
         try {
             RendererJob rendererJob = new RendererJob(upperLeft, this.standardRenderer.mapDataStore, this.renderThemeFuture, this.displayModel, this.textScale, true, true);
             RenderContext renderContext = new RenderContext(rendererJob, standardRenderer.graphicFactory);
 
-            MapReadResult mapReadResult = standardRenderer.mapDataStore.readLabels(upperLeft, lowerRight);
+            MapReadResult mapReadResult = standardRenderer.mapDataStore.readMapData(upperLeft, lowerRight);
 
             if (mapReadResult == null) {
                 return new ArrayList<>();
