@@ -1,1 +1,0 @@
-For questions, reports and feature requests please use the Discussions.
