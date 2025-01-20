@@ -17,7 +17,7 @@ In the current, 0.4.x, we have have a couple of issues, that are either unresolv
 The new approach
 ----------------
 
-  * Labels are drawn separately and directly onto the canvas. This will make it possible to rotate the underlying tiles and keep labels horizontal. Rotation is not yet implemented, but the new implementation goes a long way towards supporting map rotation.
+  * Labels are drawn separately and directly onto the canvas. This will make it possible to rotate the underlying tiles and keep labels horizontal. Rotation is now implemented.
   * Labels are not tiled anymore, therefore clipping at tile boundaries has been eliminated and the complex accounting for tile dependencies could be removed. 
   * Road labels are now part of the placement algorithm.
   * There is now a priority element on captions, symbols, line-symbols and pathtestext. The higher the priority, the earlier the element is drawn onto the map, ensuring that labels with higher priority are visible.
