@@ -322,7 +322,7 @@ public abstract class MapDataStore {
      * @return true if the way should be included in the result set
      */
     public boolean wayAsLabelTagFilter(List<Tag> tags) {
-        return !tags.isEmpty();
+        return false;
     }
 
 }

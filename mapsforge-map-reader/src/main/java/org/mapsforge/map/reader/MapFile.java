@@ -6,7 +6,7 @@
  * Copyright 2016 bvgastel
  * Copyright 2017 linuskr
  * Copyright 2017 Gustl22
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -881,7 +881,7 @@ public class MapFile extends MapDataStore {
                     if (filterRequired && wayFilterEnabled && !wayFilterBbox.intersectsArea(wayNodes)) {
                         continue;
                     }
-                    if (Selector.ALL == selector || featureName || featureHouseNumber || featureRef || wayAsLabelTagFilter(tags)) {
+                    if (Selector.ALL == selector || (Selector.LABELS == selector && !tags.isEmpty()) || featureName || featureHouseNumber || featureRef || wayAsLabelTagFilter(tags)) {
                         LatLong labelLatLong = null;
                         if (labelPosition != null) {
                             labelLatLong = new LatLong(wayNodes[0][0].latitude + LatLongUtils.microdegreesToDegrees(labelPosition[1]),
