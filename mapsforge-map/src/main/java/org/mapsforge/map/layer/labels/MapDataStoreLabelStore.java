@@ -1,6 +1,6 @@
 /*
  * Copyright 2015 Ludwig M Brinckmann
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -47,7 +47,6 @@ public class MapDataStoreLabelStore implements LabelStore {
 
         this.textScale = textScale;
         this.renderThemeFuture = renderThemeFuture;
-        // TODO (2015): what about way symbols, we have the problem that ways without names but symbols will not be included.
         this.standardRenderer = new StandardRenderer(mapDataStore, graphicFactory, true);
         this.displayModel = displayModel;
     }
@@ -69,7 +68,9 @@ public class MapDataStoreLabelStore implements LabelStore {
             RendererJob rendererJob = new RendererJob(upperLeft, this.standardRenderer.mapDataStore, this.renderThemeFuture, this.displayModel, this.textScale, true, true);
             RenderContext renderContext = new RenderContext(rendererJob, standardRenderer.graphicFactory);
 
-            MapReadResult mapReadResult = standardRenderer.mapDataStore.readMapData(upperLeft, lowerRight);
+            // -TO/DO- (2015): what about way symbols, we have the problem that ways without names but symbols will not be included.
+            //  -> 2025: Possibly fixed by including way symbols with tags.
+            MapReadResult mapReadResult = standardRenderer.mapDataStore.readLabels(upperLeft, lowerRight);
 
             if (mapReadResult == null) {
                 return new ArrayList<>();
