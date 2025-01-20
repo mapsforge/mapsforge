@@ -1,8 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Bug report
-    url: https://github.com/mapsforge/mapsforge/issues/new?template=Blank+issue
-    about: Create a report to help us improve
   - name: Forum
     url: https://github.com/mapsforge/mapsforge/discussions
     about: Ask questions and feature requests here
