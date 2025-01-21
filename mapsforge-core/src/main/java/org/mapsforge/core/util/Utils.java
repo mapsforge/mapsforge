@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 public final class Utils {
@@ -69,7 +72,7 @@ public final class Utils {
      * @param <T>        A type implementing the {@link Comparable} interface.
      * @return The original collection without duplicate elements. Order of the remaining elements is not changed.
      */
-    public static <T extends Comparable<T>> Collection<T> deduplicate(Collection<T> collection) {
+    public static <T extends Comparable<? super T>> Collection<T> deduplicate(Collection<T> collection) {
         if (!collection.isEmpty()) {
 
             final List<T> sortedList;
@@ -94,5 +97,40 @@ public final class Utils {
         }
 
         return collection;
+    }
+
+    /**
+     * Deduplicate a sorted collection by removing the duplicates
+     * from the original collection without changing the order of the remaining elements.
+     * <p>
+     * The strategy is efficient for collections with fast removal operations, like {@link LinkedList} or
+     * {@link LinkedHashSet}, and/or for collections containing small fraction of duplicates.
+     * <p>
+     * The collection is iterated sequentially, so the performance of the find operation is of no importance.
+     *
+     * @param sortedCollection A sorted collection with fast removals and/or expected small fraction of duplicates. {@code null}-s are permitted.
+     * @param <T>              A type implementing the {@link Comparable} interface.
+     * @return The original collection without duplicate elements. Order of the remaining elements is not changed.
+     */
+    public static <T extends Comparable<? super T>> Collection<T> deduplicateSorted(Collection<T> sortedCollection) {
+        if (!sortedCollection.isEmpty()) {
+            final Iterator<T> sortedIterator = sortedCollection.iterator();
+
+            T pivot = sortedIterator.next();
+
+            while (sortedIterator.hasNext()) {
+                final T item = sortedIterator.next();
+                if (pivot == item || (pivot != null && pivot.compareTo(item) == 0)) {
+                    // We're removing duplicates instead of building a new list from non-duplicates
+                    // because the expected number of duplicates is small and removals are fast.
+                    sortedIterator.remove();
+                    continue;
+                }
+
+                pivot = item;
+            }
+        }
+
+        return sortedCollection;
     }
 }

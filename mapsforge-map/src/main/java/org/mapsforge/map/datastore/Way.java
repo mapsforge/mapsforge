@@ -19,7 +19,9 @@ package org.mapsforge.map.datastore;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * An immutable container for all data associated with a single way or area (closed way).
@@ -50,16 +52,6 @@ public class Way implements Comparable<Way> {
         this.tags = tags;
         this.latLongs = latLongs;
         this.labelPosition = labelPosition;
-    }
-
-    @Override
-    public int hashCode() {
-        return System.identityHashCode(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return this == o;
     }
 
     @Override
@@ -121,5 +113,18 @@ public class Way implements Comparable<Way> {
         }
 
         return retVal;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Way)) return false;
+        Way way = (Way) o;
+        return layer == way.layer && Objects.equals(labelPosition, way.labelPosition) && Objects.deepEquals(latLongs, way.latLongs) && Objects.equals(tags, way.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(labelPosition, Arrays.deepHashCode(latLongs), layer, tags);
     }
 }

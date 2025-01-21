@@ -19,8 +19,9 @@ package org.mapsforge.map.datastore;
 
 import org.mapsforge.core.util.Utils;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * An immutable container for the data returned from a MapDataStore.
@@ -34,20 +35,18 @@ public class MapReadResult {
 
     /**
      * The read ways.
-     * LinkedHashSet is used to: 1) maintain element order, 2) maximize element removal performance when deduplicating.
      */
-    public final Set<Way> ways;
+    public final List<Way> ways;
 
     /**
      * The read POIs.
-     * LinkedHashSet is used to: 1) maintain element order, 2) maximize element removal performance when deduplicating.
      */
-    public final Set<PointOfInterest> pois;
+    public final List<PointOfInterest> pois;
 
     public MapReadResult() {
-        // LinkedHashSet is used to: 1) maintain element order, 2) maximize element removal performance when deduplicating.
-        this.ways = new LinkedHashSet<>();
-        this.pois = new LinkedHashSet<>();
+        // Note: LinkedList is used to maximize element removal performance when deduplicating!
+        this.ways = new LinkedList<>();
+        this.pois = new LinkedList<>();
     }
 
     public void add(PoiWayBundle poiWayBundle) {
@@ -66,8 +65,11 @@ public class MapReadResult {
     }
 
     public MapReadResult deduplicate() {
-        Utils.deduplicate(this.ways);
-        Utils.deduplicate(this.pois);
+        Collections.sort(this.ways);
+        Utils.deduplicateSorted(this.ways);
+
+        Collections.sort(this.pois);
+        Utils.deduplicateSorted(this.pois);
 
         return this;
     }

@@ -20,6 +20,7 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * An immutable container for all data associated with a single point of interest node (POI).
@@ -44,16 +45,6 @@ public class PointOfInterest implements Comparable<PointOfInterest> {
         this.layer = layer;
         this.tags = tags;
         this.position = position;
-    }
-
-    @Override
-    public int hashCode() {
-        return System.identityHashCode(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return this == o;
     }
 
     @Override
@@ -90,5 +81,19 @@ public class PointOfInterest implements Comparable<PointOfInterest> {
         }
 
         return retVal;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PointOfInterest)) return false;
+
+        PointOfInterest that = (PointOfInterest) o;
+        return layer == that.layer && Objects.equals(position, that.position) && Objects.equals(tags, that.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(layer, position, tags);
     }
 }
