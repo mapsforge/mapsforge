@@ -31,7 +31,7 @@ final class EncodingTest {
         Tile tile = new Tile(tileX, tileY, ZOOM_LEVEL, 256);
 
         // read all labels data, ways should be empty as in the example the way does not carry a name tag
-        MapReadResult mapReadResult = mapFile.readLabels(tile);
+        MapReadResult mapReadResult = mapFile.readNamedItems(tile);
         Assert.assertFalse(mapReadResult == null);
         Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
         Assert.assertTrue(mapReadResult.ways.isEmpty());

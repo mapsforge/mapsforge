@@ -6,7 +6,7 @@
  * Copyright 2016 bvgastel
  * Copyright 2017 linuskr
  * Copyright 2017 Gustl22
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -897,14 +897,14 @@ public class MapFile extends MapDataStore {
     }
 
     /**
-     * Reads only labels for tile.
+     * Reads only named items for a tile.
      *
      * @param tile tile for which data is requested.
      * @return label data for the tile.
      */
     @Override
-    public MapReadResult readLabels(Tile tile) {
-        return readMapData(tile, tile, Selector.LABELS);
+    public MapReadResult readNamedItems(Tile tile) {
+        return readMapData(tile, tile, Selector.NAMED);
     }
 
     /**
@@ -917,8 +917,35 @@ public class MapFile extends MapDataStore {
      * @return map data for the tile.
      */
     @Override
+    public MapReadResult readNamedItems(Tile upperLeft, Tile lowerRight) {
+        return readMapData(upperLeft, lowerRight, Selector.NAMED);
+    }
+
+    /**
+     * @deprecated Please use {@link MapDataStore#readNamedItems(Tile)}
+     * Reads only named items for a tile.
+     *
+     * @param tile tile for which data is requested.
+     * @return label data for the tile.
+     */
+    @Deprecated
+    public MapReadResult readLabels(Tile tile) {
+        return readNamedItems(tile);
+    }
+
+    /**
+     * @deprecated Please use {@link MapDataStore#readNamedItems(Tile, Tile)}
+     * Reads data for an area defined by the tile in the upper left and the tile in
+     * the lower right corner.
+     * Precondition: upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY
+     *
+     * @param upperLeft  tile that defines the upper left corner of the requested area.
+     * @param lowerRight tile that defines the lower right corner of the requested area.
+     * @return map data for the tile.
+     */
+    @Deprecated
     public MapReadResult readLabels(Tile upperLeft, Tile lowerRight) {
-        return readMapData(upperLeft, lowerRight, Selector.LABELS);
+        return readNamedItems(upperLeft, lowerRight);
     }
 
     /**
@@ -1101,9 +1128,18 @@ public class MapFile extends MapDataStore {
      * The Selector enum is used to specify which data subset is to be retrieved from a MapFile:
      * ALL: all data (as in version 0.6.0)
      * POIS: only poi data, no ways (new after 0.6.0)
-     * LABELS: poi data and ways that have a name (new after 0.6.0)
+     * NAMED: poi data and ways that have a name (new after 0.6.0)
      */
     private enum Selector {
-        ALL, POIS, LABELS
+        /** All data */
+        ALL,
+        /** Only POI data */
+        POIS,
+        /** POI data and ways that have a name */
+        NAMED,
+        /** POI data and ways that have a name
+         *  @deprecated Please use {@link Selector#NAMED} */
+        @Deprecated
+        LABELS
     }
 }
