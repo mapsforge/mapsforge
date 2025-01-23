@@ -4,7 +4,7 @@
  * Copyright 2016-2020 devemux86
  * Copyright 2017 usrusr
  * Copyright 2020 Adrian Batzill
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,7 +28,6 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.rendertheme.RenderContext;
 
-import java.util.Collections;
 import java.util.List;
 
 public class CanvasRasterer {
@@ -78,7 +77,7 @@ public class CanvasRasterer {
     }
 
     /**
-     * Fills the area outside the specificed rectangle with color.
+     * Fills the area outside the specified rectangle with color.
      * This method is used to blank out areas that fall outside the map area.
      *
      * @param color      the fill color for the outside area
@@ -150,7 +149,7 @@ public class CanvasRasterer {
                     // construct line
                     this.path.moveTo((float) points[0].x, (float) points[0].y);
                     for (int i = 1; i < points.length; ++i) {
-                        this.path.lineTo((int) points[i].x, (int) points[i].y);
+                        this.path.lineTo((float) points[i].x, (float) points[i].y);
                     }
                 }
             }
