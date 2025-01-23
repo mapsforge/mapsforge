@@ -165,7 +165,7 @@ public abstract class MapDataStore {
         for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
             for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {
                 Tile current = new Tile(x, y, upperLeft.zoomLevel, upperLeft.tileSize);
-                result.add(readLabels(current), false);
+                result.add(readLabels(current));
             }
         }
         return result;
@@ -197,7 +197,7 @@ public abstract class MapDataStore {
         for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
             for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {
                 Tile current = new Tile(x, y, upperLeft.zoomLevel, upperLeft.tileSize);
-                result.add(readMapData(current), false);
+                result.add(readMapData(current));
             }
         }
         return result;
@@ -229,7 +229,7 @@ public abstract class MapDataStore {
         for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
             for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {
                 Tile current = new Tile(x, y, upperLeft.zoomLevel, upperLeft.tileSize);
-                result.add(readPoiData(current), false);
+                result.add(readPoiData(current));
             }
         }
         return result;

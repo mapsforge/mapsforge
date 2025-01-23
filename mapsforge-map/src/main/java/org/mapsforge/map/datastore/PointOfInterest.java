@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,11 +20,12 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * An immutable container for all data associated with a single point of interest node (POI).
  */
-public class PointOfInterest {
+public class PointOfInterest implements Comparable<PointOfInterest> {
     /**
      * The layer of this POI + 5 (to avoid negative values).
      */
@@ -46,31 +48,52 @@ public class PointOfInterest {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        } else if (!(obj instanceof PointOfInterest)) {
-            return false;
+    public int compareTo(PointOfInterest other) {
+        if (this == other) {
+            return 0;
         }
-        PointOfInterest other = (PointOfInterest) obj;
-        if (this.layer != other.layer) {
-            return false;
-        } else if (!this.tags.equals(other.tags)) {
-            return false;
-        } else if (!this.position.equals(other.position)) {
-            return false;
+        if (null == other) {
+            return -1;
         }
-        return true;
+
+        int retVal = 0;
+
+        retVal = Byte.compare(this.layer, other.layer);
+        if (retVal != 0) {
+            return retVal;
+        }
+
+        retVal = this.position.compareTo(other.position);
+        if (retVal != 0) {
+            return retVal;
+        }
+
+        retVal = Integer.compare(this.tags.size(), other.tags.size());
+        if (retVal != 0) {
+            return retVal;
+        }
+
+        for (int i = 0; i < this.tags.size(); i++) {
+            retVal = this.tags.get(i).compareTo(other.tags.get(i));
+            if (retVal != 0) {
+                return retVal;
+            }
+        }
+
+        return retVal;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PointOfInterest)) return false;
+
+        PointOfInterest that = (PointOfInterest) o;
+        return layer == that.layer && Objects.equals(position, that.position) && Objects.equals(tags, that.tags);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + layer;
-        result = prime * result + tags.hashCode();
-        result = prime * result + position.hashCode();
-        return result;
+        return Objects.hash(layer, position, tags);
     }
-
 }

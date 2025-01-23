@@ -75,7 +75,7 @@ public class ReverseGeocodeViewer extends DefaultTheme {
 
         // Filter POI
         sb.append("*** POI ***");
-        for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
+        for (PointOfInterest pointOfInterest : mapReadResult.pois) {
             Point layerXY = this.mapView.getMapViewProjection().toPixels(pointOfInterest.position);
             if (!Rotation.noRotation(this.mapView.getMapRotation()) && layerXY != null) {
                 layerXY = this.mapView.getMapRotation().rotate(layerXY, true);
