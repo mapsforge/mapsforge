@@ -149,7 +149,7 @@ public class StandardRenderer {
             return;
         }
 
-        for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
+        for (PointOfInterest pointOfInterest : mapReadResult.pois) {
             renderPointOfInterest(renderContext, pointOfInterest);
         }
 

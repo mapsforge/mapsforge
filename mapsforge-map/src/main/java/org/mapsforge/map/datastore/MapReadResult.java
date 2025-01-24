@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2015-2022 devemux86
+ * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,10 +17,11 @@
  */
 package org.mapsforge.map.datastore;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import org.mapsforge.core.util.Utils;
+
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * An immutable container for the data returned from a MapDataStore.
@@ -27,58 +29,48 @@ import java.util.Set;
 public class MapReadResult {
 
     /**
-     * Hash codes.
-     */
-    private final Set<Integer> hashPois = new HashSet<>();
-    private final Set<Integer> hashWays = new HashSet<>();
-
-    /**
      * True if the read area is completely covered by water, false otherwise.
      */
     public boolean isWater;
 
     /**
-     * The read POIs.
-     */
-    public List<PointOfInterest> pointOfInterests;
-
-    /**
      * The read ways.
      */
-    public List<Way> ways;
+    public final List<Way> ways;
+
+    /**
+     * The read POIs.
+     */
+    public final List<PointOfInterest> pois;
 
     public MapReadResult() {
-        this.pointOfInterests = new ArrayList<>();
-        this.ways = new ArrayList<>();
+        // Note: LinkedList is used to maximize element removal performance when deduplicating!
+        this.ways = new LinkedList<>();
+        this.pois = new LinkedList<>();
     }
 
     public void add(PoiWayBundle poiWayBundle) {
-        this.pointOfInterests.addAll(poiWayBundle.pois);
         this.ways.addAll(poiWayBundle.ways);
+        this.pois.addAll(poiWayBundle.pois);
     }
 
     /**
      * Adds other MapReadResult by combining pois and ways.
-     * Optionally deduplication can be requested (more expensive).
      *
-     * @param other       the MapReadResult to add to this.
-     * @param deduplicate true if check for duplicates is required.
+     * @param other the MapReadResult to add to this.
      */
-    public void add(MapReadResult other, boolean deduplicate) {
-        if (deduplicate) {
-            for (PointOfInterest poi : other.pointOfInterests) {
-                if (this.hashPois.add(poi.hashCode())) {
-                    this.pointOfInterests.add(poi);
-                }
-            }
-            for (Way way : other.ways) {
-                if (this.hashWays.add(way.hashCode())) {
-                    this.ways.add(way);
-                }
-            }
-        } else {
-            this.pointOfInterests.addAll(other.pointOfInterests);
-            this.ways.addAll(other.ways);
-        }
+    public void add(MapReadResult other) {
+        this.ways.addAll(other.ways);
+        this.pois.addAll(other.pois);
+    }
+
+    public MapReadResult deduplicate() {
+        Collections.sort(this.ways);
+        Utils.deduplicateSorted(this.ways);
+
+        Collections.sort(this.pois);
+        Utils.deduplicateSorted(this.pois);
+
+        return this;
     }
 }
