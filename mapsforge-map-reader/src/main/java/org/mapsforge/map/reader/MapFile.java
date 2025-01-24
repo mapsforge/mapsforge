@@ -922,33 +922,6 @@ public class MapFile extends MapDataStore {
     }
 
     /**
-     * @deprecated Please use {@link MapDataStore#readNamedItems(Tile)}
-     * Reads only named items for a tile.
-     *
-     * @param tile tile for which data is requested.
-     * @return label data for the tile.
-     */
-    @Deprecated
-    public MapReadResult readLabels(Tile tile) {
-        return readNamedItems(tile);
-    }
-
-    /**
-     * @deprecated Please use {@link MapDataStore#readNamedItems(Tile, Tile)}
-     * Reads data for an area defined by the tile in the upper left and the tile in
-     * the lower right corner.
-     * Precondition: upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY
-     *
-     * @param upperLeft  tile that defines the upper left corner of the requested area.
-     * @param lowerRight tile that defines the lower right corner of the requested area.
-     * @return map data for the tile.
-     */
-    @Deprecated
-    public MapReadResult readLabels(Tile upperLeft, Tile lowerRight) {
-        return readNamedItems(upperLeft, lowerRight);
-    }
-
-    /**
      * Reads all map data for the area covered by the given tile at the tile zoom level.
      *
      * @param tile defines area and zoom level of read map data.
@@ -1136,10 +1109,6 @@ public class MapFile extends MapDataStore {
         /** Only POI data */
         POIS,
         /** POI data and ways that have a name */
-        NAMED,
-        /** POI data and ways that have a name
-         *  @deprecated Please use {@link Selector#NAMED} */
-        @Deprecated
-        LABELS
+        NAMED
     }
 }

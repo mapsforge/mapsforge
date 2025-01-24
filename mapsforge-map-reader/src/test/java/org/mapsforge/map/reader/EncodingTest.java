@@ -21,6 +21,8 @@ import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.Way;
 
+import java.util.ArrayList;
+
 final class EncodingTest {
     private static final byte ZOOM_LEVEL = 8;
 
@@ -33,18 +35,18 @@ final class EncodingTest {
         // read all labels data, ways should be empty as in the example the way does not carry a name tag
         MapReadResult mapReadResult = mapFile.readNamedItems(tile);
         Assert.assertFalse(mapReadResult == null);
-        Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
+        Assert.assertTrue(mapReadResult.pois.isEmpty());
         Assert.assertTrue(mapReadResult.ways.isEmpty());
 
         // read only poi data, ways should be empty
         mapReadResult = mapFile.readPoiData(tile);
         Assert.assertFalse(mapReadResult == null);
-        Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
+        Assert.assertTrue(mapReadResult.pois.isEmpty());
         Assert.assertTrue(mapReadResult.ways.isEmpty());
 
         mapReadResult = mapFile.readMapData(tile);
 
-        Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
+        Assert.assertTrue(mapReadResult.pois.isEmpty());
         Assert.assertEquals(1, mapReadResult.ways.size());
 
         LatLong latLong1 = new LatLong(0.0, 0.0);
@@ -53,7 +55,7 @@ final class EncodingTest {
         LatLong latLong4 = new LatLong(-0.1, 0.0);
         LatLong[][] latLongsExpected = new LatLong[][]{{latLong1, latLong2, latLong3, latLong4, latLong1}};
 
-        Way way = mapReadResult.ways.get(0);
+        Way way = new ArrayList<>(mapReadResult.ways).get(0);
         Assert.assertArrayEquals(latLongsExpected, way.latLongs);
 
         mapFile.close();

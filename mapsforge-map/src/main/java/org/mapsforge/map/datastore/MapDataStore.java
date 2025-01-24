@@ -165,40 +165,10 @@ public abstract class MapDataStore {
         for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
             for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {
                 Tile current = new Tile(x, y, upperLeft.zoomLevel, upperLeft.tileSize);
-                result.add(readNamedItems(current), false);
+                result.add(readNamedItems(current));
             }
         }
         return result;
-    }
-
-    /**
-     * @deprecated Please use {@link MapDataStore#readNamedItems(Tile)}
-     * Reads only named items for a tile, i.e. pois and ways that carry a name tag.
-     * It is permissible for the MapDataStore to return more data.
-     * This default implementation returns all map data, which is inefficient, but works.
-     *
-     * @param tile tile for which data is requested.
-     * @return label data for the tile.
-     */
-    @Deprecated
-    public MapReadResult readLabels(Tile tile) {
-        return readNamedItems(tile);
-    }
-
-    /**
-     * @deprecated Please use {@link MapDataStore#readNamedItems(Tile, Tile)}
-     * Reads data for an area defined by the tile in the upper left and the tile in
-     * the lower right corner. The default implementation combines the results from
-     * all tiles, a possibly inefficient solution.
-     * Precondition: upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY
-     *
-     * @param upperLeft  tile that defines the upper left corner of the requested area.
-     * @param lowerRight tile that defines the lower right corner of the requested area.
-     * @return map data for the tile.
-     */
-    @Deprecated
-    public MapReadResult readLabels(Tile upperLeft, Tile lowerRight) {
-        return readNamedItems(upperLeft, lowerRight);
     }
 
     /**
@@ -227,7 +197,7 @@ public abstract class MapDataStore {
         for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
             for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {
                 Tile current = new Tile(x, y, upperLeft.zoomLevel, upperLeft.tileSize);
-                result.add(readMapData(current), false);
+                result.add(readMapData(current));
             }
         }
         return result;
@@ -259,7 +229,7 @@ public abstract class MapDataStore {
         for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
             for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {
                 Tile current = new Tile(x, y, upperLeft.zoomLevel, upperLeft.tileSize);
-                result.add(readPoiData(current), false);
+                result.add(readPoiData(current));
             }
         }
         return result;
