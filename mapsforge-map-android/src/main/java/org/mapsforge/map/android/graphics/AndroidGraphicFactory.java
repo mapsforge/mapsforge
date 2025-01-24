@@ -50,17 +50,15 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     // if true RESOURCE_BITMAPS will be kept in the cache to avoid
     // multiple loading
     public static final boolean KEEP_RESOURCE_BITMAPS = true;
-    public static final Config NON_TRANSPARENT_BITMAP = Config.RGB_565;
 
-    // determines size of bitmaps used, RGB_565 is 2 bytes per pixel
-    // while ARGB_8888 uses 4 bytes per pixel (with severe impact
-    // on memory use) and allows transparencies. Use ARGB_8888 whenever
+    // Determines size of bitmaps used, RGB_565 is 2 bytes per pixel
+    // while ARGB_8888 uses 4 bytes per pixel and allows transparencies.
+    // Use ARGB_8888 whenever
     // you have transparencies in any of the bitmaps. ARGB_4444 is deprecated
     // and is much slower despite smaller size that ARGB_8888 as it
     // passes through unoptimized path in the skia library.
     public static final Config TRANSPARENT_BITMAP = Config.ARGB_8888;
-
-
+    public static final Config NON_TRANSPARENT_BITMAP = Config.ARGB_8888;
     public static final Config MONO_ALPHA_BITMAP = Config.ALPHA_8;
 
     public static final String LIBRARY_FILE_NAME = "mapsforge";
