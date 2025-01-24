@@ -5,6 +5,7 @@
 - Multi-map deduplicate optimization [#1635](https://github.com/mapsforge/mapsforge/pull/1635)
 - Color filter theme resources [#1622](https://github.com/mapsforge/mapsforge/pull/1622)
   - `ThemeCallback.getBitmap`
+- Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.24.0)
 
