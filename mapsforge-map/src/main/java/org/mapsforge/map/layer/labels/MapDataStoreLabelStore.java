@@ -70,7 +70,7 @@ public class MapDataStoreLabelStore implements LabelStore {
 
             // What about way symbols, we have the problem that ways without names but symbols will not be included.
             // Possibly fixed by including way symbols with tags via the hook MapDataStore.wayAsLabelTagFilter
-            MapReadResult mapReadResult = standardRenderer.mapDataStore.readLabels(upperLeft, lowerRight);
+            MapReadResult mapReadResult = standardRenderer.mapDataStore.readNamedItems(upperLeft, lowerRight);
 
             if (mapReadResult == null) {
                 return new ArrayList<>();

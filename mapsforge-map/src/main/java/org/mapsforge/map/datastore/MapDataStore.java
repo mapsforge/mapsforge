@@ -2,7 +2,7 @@
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2015 devemux86
  * Copyright 2015 lincomatic
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -136,14 +136,14 @@ public abstract class MapDataStore {
     }
 
     /**
-     * Reads only labels for tile. Labels are pois as well as ways that carry a name tag.
+     * Reads only named items for a tile, i.e. pois and ways that carry a name tag.
      * It is permissible for the MapDataStore to return more data.
      * This default implementation returns all map data, which is inefficient, but works.
      *
      * @param tile tile for which data is requested.
      * @return label data for the tile.
      */
-    public MapReadResult readLabels(Tile tile) {
+    public MapReadResult readNamedItems(Tile tile) {
         return readMapData(tile);
     }
 
@@ -157,7 +157,7 @@ public abstract class MapDataStore {
      * @param lowerRight tile that defines the lower right corner of the requested area.
      * @return map data for the tile.
      */
-    public MapReadResult readLabels(Tile upperLeft, Tile lowerRight) {
+    public MapReadResult readNamedItems(Tile upperLeft, Tile lowerRight) {
         if (upperLeft.tileX > lowerRight.tileX || upperLeft.tileY > lowerRight.tileY) {
             new IllegalArgumentException("upperLeft tile must be above and left of lowerRight tile");
         }
@@ -165,7 +165,7 @@ public abstract class MapDataStore {
         for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
             for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {
                 Tile current = new Tile(x, y, upperLeft.zoomLevel, upperLeft.tileSize);
-                result.add(readLabels(current));
+                result.add(readNamedItems(current));
             }
         }
         return result;
