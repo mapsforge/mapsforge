@@ -18,17 +18,6 @@ package org.mapsforge.core.util;
 public final class Constants {
 
     /**
-     * Display-friendly, human readable name of the library.
-     */
-    public static final String LIBRARY_DISPLAY_NAME = "Mapsforge";
-
-    /**
-     * Filename-friendly, machine readable name of the library.
-     * To be used when there's a need to name a file, folder, or similar.
-     */
-    public static final String LIBRARY_FILE_NAME = "mapsforge";
-
-    /**
      * Maximum amount of memory that the Java virtual machine will attempt to use, in megabytes.
      */
     public static final long MAX_MEMORY_MB = Runtime.getRuntime().maxMemory() / 1000 / 1000;

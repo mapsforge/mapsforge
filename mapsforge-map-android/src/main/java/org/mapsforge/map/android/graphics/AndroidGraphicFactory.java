@@ -31,7 +31,6 @@ import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.util.Constants;
 import org.mapsforge.map.model.DisplayModel;
 
 import java.io.*;
@@ -64,6 +63,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 
     public static final Config MONO_ALPHA_BITMAP = Config.ALPHA_8;
 
+    public static final String LIBRARY_FILE_NAME = "mapsforge";
     private final Object cacheFolderSync = new Object();
     private volatile File cacheFolder = null;
 
@@ -332,7 +332,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
             synchronized (this.cacheFolderSync) {
                 ourCacheFolder = this.cacheFolder;
                 if (ourCacheFolder == null) {
-                    ourCacheFolder = new File(this.context.getCacheDir(), Constants.LIBRARY_FILE_NAME);
+                    ourCacheFolder = new File(this.context.getCacheDir(), LIBRARY_FILE_NAME);
                     ourCacheFolder.mkdirs();
                     this.cacheFolder = ourCacheFolder;
                 }
