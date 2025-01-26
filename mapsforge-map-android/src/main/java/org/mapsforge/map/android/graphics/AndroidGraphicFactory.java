@@ -4,6 +4,7 @@
  * Copyright 2014-2021 devemux86
  * Copyright 2017 usrusr
  * Copyright 2018 Adrian Batzill
+ * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -61,6 +62,10 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 
 
     public static final Config MONO_ALPHA_BITMAP = Config.ALPHA_8;
+
+    public static final String LIBRARY_FILE_NAME = "mapsforge";
+    private final Object cacheFolderSync = new Object();
+    private volatile File cacheFolder = null;
 
     public static android.graphics.Bitmap convertToAndroidBitmap(Drawable drawable) {
         android.graphics.Bitmap bitmap;
@@ -268,7 +273,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         if (this.svgCacheDir != null) {
             return new File(this.svgCacheDir, name).delete();
         }
-        return this.context.deleteFile(name);
+        return getCacheFile(name).delete();
     }
 
     /*
@@ -278,7 +283,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         if (this.svgCacheDir != null) {
             return this.svgCacheDir.list();
         }
-        return this.context.fileList();
+        return getCacheFile("").list();
     }
 
     /*
@@ -288,7 +293,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         if (this.svgCacheDir != null) {
             return new FileInputStream(new File(this.svgCacheDir, name));
         }
-        return this.context.openFileInput(name);
+        return new FileInputStream(getCacheFile(name));
     }
 
     /*
@@ -298,7 +303,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         if (this.svgCacheDir != null) {
             return new FileOutputStream(new File(this.svgCacheDir, name), mode == Context.MODE_APPEND);
         }
-        return this.context.openFileOutput(name, mode);
+        return new FileOutputStream(getCacheFile(name), mode == Context.MODE_APPEND);
     }
 
     @Override
@@ -319,5 +324,21 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 
     public void setSvgCacheDir(File svgCacheDir) {
         this.svgCacheDir = svgCacheDir;
+    }
+
+    public File getCacheFile(String filename) {
+        File ourCacheFolder = this.cacheFolder;
+        if (ourCacheFolder == null) {
+            synchronized (this.cacheFolderSync) {
+                ourCacheFolder = this.cacheFolder;
+                if (ourCacheFolder == null) {
+                    ourCacheFolder = new File(this.context.getCacheDir(), LIBRARY_FILE_NAME);
+                    ourCacheFolder.mkdirs();
+                    this.cacheFolder = ourCacheFolder;
+                }
+            }
+        }
+
+        return new File(ourCacheFolder, filename);
     }
 }
