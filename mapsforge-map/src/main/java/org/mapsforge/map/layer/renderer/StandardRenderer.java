@@ -144,7 +144,7 @@ public class StandardRenderer {
         }
     }
 
-    protected void processReadMapData(final RenderContext renderContext, MapReadResult mapReadResult) {
+    public void processReadMapData(final RenderContext renderContext, MapReadResult mapReadResult) {
         if (mapReadResult == null) {
             return;
         }

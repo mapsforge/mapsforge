@@ -1,6 +1,6 @@
 /*
  * Copyright 2015 Ludwig M Brinckmann
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,9 +20,6 @@ import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
-import org.mapsforge.map.datastore.PointOfInterest;
-import org.mapsforge.map.datastore.Way;
-import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.layer.renderer.StandardRenderer;
 import org.mapsforge.map.model.DisplayModel;
@@ -68,28 +65,13 @@ public class MapDataStoreLabelStore implements LabelStore {
             RendererJob rendererJob = new RendererJob(upperLeft, this.standardRenderer.mapDataStore, this.renderThemeFuture, this.displayModel, this.textScale, true, true);
             RenderContext renderContext = new RenderContext(rendererJob, standardRenderer.graphicFactory);
 
-            // What about way symbols, we have the problem that ways without names but symbols will not be included.
-            // Possibly fixed by including way symbols with tags via the hook MapDataStore.wayAsLabelTagFilter
-            MapReadResult mapReadResult = standardRenderer.mapDataStore.readNamedItems(upperLeft, lowerRight);
+            MapReadResult mapReadResult = this.standardRenderer.mapDataStore.readMapData(upperLeft, lowerRight);
 
             if (mapReadResult == null) {
                 return new ArrayList<>();
             }
 
-            for (PointOfInterest pointOfInterest : mapReadResult.pois) {
-                renderContext.setDrawingLayer(pointOfInterest.layer);
-                renderContext.rendererJob.renderThemeFuture.get().matchNode(standardRenderer.getRenderCallback(), renderContext, pointOfInterest);
-            }
-            for (Way way : mapReadResult.ways) {
-                PolylineContainer polylineContainer = new PolylineContainer(way, upperLeft, lowerRight);
-                renderContext.setDrawingLayer(polylineContainer.getLayer());
-
-                if (polylineContainer.isClosedWay()) {
-                    renderContext.renderTheme.matchClosedWay(standardRenderer.getRenderCallback(), renderContext, polylineContainer);
-                } else {
-                    renderContext.renderTheme.matchLinearWay(standardRenderer.getRenderCallback(), renderContext, polylineContainer);
-                }
-            }
+            this.standardRenderer.processReadMapData(renderContext, mapReadResult);
 
             return renderContext.getLabels();
         } catch (Exception e) {
