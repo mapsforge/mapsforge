@@ -6,6 +6,7 @@
  * Copyright 2019 cpt1gl0
  * Copyright 2019 Adrian Batzill
  * Copyright 2019 mg4gh
+ * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,6 +21,7 @@
  */
 package org.mapsforge.core.graphics;
 
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 
 public interface GraphicContext {
@@ -42,6 +44,8 @@ public interface GraphicContext {
     void drawLine(int x1, int y1, int x2, int y2, Paint paint);
 
     void drawPath(Path path, Paint paint);
+
+    void drawLines(Point[][] coordinates, float dy, Paint paint);
 
     void drawPathText(String text, Path path, Paint paint);
 

@@ -18,7 +18,7 @@ package org.mapsforge.map.layer.renderer;
 
 import org.mapsforge.core.model.Point;
 
-class RendererUtils {
+public class RendererUtils {
 
     private static final double ANGLE_LIMIT = 170;
     private static final double ANGLE_LIMIT_COS = Math.cos(Math.toRadians(ANGLE_LIMIT));
@@ -27,7 +27,7 @@ class RendererUtils {
      * Computes a polyline with distance dy parallel to given coordinates.
      * http://objectmix.com/graphics/132987-draw-parallel-polyline-algorithm-needed.html
      */
-    static Point[] parallelPath(Point[] p, double dy) {
+    public static Point[] parallelPath(Point[] p, double dy) {
         int n = p.length - 1;
         Point[] u = new Point[n];
         Point[] h = new Point[p.length];

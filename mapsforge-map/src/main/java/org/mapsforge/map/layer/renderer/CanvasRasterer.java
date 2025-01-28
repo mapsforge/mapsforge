@@ -29,12 +29,19 @@ import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.rendertheme.RenderContext;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CanvasRasterer {
     private final RenderContext renderContext;
     private final Canvas canvas;
     private final Path path;
     private final Matrix symbolMatrix;
+
+    /** This will count paths vs. lines usage for performance diagnostics */
+    private final boolean DEBUG_COUNTS = false;
+    private final AtomicInteger linesCount = DEBUG_COUNTS ? new AtomicInteger() : null;
+    private final AtomicInteger pathsCount = DEBUG_COUNTS ? new AtomicInteger() : null;
+
 
     public CanvasRasterer(RenderContext renderContext, GraphicFactory graphicFactory) {
         this.renderContext = renderContext;
@@ -45,6 +52,10 @@ public class CanvasRasterer {
 
     public void destroy() {
         this.canvas.destroy();
+
+        if (DEBUG_COUNTS) {
+            System.out.println("LINES: " + linesCount.get() + "  PATHS: " + pathsCount.get());
+        }
     }
 
     /**
@@ -109,62 +120,57 @@ public class CanvasRasterer {
     }
 
     private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
-        this.path.clear();
+        if (shapePaintContainer.curveStyle == Curve.CUBIC) {
+            // When cubic, paths must be used.
+            makeCubicPath(coordinates, dy, this.path);
+            drawPath(shapePaintContainer);
+        } else if (shapePaintContainer.paint.isComplexStyle()) {
+            // When complex (e.g. filled) style, paths must be used.
+            makeLinesPath(coordinates, dy, this.path);
+            drawPath(shapePaintContainer);
+        } else {
+            // When neither cubic nor complex style, use lines (esp. on Android):
+            //   * To prevent libhwui.so "null pointer dereference" SIGSEGV crashes.
+            //   * For performance.
+            drawLines(shapePaintContainer, coordinates, dy);
+        }
+    }
 
-        for (Point[] innerList : coordinates) {
-            Point[] points;
-            if (dy != 0f) {
-                points = RendererUtils.parallelPath(innerList, dy);
-            } else {
-                points = innerList;
-            }
-            if (points.length >= 2) {
-                // iterate over lines based on curveStyle
-                if (shapePaintContainer.curveStyle == Curve.CUBIC) {
-                    // prepare variables
-                    float[] p1 = new float[]{(float) points[0].x, (float) points[0].y};
-                    float[] p2 = new float[]{0.0f, 0.0f};
-                    float[] p3 = new float[]{0.0f, 0.0f};
-
-                    // add first point
-                    this.path.moveTo(p1[0], p1[1]);
-                    for (int i = 1; i < points.length; ++i) {
-                        // get ending coordinates
-                        p3[0] = (float) points[i].x;
-                        p3[1] = (float) points[i].y;
-                        p2[0] = (p1[0] + p3[0]) / 2.0f;
-                        p2[1] = (p1[1] + p3[1]) / 2.0f;
-
-                        // add spline over middle point and end on 'end' point
-                        this.path.quadTo(p1[0], p1[1], p2[0], p2[1]);
-
-                        // store end point as start point for next section
-                        p1[0] = p3[0];
-                        p1[1] = p3[1];
-                    }
-
-                    // add last segment
-                    this.path.quadTo(p2[0], p2[1], p3[0], p3[1]);
-                } else {
-                    // construct line
-                    this.path.moveTo((float) points[0].x, (float) points[0].y);
-                    for (int i = 1; i < points.length; ++i) {
-                        this.path.lineTo((float) points[i].x, (float) points[i].y);
-                    }
+    private void drawPath(ShapePaintContainer shapePaintContainer) {
+        if (!this.path.isEmpty()) {
+            if (Parameters.NUMBER_OF_THREADS > 1) {
+                // Make sure setting the shader shift and actual drawing is synchronized,
+                // since the paint object is shared between multiple threads.
+                synchronized (shapePaintContainer.paint) {
+                    final RenderContext renderContext = this.renderContext;
+                    shapePaintContainer.paint.setBitmapShaderShift(renderContext.rendererJob.tile.getOrigin());
+                    this.canvas.drawPath(this.path, shapePaintContainer.paint);
                 }
+            } else {
+                this.canvas.drawPath(this.path, shapePaintContainer.paint);
+            }
+
+            if (DEBUG_COUNTS) {
+                pathsCount.incrementAndGet();
             }
         }
+    }
 
+    private void drawLines(ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
         if (Parameters.NUMBER_OF_THREADS > 1) {
             // Make sure setting the shader shift and actual drawing is synchronized,
             // since the paint object is shared between multiple threads.
             synchronized (shapePaintContainer.paint) {
                 final RenderContext renderContext = this.renderContext;
                 shapePaintContainer.paint.setBitmapShaderShift(renderContext.rendererJob.tile.getOrigin());
-                this.canvas.drawPath(this.path, shapePaintContainer.paint);
+                this.canvas.drawLines(coordinates, dy, shapePaintContainer.paint);
             }
         } else {
-            this.canvas.drawPath(this.path, shapePaintContainer.paint);
+            this.canvas.drawLines(coordinates, dy, shapePaintContainer.paint);
+        }
+
+        if (DEBUG_COUNTS) {
+            linesCount.incrementAndGet();
         }
     }
 
@@ -183,6 +189,55 @@ public class CanvasRasterer {
                 PolylineContainer polylineContainer = (PolylineContainer) shapeContainer;
                 drawPath(shapePaintContainer, polylineContainer.getCoordinatesRelativeToOrigin(), shapePaintContainer.dy);
                 break;
+        }
+    }
+
+    private static void makeCubicPath(Point[][] coordinates, float dy, Path path) {
+        path.clear();
+
+        for (Point[] innerList : coordinates) {
+            final Point[] points = dy == 0f ? innerList : RendererUtils.parallelPath(innerList, dy);
+            if (points.length >= 2) {
+                float[] p1 = new float[]{(float) points[0].x, (float) points[0].y};
+                float[] p2 = new float[]{0.0f, 0.0f};
+                float[] p3 = new float[]{0.0f, 0.0f};
+
+                // add first point
+                path.moveTo(p1[0], p1[1]);
+
+                for (int i = 1; i < points.length; ++i) {
+                    // get ending coordinates
+                    p3[0] = (float) points[i].x;
+                    p3[1] = (float) points[i].y;
+                    p2[0] = 0.5f * (p1[0] + p3[0]);
+                    p2[1] = 0.5f * (p1[1] + p3[1]);
+
+                    // add spline over middle point and end on 'end' point
+                    path.quadTo(p1[0], p1[1], p2[0], p2[1]);
+
+                    // store end point as start point for next section
+                    p1[0] = p3[0];
+                    p1[1] = p3[1];
+                }
+
+                // add last segment
+                path.quadTo(p2[0], p2[1], p3[0], p3[1]);
+            }
+        }
+    }
+
+    private static void makeLinesPath(Point[][] coordinates, float dy, Path path) {
+        path.clear();
+
+        for (Point[] innerList : coordinates) {
+            final Point[] points = dy == 0f ? innerList : RendererUtils.parallelPath(innerList, dy);
+            if (points.length >= 2) {
+                path.moveTo((float) points[0].x, (float) points[0].y);
+
+                for (int i = 1; i < points.length; ++i) {
+                    path.lineTo((float) points[i].x, (float) points[i].y);
+                }
+            }
         }
     }
 }
