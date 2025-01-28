@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    REVISION 43, 23 January 2025
+    REVISION 44, 28 January 2025
     this is the "Dark" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -338,7 +338,7 @@
         <area fill="#BBF8F8F8" stroke="#F8F8F8" stroke-width="0.1" />
     </rule>
 
-    <!-- landuse -->
+    <!-- landuse, human -->
     <rule e="way" k="landuse" v="military" zoom-min="12">
         <area fill="#ffe6e6" stroke="#ff3333" stroke-width="0.4" />
     </rule>
@@ -348,7 +348,6 @@
     <rule e="way" k="landuse" v="retail" zoom-min="12">
         <area fill="#404040" />
     </rule>
-
     <rule e="way" k="landuse" v="commercial|industrial|brownfield|railway|garages|construction"
         zoom-min="12">
         <area fill="#404040" />
@@ -360,6 +359,8 @@
         v="park|zoo|picnic_site|camp_site|caravan_site|recreation_ground" zoom-min="12">
         <area fill="#404040" />
     </rule>
+
+    <!-- landuse, natural -->
     <rule e="way" k="natural|landuse" v="forest|wood" zoom-min="9">
         <area fill="#003300" />
         <!--<rule e="any" k="*" v="*" zoom-min="12">
@@ -375,7 +376,6 @@
             </rule>
         </rule>-->
     </rule>
-
     <rule e="way" k="landuse|natural" v="meadow|grassland" zoom-min="11">
         <area fill="#003300" />
     </rule>
@@ -703,6 +703,66 @@
 
     <!-- hillshading -->
     <hillshading color="#FFEEEEEE" zoom-min="9" zoom-max="17" />
+
+	<!-- contour lines LAYER, to work with Freizeitkarte and OpenAndroMaps -->
+	<rule cat="contour" e="any" k="contour_ext" v="*">
+		<rule e="way" k="*" v="*" zoom-max="12">
+			<rule e="way" k="contour_ext" v="elevation_major">
+				<line stroke="#a4998e" stroke-width="0.3" />
+			</rule>
+		</rule>
+		<rule e="way" k="*" v="*" zoom-min="12" zoom-max="13">
+			<rule e="way" k="contour_ext" v="elevation_medium">
+				<line stroke="#a4998e" stroke-width="0.2" />
+			</rule>
+			<rule e="way" k="contour_ext" v="elevation_major">
+				<line stroke="#a4998e" stroke-width="0.5" />
+			</rule>
+		</rule>
+		<rule e="way" k="*" v="*" zoom-min="14" zoom-max="15">
+			<rule e="way" k="contour_ext" v="elevation_minor" zoom-max="15">
+				<line stroke="#a4998e" stroke-width="0.12" curve="cubic" />
+			</rule>
+			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
+				<line stroke="#a4998e" stroke-width="0.3" curve="cubic" />
+			</rule>
+		</rule>
+		<rule e="way" k="*" v="*" zoom-min="16" zoom-max="16">
+			<rule e="way" k="contour_ext" v="elevation_minor">
+				<line stroke="#a4998e" stroke-width="0.08" curve="cubic" />
+			</rule>
+			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
+				<line stroke="#a4998e" stroke-width="0.2" curve="cubic" />
+			</rule>
+		</rule>
+		<rule e="way" k="*" v="*" zoom-min="17">
+			<rule e="way" k="contour_ext" v="elevation_minor">
+				<line stroke="#a4998e" stroke-width="0.06" curve="cubic" />
+			</rule>
+			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
+				<line stroke="#a4998e" stroke-width="0.15" curve="cubic" />
+			</rule>
+		</rule>
+		<!-- captions -->
+		<rule e="way" k="*" v="*" zoom-min="13" zoom-max="13">
+			<rule e="way" k="contour_ext" v="elevation_major">
+				<pathText k="ele" font-style="bold" font-size="8" fill="#FFFFFF" stroke="#000000" stroke-width="1" repeat-start="50" repeat-gap="150" text-orientation="left" />
+				<pathText k="name" font-style="bold" font-size="8" fill="#FFFFFF" stroke="#000000" stroke-width="1" repeat-start="50" repeat-gap="150" text-orientation="left" />
+			</rule>
+		</rule>
+		<rule e="way" k="*" v="*" zoom-min="14" zoom-max="15">
+			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
+				<pathText k="ele" font-style="bold" font-size="10" fill="#FFFFFF" stroke="#000000" stroke-width="1" repeat-start="100" repeat-gap="150" text-orientation="left" />
+				<pathText k="name" font-style="bold" font-size="10" fill="#FFFFFF" stroke="#000000" stroke-width="1" repeat-start="100" repeat-gap="150" text-orientation="left" />
+			</rule>
+		</rule>
+		<rule e="way" k="*" v="*" zoom-min="16">
+			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
+				<pathText k="ele" font-style="bold" font-size="10" fill="#FFFFFF" stroke="#000000" stroke-width="2" repeat-start="200" repeat-gap="200" text-orientation="left" />
+				<pathText k="name" font-style="bold" font-size="10" fill="#FFFFFF" stroke="#000000" stroke-width="2" repeat-start="200" repeat-gap="200" text-orientation="left" />
+			</rule>
+		</rule>
+	</rule>
 
     <!-- buildings -->
     <rule e="any" k="*" v="*">
@@ -2054,65 +2114,5 @@
                 stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
     </rule>
-
-	<!-- contour lines LAYER, to work with Freizeitkarte and OpenAndroMaps -->
-	<rule cat="contour" e="any" k="contour_ext" v="*">
-		<rule e="way" k="*" v="*" zoom-max="12">
-			<rule e="way" k="contour_ext" v="elevation_major">
-				<line stroke="#a4998e" stroke-width="0.3" />
-			</rule>
-		</rule>
-		<rule e="way" k="*" v="*" zoom-min="12" zoom-max="13">
-			<rule e="way" k="contour_ext" v="elevation_medium">
-				<line stroke="#a4998e" stroke-width="0.2" />
-			</rule>
-			<rule e="way" k="contour_ext" v="elevation_major">
-				<line stroke="#a4998e" stroke-width="0.5" />
-			</rule>
-		</rule>
-		<rule e="way" k="*" v="*" zoom-min="14" zoom-max="15">
-			<rule e="way" k="contour_ext" v="elevation_minor" zoom-max="15">
-				<line stroke="#a4998e" stroke-width="0.12" curve="cubic" />
-			</rule>
-			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
-				<line stroke="#a4998e" stroke-width="0.3" curve="cubic" />
-			</rule>
-		</rule>
-		<rule e="way" k="*" v="*" zoom-min="16" zoom-max="16">
-			<rule e="way" k="contour_ext" v="elevation_minor">
-				<line stroke="#a4998e" stroke-width="0.08" curve="cubic" />
-			</rule>
-			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
-				<line stroke="#a4998e" stroke-width="0.2" curve="cubic" />
-			</rule>
-		</rule>
-		<rule e="way" k="*" v="*" zoom-min="17">
-			<rule e="way" k="contour_ext" v="elevation_minor">
-				<line stroke="#a4998e" stroke-width="0.06" curve="cubic" />
-			</rule>
-			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
-				<line stroke="#a4998e" stroke-width="0.15" curve="cubic" />
-			</rule>
-		</rule>
-		<!-- captions -->
-		<rule e="way" k="*" v="*" zoom-min="13" zoom-max="13">
-			<rule e="way" k="contour_ext" v="elevation_major">
-				<pathText k="ele" font-style="bold" font-size="8" fill="#FFFFFF" stroke="#000000" stroke-width="1" repeat-start="50" repeat-gap="150" text-orientation="left" />
-				<pathText k="name" font-style="bold" font-size="8" fill="#FFFFFF" stroke="#000000" stroke-width="1" repeat-start="50" repeat-gap="150" text-orientation="left" />
-			</rule>
-		</rule>
-		<rule e="way" k="*" v="*" zoom-min="14" zoom-max="15">
-			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
-				<pathText k="ele" font-style="bold" font-size="10" fill="#FFFFFF" stroke="#000000" stroke-width="1" repeat-start="100" repeat-gap="150" text-orientation="left" />
-				<pathText k="name" font-style="bold" font-size="10" fill="#FFFFFF" stroke="#000000" stroke-width="1" repeat-start="100" repeat-gap="150" text-orientation="left" />
-			</rule>
-		</rule>
-		<rule e="way" k="*" v="*" zoom-min="16">
-			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
-				<pathText k="ele" font-style="bold" font-size="10" fill="#FFFFFF" stroke="#000000" stroke-width="2" repeat-start="200" repeat-gap="200" text-orientation="left" />
-				<pathText k="name" font-style="bold" font-size="10" fill="#FFFFFF" stroke="#000000" stroke-width="2" repeat-start="200" repeat-gap="200" text-orientation="left" />
-			</rule>
-		</rule>
-	</rule>
 
 </rendertheme>
