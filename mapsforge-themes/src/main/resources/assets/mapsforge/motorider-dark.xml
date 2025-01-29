@@ -1278,6 +1278,7 @@
     <!-- ferry routes -->
     <rule e="way" k="route" v="ferry">
         <line stroke="#707070" stroke-dasharray="15,10" stroke-linecap="butt" stroke-width="0.3" />
+		<pathText fill="#000000" font-size="13" font-style="bold" k="name" stroke="#FFFFFF" stroke-width="2.0" />
     </rule>
 
     <!-- piste areas -->
