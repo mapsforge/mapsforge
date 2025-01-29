@@ -181,8 +181,7 @@ public class DatabaseRenderer extends StandardRenderer {
             Set<MapElementContainer> activeLabels = new HashSet<>();
 
             if (this.labelStore instanceof MapDataStoreLabelStore) {
-                // Required to prevent non-deterministic labels and label tearing when drawing labels on tiles.
-                // This is similar to what LabelLayer does in its draw() method.
+                // Surrounding tiles are required to prevent non-deterministic labels and label tearing when drawing labels on tiles.
                 activeLabels.addAll(this.labelStore.getVisibleItems(renderContext.rendererJob.tile.getAboveLeft(), renderContext.rendererJob.tile.getBelowRight()));
 
                 LayerUtil.removeInvisibleItems(activeLabels);

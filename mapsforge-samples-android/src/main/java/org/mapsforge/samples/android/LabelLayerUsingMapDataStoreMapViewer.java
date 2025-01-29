@@ -15,18 +15,13 @@
  */
 package org.mapsforge.samples.android;
 
-import org.mapsforge.core.model.Tag;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.datastore.MapDataStore;
+import org.mapsforge.map.layer.labels.CachedMapDataStoreLabelStore;
 import org.mapsforge.map.layer.labels.LabelLayer;
 import org.mapsforge.map.layer.labels.MapDataStoreLabelStore;
 import org.mapsforge.map.layer.labels.ThreadedLabelLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
-import org.mapsforge.map.reader.MapFile;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * A map viewer that draws the labels onto a single separate layer. The LabelLayer used in this example
@@ -39,24 +34,13 @@ public class LabelLayerUsingMapDataStoreMapViewer extends DefaultTheme {
         TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
                 this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false, false);
         mapView.getLayerManager().getLayers().add(tileRendererLayer);
-        MapDataStoreLabelStore labelStore = new MapDataStoreLabelStore(getMapFile(), tileRendererLayer.getRenderThemeFuture(),
+        MapDataStoreLabelStore labelStore = new CachedMapDataStoreLabelStore(getMapFile(), tileRendererLayer.getRenderThemeFuture(),
                 tileRendererLayer.getTextScale(), tileRendererLayer.getDisplayModel(), AndroidGraphicFactory.INSTANCE);
         LabelLayer labelLayer = new ThreadedLabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
         mapView.getLayerManager().getLayers().add(labelLayer);
 
         // Enable rotation gesture
         mapView.getTouchGestureHandler().setRotationEnabled(true);
-    }
-
-    @Override
-    protected MapDataStore getMapFile() {
-        return new MapFile(new File(getMapFileDirectory(), this.getMapFileName())) {
-            @Override
-            public boolean wayAsLabelTagFilter(List<Tag> tags) {
-                // Include ways with tags to cover the ways without names but symbols
-                return !tags.isEmpty();
-            }
-        };
     }
 
     @Override
