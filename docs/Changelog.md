@@ -3,8 +3,8 @@
 ## Next version
 
 - Multi-map deduplicate optimization [#1635](https://github.com/mapsforge/mapsforge/pull/1635)
-- Color filter theme resources [#1622](https://github.com/mapsforge/mapsforge/pull/1622)
-  - `ThemeCallback.getBitmap`
+- Label direct rendering `CachedMapDataStoreLabelStore` [#1646](https://github.com/mapsforge/mapsforge/pull/1646)
+- Color filter theme resources `ThemeCallback.getBitmap` [#1622](https://github.com/mapsforge/mapsforge/pull/1622)
 - Rename `MapDataStore.readLabels` to `readNamedItems` [#1640](https://github.com/mapsforge/mapsforge/pull/1640)
   - Rename `MapFile.Selector.LABELS` to `NAMED`
 - Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
@@ -18,8 +18,7 @@
 - Adaptive hillshading and improvements
   - [#1561](https://github.com/mapsforge/mapsforge/pull/1561) [#1592](https://github.com/mapsforge/mapsforge/pull/1592) [#1597](https://github.com/mapsforge/mapsforge/pull/1597) [#1605](https://github.com/mapsforge/mapsforge/pull/1605)
 - Map rendering performance improvements [#1599](https://github.com/mapsforge/mapsforge/pull/1599)
-- Multi-map improvements [#1582](https://github.com/mapsforge/mapsforge/pull/1582)
-  - `MapDataStore.setPriority`
+- Multi-map `MapDataStore.setPriority` [#1582](https://github.com/mapsforge/mapsforge/pull/1582)
 - Group of layers with z-order `ZOrderGroupLayer` [#1603](https://github.com/mapsforge/mapsforge/pull/1603)
 - Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
 - Remove `IMapViewPosition`, use `MapViewPosition` [#1591](https://github.com/mapsforge/mapsforge/pull/1591)
