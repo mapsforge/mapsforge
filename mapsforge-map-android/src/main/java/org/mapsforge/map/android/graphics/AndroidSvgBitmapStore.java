@@ -18,7 +18,6 @@ package org.mapsforge.map.android.graphics;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
 import org.mapsforge.core.util.IOUtils;
 
 import java.io.FileInputStream;
@@ -76,6 +75,8 @@ public class AndroidSvgBitmapStore {
 
     public static void clear() {
         String[] files = AndroidGraphicFactory.INSTANCE.fileList();
+        if (files == null)
+            return;
         for (String file : files) {
             if (file.startsWith(SVG_PREFIX) && file.endsWith(SVG_SUFFIX)) {
                 AndroidGraphicFactory.INSTANCE.deleteFile(file);
