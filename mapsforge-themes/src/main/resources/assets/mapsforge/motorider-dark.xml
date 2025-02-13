@@ -14,6 +14,7 @@
         <layer id="accommodation">
             <name lang="ar" value="أماكن إقامة" />
             <name lang="ca" value="Allotjament" />
+            <name lang="cs" value="Ubytování" />
             <name lang="de" value="Unterkunft" />
             <name lang="el" value="Διαμονή" />
             <name lang="en" value="Accommodation" />
@@ -29,6 +30,7 @@
         <layer id="money">
             <name lang="ar" value="البنوك وأجهزة الصراف الآلي" />
             <name lang="ca" value="Bancs i caixers automàtics" />
+            <name lang="cs" value="Banky a bankomaty" />
             <name lang="de" value="Banken und Geldautomaten" />
             <name lang="el" value="Τράπεζες και ΑΤΜ" />
             <name lang="en" value="Banks and ATM" />
@@ -44,6 +46,7 @@
         <layer id="entertainment">
             <name lang="ar" value="ترفيه" />
             <name lang="ca" value="Entreteniment" />
+            <name lang="cs" value="Zábava" />
             <name lang="de" value="Unterhaltung" />
             <name lang="el" value="Ψυχαγωγία" />
             <name lang="en" value="Entertainment" />
@@ -59,6 +62,7 @@
         <layer id="food">
             <name lang="ar" value="الطعام والشراب" />
             <name lang="ca" value="Menjar i beure" />
+            <name lang="cs" value="Jídlo a nápoje" />
             <name lang="de" value="Essen und Trinken" />
             <name lang="el" value="Φαγητό και ποτό" />
             <name lang="en" value="Food and drink" />
@@ -74,6 +78,7 @@
         <layer id="emergency">
             <name lang="ar" value="خدمات الطوارئ" />
             <name lang="ca" value="Serveis d'emergència" />
+            <name lang="cs" value="Pohotovostní služby" />
             <name lang="de" value="Gesundheit und Notdienste" />
             <name lang="el" value="Υπηρεσίες έκτακτης ανάγκης" />
             <name lang="en" value="Emergency services" />
@@ -89,6 +94,7 @@
         <layer id="fuel">
             <name lang="ar" value="محطات وقود" />
             <name lang="ca" value="Benzineres" />
+            <name lang="cs" value="Čerpací stanice" />
             <name lang="de" value="Tankstellen" />
             <name lang="el" value="Πρατήρια καυσίμων" />
             <name lang="en" value="Fuel stations" />
@@ -104,6 +110,7 @@
         <layer id="charging_station">
             <name lang="ar" value="محطات شحن" />
             <name lang="ca" value="Estacions de càrrega" />
+            <name lang="cs" value="Nabíjecí stanice" />
             <name lang="de" value="Ladestationen" />
             <name lang="el" value="Πρατήρια φόρτισης" />
             <name lang="en" value="Charging stations" />
@@ -119,6 +126,7 @@
         <layer id="parking">
             <name lang="ar" value="مواقف" />
             <name lang="ca" value="Zones d'aparcament" />
+            <name lang="cs" value="Parkovací plochy" />
             <name lang="de" value="Parkplätze" />
             <name lang="el" value="Χώροι στάθμευσης" />
             <name lang="en" value="Parking areas" />
@@ -134,6 +142,7 @@
         <layer id="misc">
             <name lang="ar" value="متنوع" />
             <name lang="ca" value="Diversos" />
+            <name lang="cs" value="Různé" />
             <name lang="de" value="Verschiedenes" />
             <name lang="el" value="Διάφορα" />
             <name lang="en" value="Miscellaneous" />
@@ -149,6 +158,7 @@
         <layer id="mountain_pass">
             <name lang="ar" value="معابر جبلية" />
             <name lang="ca" value="Passos de muntanya" />
+            <name lang="cs" value="Horské průsmyky" />
             <name lang="de" value="Bergpässe" />
             <name lang="el" value="Ορεινά περάσματα" />
             <name lang="en" value="Mountain passes" />
@@ -164,6 +174,7 @@
         <layer id="mountain_peak">
             <name lang="ar" value="قمم الجبال" />
             <name lang="ca" value="Cims de muntanya" />
+            <name lang="cs" value="Horské vrcholy" />
             <name lang="de" value="Bergspitzen" />
             <name lang="el" value="Ορεινές κορυφές" />
             <name lang="en" value="Mountain peaks" />
@@ -179,6 +190,7 @@
         <layer id="public_transport">
             <name lang="ar" value="المواصلات العامة" />
             <name lang="ca" value="Transport públic" />
+            <name lang="cs" value="Veřejná doprava" />
             <name lang="de" value="Öffentliche Verkehrsmittel" />
             <name lang="el" value="Μέσα μαζικής μεταφοράς" />
             <name lang="en" value="Public transport" />
@@ -194,6 +206,7 @@
         <layer id="shop">
             <name lang="ar" value="محل" />
             <name lang="ca" value="Botigues" />
+            <name lang="cs" value="Obchody" />
             <name lang="de" value="Shops" />
             <name lang="el" value="Καταστήματα" />
             <name lang="en" value="Shops" />
@@ -209,6 +222,7 @@
         <layer id="attraction">
             <name lang="ar" value="أماكن جذب سياحي" />
             <name lang="ca" value="Atraccions turístiques" />
+            <name lang="cs" value="Turistické atrakce" />
             <name lang="de" value="Touristenattraktionen" />
             <name lang="el" value="Τουριστικά αξιοθέατα" />
             <name lang="en" value="Tourist attractions" />
@@ -224,6 +238,7 @@
         <layer id="view">
             <name lang="ar" value="مطلات" />
             <name lang="ca" value="Miradors" />
+            <name lang="cs" value="Vyhlídky" />
             <name lang="de" value="Aussichtspunkte" />
             <name lang="el" value="Σημεία θέασης" />
             <name lang="en" value="Viewpoints" />
@@ -239,6 +254,7 @@
         <layer id="contour">
             <name lang="ar" value="خطوط الكنتور" />
             <name lang="ca" value="Línies de contorn" />
+            <name lang="cs" value="Vrstevnice" />
             <name lang="de" value="Höhenlinien" />
             <name lang="el" value="Γραμμές περιγράμματος" />
             <name lang="en" value="Contour lines" />
@@ -254,6 +270,7 @@
         <layer id="housenumber">
             <name lang="ar" value="أرقام المنازل" />
             <name lang="ca" value="Números de casa" />
+            <name lang="cs" value="Čísla domů" />
             <name lang="de" value="Hausnummern" />
             <name lang="el" value="Αριθμοί κατοικιών" />
             <name lang="en" value="House numbers" />
@@ -269,6 +286,7 @@
         <layer id="off_road">
             <name lang="ar" value="مسارات الطرق الوعرة" />
             <name lang="ca" value="Pistes fora de carretera" />
+            <name lang="cs" value="Terénní cesty" />
             <name lang="de" value="Offroad-Strecken" />
             <name lang="el" value="Διαδρομές εκτός δρόμου" />
             <name lang="en" value="Off road tracks" />
@@ -284,6 +302,7 @@
         <layer id="road_detail">
             <name lang="ar" value="المزيد من تفاصيل الطريق" />
             <name lang="ca" value="Més detalls de la carretera" />
+            <name lang="cs" value="Další podrobnosti o silnicích" />
             <name lang="de" value="Weitere Straßendetails" />
             <name lang="el" value="Περισσότερες οδικές λεπτομέρειες" />
             <name lang="en" value="More road details" />
