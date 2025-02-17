@@ -31,6 +31,7 @@ import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.model.DisplayModel;
 
 import java.io.*;
@@ -50,16 +51,9 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     // if true RESOURCE_BITMAPS will be kept in the cache to avoid
     // multiple loading
     public static final boolean KEEP_RESOURCE_BITMAPS = true;
-    public static final Config NON_TRANSPARENT_BITMAP = Config.RGB_565;
 
-    // determines size of bitmaps used, RGB_565 is 2 bytes per pixel
-    // while ARGB_8888 uses 4 bytes per pixel (with severe impact
-    // on memory use) and allows transparencies. Use ARGB_8888 whenever
-    // you have transparencies in any of the bitmaps. ARGB_4444 is deprecated
-    // and is much slower despite smaller size that ARGB_8888 as it
-    // passes through unoptimized path in the skia library.
+    // see getNonTransparentBitmapConfig
     public static final Config TRANSPARENT_BITMAP = Config.ARGB_8888;
-
 
     public static final Config MONO_ALPHA_BITMAP = Config.ALPHA_8;
 
@@ -160,6 +154,18 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         return ((AndroidMatrix) matrix).matrix;
     }
 
+    /**
+     * Determines size of bitmaps used, RGB_565 is 2 bytes per pixel
+     * while ARGB_8888 uses 4 bytes per pixel (with possible impact
+     * on memory use) and allows transparencies. Use ARGB_8888 whenever
+     * you have transparencies in any of the bitmaps. ARGB_4444 is deprecated
+     * and is much slower despite smaller size that ARGB_8888 as it
+     * passes through unoptimized path in the skia library.
+     */
+    public Config getNonTransparentBitmapConfig() {
+        return Parameters.ANDROID_16BIT_COLOR ? Config.RGB_565 : Config.ARGB_8888;
+    }
+
     static android.graphics.Path getPath(Path path) {
         return ((AndroidPath) path).path;
     }
@@ -193,7 +199,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         if (isTransparent) {
             return new AndroidBitmap(width, height, TRANSPARENT_BITMAP);
         }
-        return new AndroidBitmap(width, height, NON_TRANSPARENT_BITMAP);
+        return new AndroidBitmap(width, height, getNonTransparentBitmapConfig());
     }
 
     @Override
