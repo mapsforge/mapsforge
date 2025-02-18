@@ -28,6 +28,11 @@ public final class Parameters {
     public enum SymbolScaling {ALL, POI}
 
     /**
+     * Use Config.RGB_565 instead of Config.ARGB_8888 in non-transparent Android bitmaps.
+     */
+    public static boolean ANDROID_16BIT_COLOR = true;
+
+    /**
      * If true will use anti-aliasing in rendering.
      */
     public static boolean ANTI_ALIASING = true;

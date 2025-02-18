@@ -19,18 +19,13 @@ package org.mapsforge.map.android.graphics;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-
 import org.mapsforge.core.graphics.CorruptedInputStreamException;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
 
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
@@ -137,7 +132,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
         }
         if (this.bitmap == null) {
             android.graphics.Bitmap.Config config = isTransparent ? AndroidGraphicFactory.TRANSPARENT_BITMAP
-                    : AndroidGraphicFactory.NON_TRANSPARENT_BITMAP;
+                    : AndroidGraphicFactory.INSTANCE.getNonTransparentBitmapConfig();
             this.bitmap = AndroidBitmap.createAndroidBitmap(tileSize, tileSize, config);
         }
         if (AndroidGraphicFactory.DEBUG_BITMAPS) {
@@ -205,7 +200,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
         if (isTransparent) {
             bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.TRANSPARENT_BITMAP;
         } else {
-            bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.NON_TRANSPARENT_BITMAP;
+            bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.INSTANCE.getNonTransparentBitmapConfig();
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             android.graphics.Bitmap reusableBitmap = getTileBitmapFromReusableSet(tileSize, isTransparent);
