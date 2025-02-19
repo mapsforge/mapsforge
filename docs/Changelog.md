@@ -5,8 +5,8 @@
 - Multi-map deduplicate optimization [#1635](https://github.com/mapsforge/mapsforge/pull/1635)
 - Label direct rendering `CachedMapDataStoreLabelStore` [#1646](https://github.com/mapsforge/mapsforge/pull/1646)
 - Color filter theme resources `ThemeCallback.getBitmap` [#1622](https://github.com/mapsforge/mapsforge/pull/1622)
-- Android 32-bit color option [#1655](https://github.com/mapsforge/mapsforge/pull/1655)
-  - `Parameters.ANDROID_16BIT_COLOR`
+- Android 32-bit color option [#1656](https://github.com/mapsforge/mapsforge/pull/1656)
+  - `Parameters.ANDROID_32BIT_COLOR`
 - Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
 - Rename `MapDataStore.readLabels` to `readNamedItems` [#1640](https://github.com/mapsforge/mapsforge/pull/1640)
   - Rename `MapFile.Selector.LABELS` to `NAMED`
