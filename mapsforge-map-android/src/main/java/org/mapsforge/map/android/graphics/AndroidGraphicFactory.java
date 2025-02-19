@@ -163,7 +163,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
      * passes through unoptimized path in the skia library.
      */
     public Config getNonTransparentBitmapConfig() {
-        return Parameters.ANDROID_16BIT_COLOR ? Config.RGB_565 : Config.ARGB_8888;
+        return Parameters.ANDROID_32BIT_COLOR ? Config.ARGB_8888 : Config.RGB_565;
     }
 
     static android.graphics.Path getPath(Path path) {
