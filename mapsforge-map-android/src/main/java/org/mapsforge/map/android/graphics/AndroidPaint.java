@@ -3,7 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015-2020 devemux86
  * Copyright 2019 Matthew Egeler
- * Copyright 2024 Sublimis / Urban Biker
+ * Copyright 2024-2025 Sublimis / Urban Biker
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -38,6 +38,7 @@ import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.util.Parameters;
+import org.mapsforge.map.android.util.AndroidParameters;
 
 class AndroidPaint implements Paint {
     private static android.graphics.Paint.Align getAndroidAlign(Align align) {
@@ -204,6 +205,12 @@ class AndroidPaint implements Paint {
     @Override
     public boolean isTransparent() {
         return this.paint.getShader() == null && this.paint.getAlpha() == 0;
+    }
+
+    @Override
+    public boolean isComplexStyle() {
+        return !AndroidParameters.ANDROID_LIBHWUI_FIX || this.paint.getStyle() != android.graphics.Paint.Style.STROKE
+                || this.paint.getPathEffect() != null;
     }
 
     @Override

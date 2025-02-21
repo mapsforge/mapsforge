@@ -6,7 +6,7 @@
  * Copyright 2019 cpt1gl0
  * Copyright 2019 Adrian Batzill
  * Copyright 2019 mg4gh
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,8 +28,10 @@ import android.graphics.Region;
 import android.os.Build;
 import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Rotation;
+import org.mapsforge.map.layer.renderer.RendererUtils;
 
 class AndroidCanvas implements Canvas {
 
@@ -149,6 +151,51 @@ class AndroidCanvas implements Canvas {
             return;
         }
         this.canvas.drawPath(AndroidGraphicFactory.getPath(path), AndroidGraphicFactory.getPaint(paint));
+    }
+
+    @Override
+    public void drawLines(Point[][] coordinates, float dy, Paint paint) {
+        if (paint.isTransparent()) {
+            return;
+        }
+
+        final float[] lines;
+        {
+            int pointsCount = 0;
+
+            for (Point[] points : coordinates) {
+                if (points.length >= 2) {
+                    pointsCount += 4 * (points.length - 1);
+                }
+            }
+
+            lines = new float[pointsCount];
+        }
+
+        int ptr = 0;
+
+        for (Point[] innerList : coordinates) {
+            final Point[] points = dy == 0f ? innerList : RendererUtils.parallelPath(innerList, dy);
+            if (points.length >= 2) {
+                lines[ptr] = (float) points[0].x;
+                lines[ptr + 1] = (float) points[0].y;
+                lines[ptr + 2] = (float) points[1].x;
+                lines[ptr + 3] = (float) points[1].y;
+
+                ptr += 4;
+
+                for (int i = 1; i < points.length - 1; i++) {
+                    lines[ptr] = lines[ptr - 2];
+                    lines[ptr + 1] = lines[ptr - 1];
+                    lines[ptr + 2] = (float) points[i + 1].x;
+                    lines[ptr + 3] = (float) points[i + 1].y;
+
+                    ptr += 4;
+                }
+            }
+        }
+
+        this.canvas.drawLines(lines, AndroidGraphicFactory.getPaint(paint));
     }
 
     @Override

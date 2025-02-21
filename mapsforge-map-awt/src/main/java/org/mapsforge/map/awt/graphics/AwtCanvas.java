@@ -6,7 +6,7 @@
  * Copyright 2019 Adrian Batzill
  * Copyright 2019 Matthew Egeler
  * Copyright 2019 mg4gh
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,6 +26,7 @@ import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.Parameters;
@@ -208,6 +209,11 @@ class AwtCanvas implements Canvas {
         }
 
         throw new IllegalArgumentException(UNKNOWN_STYLE + style);
+    }
+
+    @Override
+    public void drawLines(Point[][] coordinates, float dy, Paint paint) {
+        // Not used
     }
 
     @Override

@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2017 devemux86
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -197,6 +197,11 @@ public class AwtPaint implements Paint {
     @Override
     public boolean isTransparent() {
         return this.texturePaint == null && this.color.getAlpha() == 0;
+    }
+
+    @Override
+    public boolean isComplexStyle() {
+        return true;
     }
 
     @Override
