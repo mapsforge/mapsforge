@@ -24,4 +24,8 @@ public final class AndroidParameters {
      * Defaults to {@code true} for Android API levels 32 and below.
      */
     public static boolean ANDROID_LIBHWUI_FIX = Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2;
+
+    private AndroidParameters() {
+        throw new IllegalStateException();
+    }
 }
