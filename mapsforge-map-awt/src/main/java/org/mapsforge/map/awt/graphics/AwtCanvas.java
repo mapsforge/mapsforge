@@ -405,7 +405,7 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
-    public void setClipDifference(int left, int top, int width, int height) {
+    public void setClipDifference(float left, float top, float width, float height) {
         Area clip = new Area(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
         clip.subtract(new Area(new Rectangle2D.Double(left, top, width, height)));
         this.graphics2D.setClip(clip);
