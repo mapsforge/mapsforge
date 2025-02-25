@@ -334,6 +334,7 @@ class AndroidCanvas implements Canvas {
         setClip(left, top, width, height, false);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void setClip(int left, int top, int width, int height, boolean intersect) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -341,22 +342,18 @@ class AndroidCanvas implements Canvas {
                 this.canvas.clipRect(left, top, left + width, top + height);
             }
         } else {
-            this.setClipInternal(left, top, width, height, Region.Op.REPLACE);
-        }
-    }
-
-    @Override
-    public void setClipDifference(int left, int top, int width, int height) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            this.canvas.clipOutRect(left, top, left + width, top + height);
-        } else {
-            this.setClipInternal(left, top, width, height, Region.Op.DIFFERENCE);
+            this.canvas.clipRect(left, top, left + width, top + height, Region.Op.REPLACE);
         }
     }
 
     @SuppressWarnings("deprecation")
-    private void setClipInternal(int left, int top, int width, int height, Region.Op op) {
-        this.canvas.clipRect(left, top, left + width, top + height, op);
+    @Override
+    public void setClipDifference(float left, float top, float width, float height) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.canvas.clipOutRect(left, top, left + width, top + height);
+        } else {
+            this.canvas.clipRect(left, top, left + width, top + height, Region.Op.DIFFERENCE);
+        }
     }
 
     @Override

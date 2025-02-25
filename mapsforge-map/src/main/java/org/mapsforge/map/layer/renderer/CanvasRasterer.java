@@ -37,7 +37,9 @@ public class CanvasRasterer {
     private final Path path;
     private final Matrix symbolMatrix;
 
-    /** This will count paths vs. lines usage for performance diagnostics */
+    /**
+     * This will count paths vs. lines usage for performance diagnostics
+     */
     private final boolean DEBUG_COUNTS = false;
     private final AtomicInteger linesCount = DEBUG_COUNTS ? new AtomicInteger() : null;
     private final AtomicInteger pathsCount = DEBUG_COUNTS ? new AtomicInteger() : null;
@@ -82,7 +84,7 @@ public class CanvasRasterer {
      * @param insideArea the inside area on which not to draw
      */
     void fillOutsideAreas(Color color, Rectangle insideArea) {
-        this.canvas.setClipDifference((int) insideArea.left, (int) insideArea.top, (int) insideArea.getWidth(), (int) insideArea.getHeight());
+        this.canvas.setClipDifference((float) insideArea.left, (float) insideArea.top, (float) insideArea.getWidth(), (float) insideArea.getHeight());
         this.canvas.fillColor(color);
         this.canvas.resetClip();
     }
@@ -95,7 +97,7 @@ public class CanvasRasterer {
      * @param insideArea the inside area on which not to draw
      */
     void fillOutsideAreas(int color, Rectangle insideArea) {
-        this.canvas.setClipDifference((int) insideArea.left, (int) insideArea.top, (int) insideArea.getWidth(), (int) insideArea.getHeight());
+        this.canvas.setClipDifference((float) insideArea.left, (float) insideArea.top, (float) insideArea.getWidth(), (float) insideArea.getHeight());
         this.canvas.fillColor(color);
         this.canvas.resetClip();
     }
