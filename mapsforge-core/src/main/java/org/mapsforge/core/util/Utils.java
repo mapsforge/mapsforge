@@ -15,14 +15,7 @@
  */
 package org.mapsforge.core.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public final class Utils {
 
@@ -35,6 +28,14 @@ public final class Utils {
 
     private Utils() {
         throw new IllegalStateException();
+    }
+
+    public static float clampFloat(float value) {
+        if (value < Float.MIN_VALUE)
+            return Float.MIN_VALUE;
+        if (value > Float.MAX_VALUE)
+            return Float.MAX_VALUE;
+        return value;
     }
 
     // UTILS FOR RULES
