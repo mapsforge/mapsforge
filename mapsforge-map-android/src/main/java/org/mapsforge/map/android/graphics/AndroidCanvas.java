@@ -31,6 +31,7 @@ import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Rotation;
+import org.mapsforge.core.util.Utils;
 import org.mapsforge.map.layer.renderer.RendererUtils;
 
 class AndroidCanvas implements Canvas {
@@ -350,9 +351,9 @@ class AndroidCanvas implements Canvas {
     @Override
     public void setClipDifference(float left, float top, float width, float height) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            this.canvas.clipOutRect(left, top, left + width, top + height);
+            this.canvas.clipOutRect(Utils.clampFloat(left), Utils.clampFloat(top), Utils.clampFloat(left + width), Utils.clampFloat(top + height));
         } else {
-            this.canvas.clipRect(left, top, left + width, top + height, Region.Op.DIFFERENCE);
+            this.canvas.clipRect(Utils.clampFloat(left), Utils.clampFloat(top), Utils.clampFloat(left + width), Utils.clampFloat(top + height), Region.Op.DIFFERENCE);
         }
     }
 
