@@ -1,5 +1,6 @@
 /*
  * Copyright 2019 Adrian Batzill
+ * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -91,8 +92,8 @@ public class LineString {
     public Rectangle getBounds() {
         double minX = Double.MAX_VALUE;
         double minY = Double.MAX_VALUE;
-        double maxX = Double.MIN_VALUE;
-        double maxY = Double.MIN_VALUE;
+        double maxX = -minX;
+        double maxY = -minY;
 
         for (LineSegment segment : this.segments) {
             minX = Math.min(minX, Math.min(segment.start.x, segment.end.x));
