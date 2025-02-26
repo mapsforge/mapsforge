@@ -30,14 +30,6 @@ public final class Utils {
         throw new IllegalStateException();
     }
 
-    public static float clampFloat(float value) {
-        if (value < Float.MIN_VALUE)
-            return Float.MIN_VALUE;
-        if (value > Float.MAX_VALUE)
-            return Float.MAX_VALUE;
-        return value;
-    }
-
     // UTILS FOR RULES
 
     public static int hashTagParameter(String keyValue) {
