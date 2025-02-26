@@ -85,8 +85,8 @@ public class CanvasRasterer {
      */
     void fillOutsideAreas(Color color, Rectangle insideArea) {
 
-        // Normalize input to prevent overwhelming the canvas with extreme coordinate values
-        insideArea = insideArea.normalizeToDimensions(this.canvas.getWidth(), this.canvas.getHeight());
+        // Clamp input to prevent overwhelming the canvas with extreme coordinate values
+        insideArea = insideArea.clampClipCoordinates(this.canvas.getWidth(), this.canvas.getHeight());
 
         this.canvas.setClipDifference((float) insideArea.left, (float) insideArea.top, (float) insideArea.getWidth(), (float) insideArea.getHeight());
         this.canvas.fillColor(color);
@@ -102,8 +102,8 @@ public class CanvasRasterer {
      */
     void fillOutsideAreas(int color, Rectangle insideArea) {
 
-        // Normalize input to prevent overwhelming the canvas with extreme coordinate values
-        insideArea = insideArea.normalizeToDimensions(this.canvas.getWidth(), this.canvas.getHeight());
+        // Clamp input to prevent overwhelming the canvas with extreme coordinate values
+        insideArea = insideArea.clampClipCoordinates(this.canvas.getWidth(), this.canvas.getHeight());
 
         this.canvas.setClipDifference((float) insideArea.left, (float) insideArea.top, (float) insideArea.getWidth(), (float) insideArea.getHeight());
         this.canvas.fillColor(color);

@@ -218,15 +218,15 @@ public class Rectangle implements Serializable {
         return new Rectangle(this.left + origin.x, this.top + origin.y, this.right + origin.x, this.bottom + origin.y);
     }
 
-    public Rectangle normalizeToDimensions(double width, double height) {
+    public Rectangle clampClipCoordinates(double horizontal, double vertical) {
         Rectangle output = this;
 
-        if (output.left != 0 || output.top != 0) {
-            output = output.shift(new Point(-this.left, -this.top));
-        }
-
-        if (output.getWidth() > width || output.getHeight() > height) {
-            output = new Rectangle(0, 0, Math.min(output.getWidth(), width), Math.min(output.getHeight(), height));
+        if (output.getWidth() > horizontal || output.getHeight() > vertical) {
+            final double newLeft = Math.abs(output.left) > horizontal ? Math.signum(output.left) * horizontal : output.left;
+            final double newTop = Math.abs(output.top) > vertical ? Math.signum(output.top) * vertical : output.top;
+            final double newRight = Math.abs(output.right) > horizontal ? Math.signum(output.right) * horizontal : output.right;
+            final double newBottom = Math.abs(output.bottom) > vertical ? Math.signum(output.bottom) * vertical : output.bottom;
+            output = new Rectangle(newLeft, newTop, newRight, newBottom);
         }
 
         return output;
