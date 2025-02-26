@@ -21,7 +21,7 @@ import java.util.List;
 public class LineString {
     public final List<LineSegment> segments = new ArrayList<>();
 
-    public void LineString() {
+    public LineString() {
     }
 
     @Override
