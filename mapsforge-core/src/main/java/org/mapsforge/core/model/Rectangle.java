@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -216,6 +216,20 @@ public class Rectangle implements Serializable {
             return this;
         }
         return new Rectangle(this.left + origin.x, this.top + origin.y, this.right + origin.x, this.bottom + origin.y);
+    }
+
+    public Rectangle normalizeToDimensions(double width, double height) {
+        Rectangle output = this;
+
+        if (output.left != 0 || output.top != 0) {
+            output = output.shift(new Point(-this.left, -this.top));
+        }
+
+        if (output.getWidth() > width || output.getHeight() > height) {
+            output = new Rectangle(0, 0, Math.min(output.getWidth(), width), Math.min(output.getHeight(), height));
+        }
+
+        return output;
     }
 
     @Override
