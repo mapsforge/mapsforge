@@ -30,7 +30,6 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.Parameters;
-import org.mapsforge.core.util.Utils;
 
 import java.awt.*;
 import java.awt.font.TextLayout;
@@ -408,7 +407,7 @@ class AwtCanvas implements Canvas {
     @Override
     public void setClipDifference(float left, float top, float width, float height) {
         Area clip = new Area(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
-        clip.subtract(new Area(new Rectangle2D.Double(Utils.clampFloat(left), Utils.clampFloat(top), Utils.clampFloat(width), Utils.clampFloat(height))));
+        clip.subtract(new Area(new Rectangle2D.Double(left, top, width, height)));
         this.graphics2D.setClip(clip);
     }
 
