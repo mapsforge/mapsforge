@@ -84,6 +84,10 @@ public class CanvasRasterer {
      * @param insideArea the inside area on which not to draw
      */
     void fillOutsideAreas(Color color, Rectangle insideArea) {
+
+        // Clamp input to prevent overwhelming the canvas with extreme coordinate values
+        insideArea = insideArea.clampClipCoordinates(this.canvas.getWidth(), this.canvas.getHeight());
+
         this.canvas.setClipDifference((float) insideArea.left, (float) insideArea.top, (float) insideArea.getWidth(), (float) insideArea.getHeight());
         this.canvas.fillColor(color);
         this.canvas.resetClip();
@@ -97,6 +101,10 @@ public class CanvasRasterer {
      * @param insideArea the inside area on which not to draw
      */
     void fillOutsideAreas(int color, Rectangle insideArea) {
+
+        // Clamp input to prevent overwhelming the canvas with extreme coordinate values
+        insideArea = insideArea.clampClipCoordinates(this.canvas.getWidth(), this.canvas.getHeight());
+
         this.canvas.setClipDifference((float) insideArea.left, (float) insideArea.top, (float) insideArea.getWidth(), (float) insideArea.getHeight());
         this.canvas.fillColor(color);
         this.canvas.resetClip();

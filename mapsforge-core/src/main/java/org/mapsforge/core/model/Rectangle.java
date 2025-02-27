@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -216,6 +216,20 @@ public class Rectangle implements Serializable {
             return this;
         }
         return new Rectangle(this.left + origin.x, this.top + origin.y, this.right + origin.x, this.bottom + origin.y);
+    }
+
+    public Rectangle clampClipCoordinates(double horizontal, double vertical) {
+        Rectangle output = this;
+
+        if (output.getWidth() > horizontal || output.getHeight() > vertical) {
+            final double newLeft = Math.abs(output.left) > horizontal ? Math.signum(output.left) * horizontal : output.left;
+            final double newTop = Math.abs(output.top) > vertical ? Math.signum(output.top) * vertical : output.top;
+            final double newRight = Math.abs(output.right) > horizontal ? Math.signum(output.right) * horizontal : output.right;
+            final double newBottom = Math.abs(output.bottom) > vertical ? Math.signum(output.bottom) * vertical : output.bottom;
+            output = new Rectangle(newLeft, newTop, newRight, newBottom);
+        }
+
+        return output;
     }
 
     @Override
