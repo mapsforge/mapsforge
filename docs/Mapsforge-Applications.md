@@ -65,3 +65,4 @@
 | [Watertrack ECO](http://watertrack.de/) | GPS Tracking on Germany Waterways | Proprietary/Free | Closed |
 | [WhereYouGo](https://www.whereyougo.org) | Geocaching | GPL3/Free | Open |
 | [Wikiloc](http://www.wikiloc.com/outdoor-navigation-app) | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed |
+| [WRPElevationChart](https://play.google.com/store/apps/details?id=de.wrpsoft.wrpelevationchartmaker) | GPSViewer and (3D) elevation chart creator| Proprietary/Free | Closed |
