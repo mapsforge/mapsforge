@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    REVISION 44, 28 January 2025
+    REVISION 46, 1 March 2025
 	this is the default/light Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -378,7 +378,7 @@
         v="park|zoo|picnic_site|camp_site|caravan_site|recreation_ground" zoom-min="12">
         <area fill="#BBC7F1A3" />
     </rule>
-	
+
     <!-- landuse, natural -->
     <rule e="way" k="natural|landuse" v="forest|wood" zoom-min="9">
         <area fill="#a6cd98" />
@@ -464,7 +464,7 @@
         <area src="jar:patterns/nature-reserve.png" />
 		<!--<area fill="#88c5deba" />-->
 	</rule>
-
+	
     <!-- tunnels -->
     <rule e="way" k="tunnel" v="true|yes|culvert|building_passage|passage">
         <!-- highway tunnel -->
@@ -1000,6 +1000,47 @@
         </rule>
     </rule>
 
+    <!-- railway (no tunnel) -->
+    <rule e="way" k="railway" v="*">
+        <rule e="way" k="tunnel" v="~|false|no">
+            <!-- railway bridges -->
+            <rule e="way" k="bridge" v="yes|true|viaduct|aqueduct|suspension|culvert|swing">
+                <rule e="way" k="railway"
+                    v="subway|narrow_gauge|preserved|funicular|miniature|tram|light_rail|monorail">
+                    <line stroke="#666666" stroke-linecap="butt" stroke-width="1.2" />
+                    <line stroke="#EEEEEE" stroke-linecap="butt" stroke-width="0.8" />
+                </rule>
+                <rule e="way" k="railway" v="rail">
+                    <line stroke="#666666" stroke-linecap="butt" stroke-width="1.4" />
+                    <line stroke="#EEEEEE" stroke-linecap="butt" stroke-width="1.0" />
+                </rule>
+            </rule>
+            <!-- railway casings and cores -->
+            <rule e="way" k="railway" v="tram|light_rail">
+                <line stroke="#666666" stroke-linecap="butt" stroke-width="0.4" />
+                <line stroke="#DDDDDD" stroke-dasharray="12,12" stroke-linecap="butt"
+                    stroke-width="0.25" />
+            </rule>
+            <rule e="way" k="railway" v="subway">
+                <line stroke="#666666" stroke-linecap="butt" stroke-width="0.4" />
+                <line stroke="#B7B7E6" stroke-dasharray="12,18" stroke-linecap="butt"
+                    stroke-width="0.25" />
+            </rule>
+            <rule e="way" k="railway" v="narrow_gauge|preserved|funicular|miniature|monorail">
+                <line stroke="#333333" stroke-linecap="butt" stroke-width="0.4" />
+                <line stroke="#E6E6E6" stroke-linecap="butt" stroke-width="0.25" />
+                <line stroke="#333333" stroke-dasharray="12,12" stroke-linecap="butt"
+                    stroke-width="0.25" />
+            </rule>
+            <rule e="way" k="railway" v="rail">
+            <line stroke="#4d4d4d" stroke-width="0.75" stroke-linecap="butt"/>
+            <line stroke="#e6e6e6" stroke-width="0.6" stroke-linecap="butt"/>
+            <line stroke="#4d4d4d" stroke-width="0.3" scale="all" stroke-dasharray="2.4,2.4" stroke-linecap="butt"/>
+
+            </rule>
+        </rule>
+    </rule>
+
     <!-- turning circle core -->
     <!--<rule e="node" k="highway" v="turning_circle">
         <circle fill="#FFFFFF" radius="1.2" scale-radius="true" />
@@ -1140,14 +1181,13 @@
             <pathText fill="#000000" font-size="10" font-style="bold" k="name" priority="50" stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
         <rule e="way" k="highway" v="motorway|motorway_link" zoom-min="11" zoom-max="12">
-            <caption k="ref" fill="#FFFFFF" font-size="10" font-style="bold" priority="95" stroke="#42618a" stroke-width="4"/>
+            <caption k="ref" fill="#FFFFFF" font-size="10" font-style="normal" priority="95" stroke="#42618a" stroke-width="8"/>
         </rule>
         <rule e="way" k="highway" v="motorway|motorway_link" zoom-min="13">
             <pathText k="ref" fill="#FFFFFF" font-size="10" font-style="bold" priority="95" repeat-gap="250" repeat-start="50" stroke="#42618a" stroke-width="4" />
         </rule>
         <rule e="way" k="highway" v="trunk|trunk_link" zoom-min="12" zoom-max="12">
-            <caption k="ref" fill="#ffff00" font-size="10" font-style="bold" priority="80" stroke="#006600" stroke-width="4"/>
-            <!--<pathText k="ref" fill="#ffff00" font-size="10" font-style="bold" priority="80" repeat-gap="50" repeat-start="25" stroke="#006600" stroke-width="3" />-->
+            <caption k="ref" fill="#ffff00" font-size="10" font-style="normal" priority="80" stroke="#006600" stroke-width="8"/>
         </rule>
         <rule e="way" k="highway" v="trunk|trunk_link" zoom-min="13">
             <pathText k="name" fill="#000000" font-size="10" font-style="bold" priority="80" repeat-gap="250" repeat-start="50" stroke="#FFFFFF" stroke-width="3" />
@@ -1265,19 +1305,16 @@
     <!-- provides additional road captions for Motorway, Trunk, Primary/Secondary at levels 10, 11 and 12 respectively -->
     <rule cat="road_detail" e="way" k="highway" v="*" zoom-min="8">
         <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="12" zoom-max="12">
-            <!--<caption k="ref" fill="#FFFFFF" font-size="10" font-style="bold" priority="30" stroke="#804000" stroke-width="4"/>-->
-            <pathText k="ref" fill="#000000" font-size="10" font-style="bold" priority="30" repeat-gap="35" repeat-start="15" stroke="#FFFFFF" stroke-width="2" />
+            <caption k="ref" fill="#FFFFFF" font-size="10" font-style="normal" priority="30" stroke="#804000" stroke-width="8"/>
         </rule>
         <rule e="way" k="highway" v="primary|primary_link" zoom-min="12" zoom-max="12">
-            <!--<caption k="ref" fill="#FFFFFF" font-size="10" font-style="bold" priority="40" stroke="#b30000" stroke-width="4"/>-->
-            <pathText k="ref" fill="#000000" font-size="10" font-style="bold" priority="40" repeat-gap="35" repeat-start="15" stroke="#FFFFFF" stroke-width="2" />
+            <caption k="ref" fill="#FFFFFF" font-size="10" font-style="normal" priority="40" stroke="#b30000" stroke-width="8"/>
         </rule>
         <rule e="way" k="highway" v="trunk|trunk_link" zoom-min="11" zoom-max="11">
-            <caption k="ref" fill="#ffff00" font-size="10" font-style="bold" priority="80" stroke="#006600" stroke-width="4"/>
-            <!--<pathText k="ref" fill="#ffff00" font-size="10" font-style="bold" priority="80" repeat-gap="125" repeat-start="50" stroke="#006600" stroke-width="4" />-->
+            <caption k="ref" fill="#ffff00" font-size="10" font-style="normal" priority="80" stroke="#006600" stroke-width="8"/>
         </rule>
         <rule e="way" k="highway" v="motorway|motorway_link" zoom-min="10" zoom-max="12">
-            <caption k="ref" fill="#FFFFFF" font-size="10" font-style="bold" priority="95" stroke="#42618a" stroke-width="4"/>
+            <caption k="ref" fill="#FFFFFF" font-size="10" font-style="normal" priority="95" stroke="#42618a" stroke-width="8"/>
         </rule>
     </rule>
 
@@ -1356,47 +1393,6 @@
         <rule e="way" k="piste:type" v="nordic">
             <line stroke="#5598F5FF" stroke-dasharray="20,15" stroke-linecap="butt"
                 stroke-width="0.6" />
-        </rule>
-    </rule>
-
-    <!-- railway (no tunnel) -->
-    <rule e="way" k="railway" v="*">
-        <rule e="way" k="tunnel" v="~|false|no">
-            <!-- railway bridges -->
-            <rule e="way" k="bridge" v="yes|true|viaduct|aqueduct|suspension|culvert|swing">
-                <rule e="way" k="railway"
-                    v="subway|narrow_gauge|preserved|funicular|miniature|tram|light_rail|monorail">
-                    <line stroke="#666666" stroke-linecap="butt" stroke-width="1.2" />
-                    <line stroke="#EEEEEE" stroke-linecap="butt" stroke-width="0.8" />
-                </rule>
-                <rule e="way" k="railway" v="rail">
-                    <line stroke="#666666" stroke-linecap="butt" stroke-width="1.4" />
-                    <line stroke="#EEEEEE" stroke-linecap="butt" stroke-width="1.0" />
-                </rule>
-            </rule>
-            <!-- railway casings and cores -->
-            <rule e="way" k="railway" v="tram|light_rail">
-                <line stroke="#666666" stroke-linecap="butt" stroke-width="0.4" />
-                <line stroke="#DDDDDD" stroke-dasharray="12,12" stroke-linecap="butt"
-                    stroke-width="0.25" />
-            </rule>
-            <rule e="way" k="railway" v="subway">
-                <line stroke="#666666" stroke-linecap="butt" stroke-width="0.4" />
-                <line stroke="#B7B7E6" stroke-dasharray="12,18" stroke-linecap="butt"
-                    stroke-width="0.25" />
-            </rule>
-            <rule e="way" k="railway" v="narrow_gauge|preserved|funicular|miniature|monorail">
-                <line stroke="#333333" stroke-linecap="butt" stroke-width="0.4" />
-                <line stroke="#E6E6E6" stroke-linecap="butt" stroke-width="0.25" />
-                <line stroke="#333333" stroke-dasharray="12,12" stroke-linecap="butt"
-                    stroke-width="0.25" />
-            </rule>
-            <rule e="way" k="railway" v="rail">
-            <line stroke="#4d4d4d" stroke-width="0.75" stroke-linecap="butt"/>
-            <line stroke="#e6e6e6" stroke-width="0.6" stroke-linecap="butt"/>
-            <line stroke="#4d4d4d" stroke-width="0.3" scale="all" stroke-dasharray="2.4,2.4" stroke-linecap="butt"/>
-
-            </rule>
         </rule>
     </rule>
 
@@ -1665,14 +1661,14 @@
     <!-- fuel and charging stations LAYER -->
     <rule cat="fuel" e="any" k="amenity" v="fuel" zoom-min="10">
         <symbol display="always" id="fuel" priority="80" src="jar:symbols/transport/fuel.svg" />
-        <rule e="any" k="*" v="*" zoom-min="17">
+        <rule e="any" k="*" v="*" zoom-min="16">
             <caption fill="#ac39ac" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                 stroke-width="2.0" symbol-id="fuel" />
         </rule>
     </rule>
     <rule cat="charging_station" e="any" k="amenity" v="charging_station" zoom-min="10">
         <symbol display="always" id="charging_station" priority="80" src="jar:symbols/custom/transport/charging_station.svg" />
-        <rule e="any" k="*" v="*" zoom-min="17">
+        <rule e="any" k="*" v="*" zoom-min="16">
             <caption fill="#ac39ac" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                 stroke-width="2.0" symbol-id="charging_station" />
         </rule>
