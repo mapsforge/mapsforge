@@ -89,13 +89,9 @@ public class Samples extends Activity {
 
         setContentView(R.layout.activity_samples);
         LinearLayout linearLayout = findViewById(R.id.samples);
-        linearLayout.addView(createButton(GettingStarted.class));
-        linearLayout.addView(createLabel(null));
         linearLayout.addView(createButton(MapsforgeMapViewer.class));
-        linearLayout.addView(createButton(SimplestMapViewer.class));
-        linearLayout.addView(createButton(DiagnosticsMapViewer.class));
 
-        linearLayout.addView(createLabel("Features"));
+        linearLayout.addView(createLabel(null));
         linearLayout.addView(createButton(LocationOverlayMapViewer.class));
         linearLayout.addView(createButton(PoiSearchViewer.class, null, new View.OnClickListener() {
             @Override
@@ -103,35 +99,18 @@ public class Samples extends Activity {
                 startupDialog("poi", R.string.startup_message_poi, PoiSearchViewer.class);
             }
         }));
-        linearLayout.addView(createButton(RotationMapViewer.class));
-
-        linearLayout.addView(createLabel("Vector Features"));
-        linearLayout.addView(createButton(MultiLingualMapViewer.class));
         linearLayout.addView(createButton(StyleMenuMapViewer.class));
+        linearLayout.addView(createButton(HillshadingMapViewer.class));
         linearLayout.addView(createButton(LabelLayerUsingLabelCacheMapViewer.class));
         linearLayout.addView(createButton(LabelLayerUsingMapDataStoreMapViewer.class));
-        linearLayout.addView(createButton(HillshadingMapViewer.class));
-
-        linearLayout.addView(createLabel("Raster Maps"));
-        linearLayout.addView(createButton(DownloadLayerViewer.class));
-        linearLayout.addView(createButton(DownloadCustomLayerViewer.class));
-        linearLayout.addView(createButton(TileStoreLayerViewer.class, null, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startupDialog("tilestore", R.string.startup_message_tilestore, TileStoreLayerViewer.class);
-            }
-        }));
+        linearLayout.addView(createButton(RotationMapViewer.class));
 
         linearLayout.addView(createLabel("Overlays"));
         linearLayout.addView(createButton(OverlayMapViewer.class));
         linearLayout.addView(createButton(BubbleOverlay.class));
         linearLayout.addView(createButton(ViewOverlayViewer.class));
 
-        linearLayout.addView(createLabel("User Interaction"));
-        linearLayout.addView(createButton(LongPressAction.class));
-        linearLayout.addView(createButton(ItemListActivity.class));
-
-        linearLayout.addView(createLabel("Dual Map Views"));
+        linearLayout.addView(createLabel("Multi-map"));
         linearLayout.addView(createButton(DualMapViewer.class));
         linearLayout.addView(createButton(DualOverviewMapViewer.class));
         linearLayout.addView(createButton(MultiMapLowResWorld.class, null, new View.OnClickListener() {
@@ -159,12 +138,6 @@ public class Samples extends Activity {
                 }
             }
         }));
-
-        linearLayout.addView(createLabel("Experiments"));
-        linearLayout.addView(createButton(ColorFilterMapViewer.class));
-        linearLayout.addView(createButton(ReverseGeocodeViewer.class));
-        linearLayout.addView(createButton(ClusterMapActivity.class));
-        linearLayout.addView(createButton(GroupMarkerExample.class));
     }
 
     @Override
