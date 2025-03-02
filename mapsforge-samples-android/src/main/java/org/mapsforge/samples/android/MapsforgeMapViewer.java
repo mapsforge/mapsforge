@@ -141,9 +141,9 @@ public class MapsforgeMapViewer extends Activity {
                 MapDataStore mapDataStore = new MapFile(fis);
                 tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
                         mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);
-                tileRendererLayer.setCacheTileMargin(1);
-                tileRendererLayer.setCacheZoomMinus(1);
-                tileRendererLayer.setCacheZoomPlus(2);
+                //tileRendererLayer.setCacheTileMargin(1);
+                //tileRendererLayer.setCacheZoomMinus(1);
+                //tileRendererLayer.setCacheZoomPlus(2);
                 tileRendererLayer.setXmlRenderTheme(MapsforgeThemes.MOTORIDER);
 
                 mapView.getLayerManager().getLayers().add(tileRendererLayer);
@@ -230,9 +230,9 @@ public class MapsforgeMapViewer extends Activity {
             MapDataStore mapDataStore = new MapFile(fis);
             tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
                     mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);
-            tileRendererLayer.setCacheTileMargin(1);
-            tileRendererLayer.setCacheZoomMinus(1);
-            tileRendererLayer.setCacheZoomPlus(2);
+            //tileRendererLayer.setCacheTileMargin(1);
+            //tileRendererLayer.setCacheZoomMinus(1);
+            //tileRendererLayer.setCacheZoomPlus(2);
             tileRendererLayer.setXmlRenderTheme(theme);
 
             mapView.getLayerManager().getLayers().add(tileRendererLayer);
