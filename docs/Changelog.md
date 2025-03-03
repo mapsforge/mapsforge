@@ -1,6 +1,11 @@
 # Changelog
 
 ## Next version
+ 
+- Minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.25.0)
+
+## Version 0.24.0 (2025-03-03)
 
 - Multi-map deduplicate optimization [#1635](https://github.com/mapsforge/mapsforge/pull/1635)
 - Label direct rendering `CachedMapDataStoreLabelStore` [#1646](https://github.com/mapsforge/mapsforge/pull/1646)
