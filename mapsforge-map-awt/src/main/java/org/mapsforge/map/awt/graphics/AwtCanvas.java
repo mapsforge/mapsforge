@@ -21,10 +21,10 @@
  */
 package org.mapsforge.map.awt.graphics;
 
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
@@ -51,7 +51,7 @@ class AwtCanvas implements Canvas {
     private static Map.Entry<Float, Composite> sizeOneShadingCompositeCache = null;
     private final AffineTransform transform = new AffineTransform();
 
-    private static Composite getHillshadingComposite(float magnitude) {
+    private static Composite getHillshadingComposite(float magnitude, boolean external) {
         Map.Entry<Float, Composite> existing = sizeOneShadingCompositeCache;
         if (existing != null && existing.getKey() == magnitude) {
             // JMM says: "A thread-safe immutable object is seen as immutable by all threads, even
@@ -60,7 +60,7 @@ class AwtCanvas implements Canvas {
             return existing.getValue();
         }
 
-        Composite selected = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, magnitude);
+        Composite selected = AlphaComposite.getInstance(external ? AlphaComposite.SRC_OVER : AlphaComposite.SRC_ATOP, magnitude);
 
         if (sizeOneShadingCompositeCache == null) {
             // only cache the first magnitude value, in the rare instance that more than one
@@ -417,9 +417,9 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
-    public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude, int color) {
+    public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude, int color, boolean external) {
         Composite oldComposite = this.graphics2D.getComposite();
-        Composite composite = getHillshadingComposite(magnitude);
+        Composite composite = getHillshadingComposite(magnitude, external);
         this.graphics2D.setComposite(composite);
 
         if (bitmap == null) {
