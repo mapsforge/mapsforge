@@ -93,7 +93,7 @@ public class AndroidBitmap extends BaseBitmap implements Bitmap {
 
     @Override
     public void compress(OutputStream outputStream) throws IOException {
-        if (!this.bitmap.compress(CompressFormat.PNG, 0, outputStream)) {
+        if (!this.bitmap.compress(CompressFormat.PNG, 100, outputStream)) {
             throw new IOException("Failed to write bitmap to output stream");
         }
     }
