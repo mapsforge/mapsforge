@@ -363,7 +363,7 @@ class AndroidCanvas implements Canvas {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude, int color) {
+    public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude, int color, boolean external) {
         this.canvas.save();
 
         shadePaint.setAlpha((int) (255 * magnitude));

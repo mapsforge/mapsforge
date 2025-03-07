@@ -125,7 +125,7 @@ public class CanvasRasterer {
 
         // Synchronized to prevent concurrent modification by other threads e.g. while merging neighbors
         synchronized (bitmap.getMutex()) {
-            canvas.shadeBitmap(bitmap, container.hillsRect, container.tileRect, container.magnitude, container.color);
+            canvas.shadeBitmap(bitmap, container.hillsRect, container.tileRect, container.magnitude, container.color, false);
         }
     }
 

@@ -77,6 +77,8 @@ public interface GraphicContext {
      * Shade whole map tile when tileRect is null (and bitmap, shadeRect are null).
      * Shade tileRect neutral if bitmap is null (and shadeRect).
      * Shade tileRect with bitmap otherwise.
+     *
+     * @param external For external use, like producing transparent bitmap tiles.
      */
-    void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude, int color);
+    void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude, int color, boolean external);
 }

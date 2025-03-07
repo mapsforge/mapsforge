@@ -93,6 +93,7 @@ public class Samples extends Activity {
 
         linearLayout.addView(createLabel(null));
         linearLayout.addView(createButton(LocationOverlayMapViewer.class));
+        linearLayout.addView(createButton(HillshadingMapViewer.class));
         linearLayout.addView(createButton(PoiSearchViewer.class, null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +101,6 @@ public class Samples extends Activity {
             }
         }));
         linearLayout.addView(createButton(StyleMenuMapViewer.class));
-        linearLayout.addView(createButton(HillshadingMapViewer.class));
         linearLayout.addView(createButton(LabelLayerUsingLabelCacheMapViewer.class));
         linearLayout.addView(createButton(LabelLayerUsingMapDataStoreMapViewer.class));
         linearLayout.addView(createButton(RotationMapViewer.class));
