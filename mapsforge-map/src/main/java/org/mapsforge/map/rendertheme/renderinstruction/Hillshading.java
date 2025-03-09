@@ -222,7 +222,7 @@ public class Hillshading {
 
                     final Rectangle hillsRect = (shadingTile == null) ? null : new Rectangle(shadingSubrectLeft, shadingSubrectTop, shadingSubrectRight, shadingSubrectBottom);
                     final Rectangle maptileRect = new Rectangle(maptileSubrectLeft, maptileSubrectTop, maptileSubrectRight, maptileSubrectBottom);
-                    final ShapeContainer hillShape = new HillshadingContainer(shadingTile, effectiveMagnitude, effectiveColor, hillsRect, maptileRect);
+                    final ShapeContainer hillShape = new HillshadingContainer(shadingTile, effectiveMagnitude, effectiveColor, hillsRect, maptileRect, hillsRenderConfig.isExternal());
 
                     final ShapePaintContainer newContainer = new ShapePaintContainer(hillShape, null);
 

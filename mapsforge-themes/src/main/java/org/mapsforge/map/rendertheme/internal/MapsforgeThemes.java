@@ -28,6 +28,7 @@ import java.io.InputStream;
 public enum MapsforgeThemes implements XmlRenderTheme {
 
     DEFAULT("/assets/mapsforge/default.xml"),
+    HILLSHADING("/assets/mapsforge/hillshading.xml"),
     MOTORIDER("/assets/mapsforge/motorider.xml"),
     MOTORIDER_DARK("/assets/mapsforge/motorider-dark.xml"),
     OSMARENDER("/assets/mapsforge/osmarender.xml");

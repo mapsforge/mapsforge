@@ -29,6 +29,7 @@ public class HillsRenderConfig {
     protected final ShadeTileSource tileSource;
     protected volatile float magnitudeScaleFactor = 1f;
     protected volatile int color = 0;
+    protected volatile boolean external;
 
     public HillsRenderConfig(ShadeTileSource tileSource) {
         this.tileSource = tileSource;
@@ -97,6 +98,21 @@ public class HillsRenderConfig {
      */
     public HillsRenderConfig setColor(int color) {
         this.color = color;
+        return this;
+    }
+
+    /**
+     * @return Use in external hillshading tile layer.
+     */
+    public boolean isExternal() {
+        return external;
+    }
+
+    /**
+     * Use in external hillshading tile layer.
+     */
+    public HillsRenderConfig setExternal(boolean external) {
+        this.external = external;
         return this;
     }
 
