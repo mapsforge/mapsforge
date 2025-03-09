@@ -29,6 +29,7 @@ public enum MapsforgeThemes implements XmlRenderTheme {
 
     BIKER("/assets/mapsforge/biker.xml"),
     DEFAULT("/assets/mapsforge/default.xml"),
+    HILLSHADING("/assets/mapsforge/hillshading.xml"),
     MOTORIDER("/assets/mapsforge/motorider.xml"),
     OSMARENDER("/assets/mapsforge/osmarender.xml");
 

@@ -23,7 +23,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.hills.DemFolderAndroidContent;
+import org.mapsforge.map.android.util.AndroidUtil;
+import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.hills.*;
+import org.mapsforge.map.layer.labels.LabelLayer;
+import org.mapsforge.map.layer.renderer.TileRendererLayer;
+import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
 
 import java.io.File;
 
@@ -31,7 +36,8 @@ import java.io.File;
  * Standard map view with hill shading.
  */
 public class HillshadingMapViewer extends DefaultTheme {
-    private HillsRenderConfig hillsConfig;
+    private static final boolean EXTERNAL_HILLSHADING = false;
+
     /**
      * holds the DEM folder URI in a quick and dirty "reboot" after selection
      */
@@ -42,7 +48,6 @@ public class HillshadingMapViewer extends DefaultTheme {
     @SuppressWarnings("deprecation")
     @Override
     protected void createLayers() {
-
         DemFolder anyDems = null;
         Uri demUri = getIntent().getParcelableExtra(demFolderKey);
         boolean demFiles = getIntent().getBooleanExtra(demUseFiles, false);
@@ -53,13 +58,11 @@ public class HillshadingMapViewer extends DefaultTheme {
         } else if (demUri != null) {
             anyDems = new DemFolderAndroidContent(demUri, this, getContentResolver());
         }
+
+        HillsRenderConfig hillsConfig = null;
         if (anyDems == null) {
-
-
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setTitle("Select DEM source (srtm hgt files) for hillshading:");
-
-
             String fileState = !demFolder.exists() ? "(does not exist)" :
                     !demFolder.isDirectory() ? "(not a directory)" :
                             !demFolder.canRead() ? "(cannot read)" :
@@ -79,11 +82,8 @@ public class HillshadingMapViewer extends DefaultTheme {
                     startSelect();
                 }
             });
-
-
             alert.show();
-        }
-        if (anyDems != null) {
+        } else {
             final AdaptiveClasyHillShading algorithm = new AdaptiveClasyHillShading()
                     // You can make additional behavior adjustments
                     .setAdaptiveZoomEnabled(true)
@@ -98,19 +98,44 @@ public class HillshadingMapViewer extends DefaultTheme {
             // You can override theme values:
             // hillsConfig.setMagnitudeScaleFactor(1);
             // hillsConfig.setColor(0xff000000);
+            hillsConfig.setExternal(EXTERNAL_HILLSHADING);
 
             // call after setting/changing parameters, walks filesystem for DEM metadata
             hillsConfig.indexOnThread();
         }
 
-        super.createLayers();
+        TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCaches.get(0),
+                mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(),
+                false, false, true, EXTERNAL_HILLSHADING ? null : hillsConfig);
+        mapView.getLayerManager().getLayers().add(tileRendererLayer);
+
+        if (EXTERNAL_HILLSHADING) {
+            TileRendererLayer hillshadingLayer = new TileRendererLayer(tileCaches.get(1),
+                    getMapFile(), mapView.getModel().mapViewPosition, true, false, false,
+                    AndroidGraphicFactory.INSTANCE, hillsConfig);
+            hillshadingLayer.setXmlRenderTheme(MapsforgeThemes.HILLSHADING);
+            mapView.getLayerManager().getLayers().add(hillshadingLayer);
+        }
+
+        LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
+        mapView.getLayerManager().getLayers().add(labelLayer);
+    }
+
+    private TileCache createHillshadingCache() {
+        return AndroidUtil.createTileCache(this, getPersistableId2(),
+                mapView.getModel().displayModel.getTileSize(), getScreenRatio(),
+                mapView.getModel().frameBufferModel.getOverdrawFactor());
     }
 
     @Override
-    protected HillsRenderConfig getHillsRenderConfig() {
-        return hillsConfig;
+    protected void createTileCaches() {
+        super.createTileCaches();
+        tileCaches.add(createHillshadingCache());
     }
 
+    private String getPersistableId2() {
+        return getPersistableId() + "-2";
+    }
 
     private void startSelect() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
@@ -121,8 +146,6 @@ public class HillshadingMapViewer extends DefaultTheme {
         );
 
         startActivityForResult(intent, SELECT_DEM_FOLDER);
-
-        hillsConfig = null;
     }
 
     @Override

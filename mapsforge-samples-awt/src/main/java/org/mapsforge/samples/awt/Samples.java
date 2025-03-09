@@ -63,6 +63,7 @@ public final class Samples {
     private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
     private static final boolean SHOW_DEBUG_LAYERS = false;
     private static final boolean SHOW_RASTER_MAP = false;
+    private static final boolean EXTERNAL_HILLSHADING = false;
 
     private static final String MESSAGE = "Are you sure you want to exit the application?";
     private static final String TITLE = "Confirm close";
@@ -98,6 +99,7 @@ public final class Samples {
             // You can override theme values
             // hillsConfig.setMagnitudeScaleFactor(1);
             // hillsConfig.setColor(0xff000000);
+            hillsConfig.setExternal(EXTERNAL_HILLSHADING);
 
             hillsConfig.indexOnThread();
             args = Arrays.copyOfRange(args, 1, args.length);
@@ -185,8 +187,20 @@ public final class Samples {
                 }
                 multiMapDataStore.addMapDataStore(mapFileDataStore, false, false);
             }
-            TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, multiMapDataStore, mapView.getModel().mapViewPosition, hillsRenderConfig);
+            TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, multiMapDataStore, mapView.getModel().mapViewPosition, EXTERNAL_HILLSHADING ? null : hillsRenderConfig);
             layers.add(tileRendererLayer);
+            if (EXTERNAL_HILLSHADING) {
+                TileCache hillshadingCache = AwtUtil.createTileCache(
+                        tileSize,
+                        mapView.getModel().frameBufferModel.getOverdrawFactor(),
+                        1024,
+                        new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString()));
+                TileRendererLayer hillshadingLayer = new TileRendererLayer(hillshadingCache, multiMapDataStore,
+                        mapView.getModel().mapViewPosition, true, false, false,
+                        GRAPHIC_FACTORY, hillsRenderConfig);
+                hillshadingLayer.setXmlRenderTheme(MapsforgeThemes.HILLSHADING);
+                layers.add(hillshadingLayer);
+            }
             LabelLayer labelLayer = new LabelLayer(AwtGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
             mapView.getLayerManager().getLayers().add(labelLayer);
             boundingBox = multiMapDataStore.boundingBox();
