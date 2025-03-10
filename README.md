@@ -36,8 +36,8 @@ In other words, you are allowed to include Mapsforge library in your Android app
 
 | Android       |
 | ------------- |
-|![cruiser-rev42-a](https://github.com/user-attachments/assets/8531c67d-2b7f-4381-8d08-7221ffca1b66)|
-|![cruiser-rev42-b](https://github.com/user-attachments/assets/2137dcf4-d2aa-4b6e-8b59-e40b57a69d53)|
+|![Mapsforge](https://github.com/user-attachments/assets/41d66231-ce00-4647-856e-86092dd60d12)|
+|![Mapsforge2](https://github.com/user-attachments/assets/2898c12a-d051-412a-acd2-e1c4a847cd57)|
 
 | Desktop       |
 | ------------- |
