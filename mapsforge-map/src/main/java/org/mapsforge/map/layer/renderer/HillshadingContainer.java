@@ -21,18 +21,24 @@ import org.mapsforge.core.model.Rectangle;
 
 public class HillshadingContainer implements ShapeContainer {
 
+    public final Bitmap bitmap;
     public final float magnitude;
     public final int color;
-    public final Bitmap bitmap;
     public final Rectangle hillsRect;
     public final Rectangle tileRect;
+    public final boolean external;
 
-    public HillshadingContainer(HillshadingBitmap bitmap, float magnitude, int color, Rectangle hillsRect, Rectangle tileRect) {
+    public HillshadingContainer(HillshadingBitmap bitmap, float magnitude, int color, Rectangle hillsRect, Rectangle tileRect, boolean external) {
+        this.bitmap = bitmap;
         this.magnitude = magnitude;
         this.color = color;
-        this.bitmap = bitmap;
         this.hillsRect = hillsRect;
         this.tileRect = tileRect;
+        this.external = external;
+    }
+
+    public HillshadingContainer(HillshadingBitmap bitmap, float magnitude, int color, Rectangle hillsRect, Rectangle tileRect) {
+        this(bitmap, magnitude, color, hillsRect, tileRect, false);
     }
 
     public HillshadingContainer(HillshadingBitmap bitmap, float magnitude, Rectangle hillsRect, Rectangle tileRect) {
