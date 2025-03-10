@@ -47,4 +47,10 @@ public class MapsforgeThemesTest {
         XmlRenderTheme xmlRenderTheme = MapsforgeThemes.MOTORIDER;
         Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
     }
+
+    @Test
+    public void bikerTest() throws XmlPullParserException, IOException {
+        XmlRenderTheme xmlRenderTheme = MapsforgeThemes.BIKER;
+        Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
+    }
 }
