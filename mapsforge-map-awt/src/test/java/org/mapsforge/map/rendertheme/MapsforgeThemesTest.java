@@ -47,10 +47,4 @@ public class MapsforgeThemesTest {
         XmlRenderTheme xmlRenderTheme = MapsforgeThemes.MOTORIDER;
         Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
     }
-
-    @Test
-    public void motoriderDarkTest() throws XmlPullParserException, IOException {
-        XmlRenderTheme xmlRenderTheme = MapsforgeThemes.MOTORIDER_DARK;
-        Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
-    }
 }
