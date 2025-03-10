@@ -88,7 +88,6 @@
     <string name="dialog_theme_title">Select a theme</string>
 
     <string name="theme_motorider">Motorider</string>
-    <string name="theme_motorider_dark">Motorider Dark</string>
     <string name="theme_default">Default</string>
     <string name="theme_osmarender">Osmarender</string>
     <string name="theme_external">External theme (Android 5)</string>

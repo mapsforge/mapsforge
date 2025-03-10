@@ -89,10 +89,6 @@ public class MapsforgeMapViewer extends Activity {
             loadTheme(MapsforgeThemes.MOTORIDER);
             item.setChecked(true);
             return true;
-        } else if (itemId == R.id.theme_motorider_dark) {
-            loadTheme(MapsforgeThemes.MOTORIDER_DARK);
-            item.setChecked(true);
-            return true;
         } else if (itemId == R.id.theme_default) {
             loadTheme(MapsforgeThemes.DEFAULT);
             item.setChecked(true);
