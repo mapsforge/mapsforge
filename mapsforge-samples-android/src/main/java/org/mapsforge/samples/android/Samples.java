@@ -16,16 +16,12 @@
  */
 package org.mapsforge.samples.android;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DownloadManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -52,8 +48,7 @@ public class Samples extends Activity {
 
     private Button createButton(final Class<?> clazz, String text, View.OnClickListener customListener) {
         Button button = new Button(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-            button.setAllCaps(false);
+        button.setAllCaps(false);
         if (text == null) {
             button.setText(clazz.getSimpleName());
         } else {
@@ -109,35 +104,6 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(OverlayMapViewer.class));
         linearLayout.addView(createButton(BubbleOverlay.class));
         linearLayout.addView(createButton(ViewOverlayViewer.class));
-
-        linearLayout.addView(createLabel("Multi-map"));
-        linearLayout.addView(createButton(DualMapViewer.class));
-        linearLayout.addView(createButton(DualOverviewMapViewer.class));
-        linearLayout.addView(createButton(MultiMapLowResWorld.class, null, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!MultiMapLowResWorld.getWorldMapFile(Samples.this).exists()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Samples.this);
-                    builder.setTitle("Warning");
-                    builder.setMessage(R.string.startup_message_multimap);
-                    builder.setPositiveButton(R.string.downloadnowbutton, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // TODO show progress and wait for download
-                            DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-                            DownloadManager.Request downloadRequest = new DownloadManager.Request(
-                                    Uri.parse("https://download.mapsforge.org/maps/v5/world/world.map"));
-                            downloadRequest.setDescription("Mapsforge low-res world map");
-                            downloadRequest.setDestinationInExternalFilesDir(Samples.this, null, MultiMapLowResWorld.getWorldMapFileName());
-                            downloadManager.enqueue(downloadRequest);
-                        }
-                    });
-                    builder.show();
-                } else {
-                    startActivity(new Intent(Samples.this, MultiMapLowResWorld.class));
-                }
-            }
-        }));
     }
 
     @Override
@@ -146,18 +112,12 @@ public class Samples extends Activity {
         return true;
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @SuppressWarnings("deprecation")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.menu_preferences) {
             Intent intent = new Intent(this, Settings.class);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-            } else {
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
             startActivity(intent);
             return true;
         } else if (itemId == R.id.menu_svgclear) {
