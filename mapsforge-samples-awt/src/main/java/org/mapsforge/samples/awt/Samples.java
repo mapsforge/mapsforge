@@ -47,16 +47,15 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.reader.MapFile;
+import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.io.FileNotFoundException;
+import java.util.*;
 import java.util.prefs.Preferences;
 
 public final class Samples {
@@ -76,11 +75,16 @@ public final class Samples {
      * Starts the {@code Samples}.
      *
      * @param args command line args: expects the map files as multiple parameters
-     *             with possible SRTM hgt folder as 1st argument.
+     *             with possible theme file as 1st argument
+     *             and possible SRTM hgt folder as 2nd argument.
      */
     public static void main(String[] args) {
         // Square frame buffer
         Parameters.SQUARE_FRAME_BUFFER = false;
+
+        final File themeFile = getThemeFile(args);
+        if (themeFile != null)
+            args = Arrays.copyOfRange(args, 1, args.length);
 
         final HillsRenderConfig hillsConfig;
         File demFolder = getDemFolder(args);
@@ -136,7 +140,7 @@ public final class Samples {
 
             @Override
             public void windowOpened(WindowEvent e) {
-                final BoundingBox boundingBox = addLayers(mapView, mapFiles, hillsConfig);
+                final BoundingBox boundingBox = addLayers(mapView, mapFiles, hillsConfig, themeFile);
                 final Model model = mapView.getModel();
                 double latitude = preferences.getDouble(LATITUDE, 0);
                 double longitude = preferences.getDouble(LONGITUDE, 0);
@@ -151,7 +155,7 @@ public final class Samples {
         frame.setVisible(true);
     }
 
-    private static BoundingBox addLayers(MapView mapView, List<File> mapFiles, HillsRenderConfig hillsRenderConfig) {
+    private static BoundingBox addLayers(MapView mapView, List<File> mapFiles, HillsRenderConfig hillsRenderConfig, File themeFile) {
         Layers layers = mapView.getLayerManager().getLayers();
 
         int tileSize = SHOW_RASTER_MAP ? 256 : 512;
@@ -187,7 +191,7 @@ public final class Samples {
                 }
                 multiMapDataStore.addMapDataStore(mapFileDataStore, false, false);
             }
-            TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, multiMapDataStore, mapView.getModel().mapViewPosition, EXTERNAL_HILLSHADING ? null : hillsRenderConfig);
+            TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, multiMapDataStore, mapView.getModel().mapViewPosition, EXTERNAL_HILLSHADING ? null : hillsRenderConfig, themeFile);
             layers.add(tileRendererLayer);
             if (EXTERNAL_HILLSHADING) {
                 TileCache hillshadingCache = AwtUtil.createTileCache(
@@ -236,7 +240,7 @@ public final class Samples {
         };
     }
 
-    private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, final MapViewPosition mapViewPosition, HillsRenderConfig hillsRenderConfig) {
+    private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, final MapViewPosition mapViewPosition, HillsRenderConfig hillsRenderConfig, File themeFile) {
         TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore, mapViewPosition, false, false, true, GRAPHIC_FACTORY, hillsRenderConfig) {
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
@@ -245,7 +249,11 @@ public final class Samples {
                 return true;
             }
         };
-        tileRendererLayer.setXmlRenderTheme(MapsforgeThemes.MOTORIDER);
+        try {
+            tileRendererLayer.setXmlRenderTheme(themeFile != null ? new ExternalRenderTheme(themeFile.getAbsolutePath()) : MapsforgeThemes.MOTORIDER);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         return tileRendererLayer;
     }
 
@@ -283,6 +291,22 @@ public final class Samples {
                 result.add(mapFile);
         }
         return result;
+    }
+
+    private static File getThemeFile(String[] args) {
+        if (args.length == 0) {
+            if (SHOW_RASTER_MAP) {
+                return null;
+            } else {
+                throw new IllegalArgumentException("missing argument: <mapFile>");
+            }
+        }
+
+        File themeFile = new File(args[0]);
+        if (themeFile.exists() && themeFile.isFile() && themeFile.canRead() && themeFile.getName().toLowerCase(Locale.ROOT).endsWith(".xml")) {
+            return themeFile;
+        }
+        return null;
     }
 
     /**
