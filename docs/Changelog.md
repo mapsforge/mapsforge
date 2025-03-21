@@ -4,6 +4,7 @@
 
 - Hillshading tile layer [#1672](https://github.com/mapsforge/mapsforge/pull/1672)
 - POI: Arabic normalization [#1680](https://github.com/mapsforge/mapsforge/pull/1680)
+- Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
 - Biker map theme [#1674](https://github.com/mapsforge/mapsforge/issues/1674)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.25.0)
