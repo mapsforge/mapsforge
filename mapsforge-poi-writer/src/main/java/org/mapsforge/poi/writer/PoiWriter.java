@@ -27,6 +27,7 @@ import org.mapsforge.poi.storage.*;
 import org.mapsforge.poi.writer.logging.LoggerWrapper;
 import org.mapsforge.poi.writer.logging.ProgressManager;
 import org.mapsforge.poi.writer.model.PoiWriterConfiguration;
+import org.mapsforge.poi.writer.util.ArabicNormalizer;
 import org.openstreetmap.osmosis.core.container.v0_6.EntityContainer;
 import org.openstreetmap.osmosis.core.domain.v0_6.*;
 
@@ -287,6 +288,11 @@ public final class PoiWriter {
      * @return string without accents
      */
     private String normalize(String str) {
+        if (ArabicNormalizer.isSpecialArabic(str)) {
+            String normalized = ArabicNormalizer.normalize(str);
+            if (normalized != null && !normalized.trim().isEmpty())
+                return normalized;
+        }
         String normalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
         return NAME_NORMALIZE_PATTERN.matcher(normalizedString).replaceAll("");
     }
