@@ -2,6 +2,11 @@
 
 ## Next version
 
+- Minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.26.0)
+
+## Version 0.25.0 (2025-04-04)
+
 - Hillshading tile layer [#1672](https://github.com/mapsforge/mapsforge/pull/1672)
 - POI: Arabic normalization [#1680](https://github.com/mapsforge/mapsforge/pull/1680)
 - Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
