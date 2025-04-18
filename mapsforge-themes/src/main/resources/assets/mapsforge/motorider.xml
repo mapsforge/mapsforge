@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    REVISION 47, 21 March 2025
+    VERSION 48, 13th April 2025
 	this is the default/light Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -15,7 +15,7 @@
             <name lang="ar" value="أماكن إقامة" />
             <name lang="ca" value="Allotjament" />
             <name lang="cs" value="Ubytování" />
-            <name lang="de" value="Unterkunft" />
+            <name lang="de" value="Unterkünfte" />
             <name lang="el" value="Διαμονή" />
             <name lang="en" value="Accommodation" />
             <name lang="es" value="Alojamiento" />
@@ -299,21 +299,21 @@
             <name lang="zh" value="非铺装/越野路线" />
             <cat id="off_road" />
         </layer>
-        <layer id="road_detail">
-            <name lang="ar" value="المزيد من تفاصيل الطريق" />
-            <name lang="ca" value="Més detalls de la carretera" />
-            <name lang="cs" value="Další podrobnosti o silnicích" />
-            <name lang="de" value="Weitere Straßendetails" />
-            <name lang="el" value="Περισσότερες οδικές λεπτομέρειες" />
-            <name lang="en" value="More road details" />
-            <name lang="es" value="Más detalles de la carretera" />
-            <name lang="fr" value="Plus de détails sur la route" />
-            <name lang="it" value="Maggiori dettagli stradali" />
-            <name lang="ko" value="자세한 도로 정보" />
-            <name lang="nl" value="Meer wegdetails" />
-            <name lang="pl" value="Więcej szczegółów drogi" />
-            <name lang="zh" value="更多道路详情" />
-            <cat id="road_detail" />
+        <layer id="map_detail">
+            <name lang="ar" value="مزيد من تفاصيل الخريطة" />
+            <name lang="ca" value="Més detalls del mapa" />
+            <name lang="cs" value="Více detailů v mapě" />
+            <name lang="de" value="Weitere Kartendetails" />
+            <name lang="el" value="Περισσότερες λεπτομέρειες χάρτη" />
+            <name lang="en" value="More map details" />
+            <name lang="es" value="Más detalles del mapa" />
+            <name lang="fr" value="Plus de détails sur la carte" />
+            <name lang="it" value="Maggiori dettagli sulla mappa" />
+            <name lang="ko" value="더 많은 지도 세부 정보" />
+            <name lang="nl" value="Meer kaartdetails" />
+            <name lang="pl" value="Więcej szczegółów mapy" />
+            <name lang="zh" value="更多地图详情" />
+            <cat id="map_detail" />
         </layer>
         <layer enabled="true" id="nature">
             <name lang="ar" value="الغطاء النباتي" />
@@ -350,7 +350,7 @@
             <overlay id="contour" />
             <overlay id="housenumber" />
             <overlay id="off_road" />
-            <overlay id="road_detail" />
+            <overlay id="map_detail" />
             <overlay id="nature" />
         </layer>
     </stylemenu>
@@ -959,7 +959,10 @@
                 <rule e="way" k="highway" v="service" zoom-min="15">
                     <line stroke="#000000" stroke-width="1.1" />
                 </rule>
-                <rule e="way" k="highway" v="cycleway" zoom-min="15">
+                <rule cat="map_detail" e="way" k="highway" v="cycleway" zoom-min="14">
+                    <line stroke="#3366FF" stroke-width="1.0" />
+                </rule>
+                <rule e="way" k="highway" v="cycleway" zoom-min="18">
                     <line stroke="#3366FF" stroke-width="1.0" />
                 </rule>
                 <rule e="way" k="highway" v="unclassified" zoom-min="12" zoom-max="12">
@@ -1069,17 +1072,14 @@
         <rule e="way" k="area" v="~|no|false">
             <!-- highway cores -->
             <rule e="way" k="highway" v="footway" zoom-min="17">
-                <line stroke="#888888" stroke-dasharray="12,1" stroke-linecap="butt"
-                    stroke-width="0.3" />
+                <line stroke="#888888" stroke-dasharray="12,1" stroke-linecap="butt" stroke-width="0.3" />
             </rule>
             <rule e="way" k="highway" v="path" zoom-min="17">
-                <line stroke="#9C6800" stroke-dasharray="12,1" stroke-linecap="butt"
-                    stroke-width="0.5" />
+                <line stroke="#9C6800" stroke-dasharray="12,1" stroke-linecap="butt" stroke-width="0.5" />
             </rule>
             <rule e="way" k="highway" v="steps" zoom-min="17">
                 <line stroke="#888888" stroke-linecap="butt" stroke-width="0.5" />
-                <line stroke="#DDDDDD" stroke-dasharray="3,3" stroke-linecap="butt"
-                    stroke-width="0.5" />
+                <line stroke="#DDDDDD" stroke-dasharray="3,3" stroke-linecap="butt" stroke-width="0.5" />
             </rule>
             <rule e="way" k="highway" v="track|byway" zoom-min="17">
                 <rule e="way" k="tracktype" v="grade1">
@@ -1089,25 +1089,20 @@
                     <line stroke="#cbc0b3" stroke-width="0.6" />
                 </rule>
                 <rule e="way" k="tracktype" v="grade3">
-                    <line stroke="#cbc0b3" stroke-dasharray="25,5" stroke-linecap="butt"
-                        stroke-width="0.6" />
+                    <line stroke="#cbc0b3" stroke-dasharray="25,5" stroke-linecap="butt" stroke-width="0.6" />
                 </rule>
                 <rule e="way" k="tracktype" v="grade4">
-                    <line stroke="#cbc0b3" stroke-dasharray="20,5,8,5" stroke-linecap="butt"
-                        stroke-width="0.6" />
+                    <line stroke="#cbc0b3" stroke-dasharray="20,5,8,5" stroke-linecap="butt" stroke-width="0.6" />
                 </rule>
                 <rule e="way" k="tracktype" v="grade5">
-                    <line stroke="#cbc0b3" stroke-dasharray="8,5" stroke-linecap="butt"
-                        stroke-width="0.6" />
+                    <line stroke="#cbc0b3" stroke-dasharray="8,5" stroke-linecap="butt" stroke-width="0.6" />
                 </rule>
                 <rule e="way" k="tracktype" v="~">
-                    <line stroke="#cbc0b3" stroke-dasharray="15,5" stroke-linecap="butt"
-                        stroke-width="0.6" />
+                    <line stroke="#cbc0b3" stroke-dasharray="15,5" stroke-linecap="butt" stroke-width="0.6" />
                 </rule>
             </rule>
             <rule e="way" k="highway" v="bridleway" zoom-min="17">
-                <line stroke="#cbc0b3" stroke-dasharray="10,12" stroke-linecap="round"
-                    stroke-width="0.6" />
+                <line stroke="#cbc0b3" stroke-dasharray="10,12" stroke-linecap="round" stroke-width="0.6" />
             </rule>
             <rule e="way" k="highway" v="cycleway|raceway" zoom-min="15">
                 <line stroke="#F0F0FF" stroke-width="0.8" />
@@ -1273,18 +1268,21 @@
 			</rule>
 		</rule>
 		<!--off-road/track cores-->
-		<rule e="way" k="highway" v="footway" zoom-min="14">
-			<line stroke="#888888" stroke-dasharray="12,1" stroke-linecap="butt"
-				stroke-width="0.3" />
+		<rule cat="map_detail" e="way" k="highway" v="footway" zoom-min="15">
+			<line stroke="#888888" stroke-dasharray="12,1" stroke-linecap="butt" stroke-width="0.3" />
 		</rule>
-		<rule e="way" k="highway" v="path" zoom-min="14">
-			<line stroke="#9C6800" stroke-dasharray="12,1" stroke-linecap="butt"
-				stroke-width="0.5" />
+		<rule e="way" k="highway" v="footway" zoom-min="17">
+			<line stroke="#888888" stroke-dasharray="12,1" stroke-linecap="butt" stroke-width="0.3" />
 		</rule>
-		<rule e="way" k="highway" v="steps" zoom-min="14">
+		<rule cat="map_detail" e="way" k="highway" v="path" zoom-min="14">
+			<line stroke="#9C6800" stroke-dasharray="12,1" stroke-linecap="butt" stroke-width="0.5" />
+		</rule>
+		<rule e="way" k="highway" v="path" zoom-min="17">
+			<line stroke="#9C6800" stroke-dasharray="12,1" stroke-linecap="butt" stroke-width="0.5" />
+		</rule>
+		<rule e="way" k="highway" v="steps" zoom-min="16">
 			<line stroke="#888888" stroke-linecap="butt" stroke-width="0.5" />
-			<line stroke="#DDDDDD" stroke-dasharray="3,3" stroke-linecap="butt"
-				stroke-width="0.5" />
+			<line stroke="#DDDDDD" stroke-dasharray="3,3" stroke-linecap="butt" stroke-width="0.5" />
 		</rule>
 		<rule e="way" k="highway" v="track|byway" zoom-min="14">
 			<rule e="way" k="tracktype" v="grade1">
@@ -1294,33 +1292,31 @@
 				<line stroke="#cc9966" stroke-width="0.6" />
 			</rule>
 			<rule e="way" k="tracktype" v="grade3">
-				<line stroke="#8c8c8c" stroke-dasharray="25,5" stroke-linecap="butt"
-					stroke-width="0.6" />
+				<line stroke="#8c8c8c" stroke-dasharray="25,5" stroke-linecap="butt" stroke-width="0.6" />
 			</rule>
 			<rule e="way" k="tracktype" v="grade4">
-				<line stroke="#669900" stroke-dasharray="20,5,8,5" stroke-linecap="butt"
-					stroke-width="0.6" />
+				<line stroke="#669900" stroke-dasharray="20,5,8,5" stroke-linecap="butt" stroke-width="0.6" />
 			</rule>
 			<rule e="way" k="tracktype" v="grade5">
-				<line stroke="#669900" stroke-dasharray="8,5" stroke-linecap="butt"
-					stroke-width="0.6" />
+				<line stroke="#669900" stroke-dasharray="8,5" stroke-linecap="butt" stroke-width="0.6" />
 			</rule>
 			<rule e="way" k="tracktype" v="~">
-				<line stroke="#cbc0b3" stroke-dasharray="15,5" stroke-linecap="butt"
-					stroke-width="0.6" />
+				<line stroke="#cbc0b3" stroke-dasharray="15,5" stroke-linecap="butt" stroke-width="0.6" />
 			</rule>
 		</rule>
 		<rule e="way" k="highway" v="bridleway" zoom-min="14">
-			<line stroke="#cbc0b3" stroke-dasharray="10,12" stroke-linecap="round"
-				stroke-width="0.6" />
+			<line stroke="#cbc0b3" stroke-dasharray="10,12" stroke-linecap="round" stroke-width="0.6" />
 		</rule>
-		<rule e="way" k="highway" v="cycleway" zoom-min="14">
+		<rule cat="map_detail" e="way" k="highway" v="cycleway" zoom-min="14">
+			<line stroke="#F0F0FF" stroke-width="0.8" />
+		</rule>
+		<rule e="way" k="highway" v="cycleway" zoom-min="17">
 			<line stroke="#F0F0FF" stroke-width="0.8" />
 		</rule>
     </rule>
 
     <!-- provides additional road captions for Motorway, Trunk, Primary/Secondary at levels 10, 11 and 12 respectively -->
-    <rule cat="road_detail" e="way" k="highway" v="*" zoom-min="8">
+    <rule cat="map_detail" e="way" k="highway" v="*" zoom-min="8">
         <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="12" zoom-max="12">
             <caption k="ref" fill="#FFFFFF" font-size="10" font-style="normal" priority="30" stroke="#804000" stroke-width="8"/>
         </rule>
@@ -1527,7 +1523,7 @@
         </rule>
         <rule cat="mountain_peak" e="node" k="natural" v="peak" zoom-min="11">
             <symbol id="peak" src="jar:symbols/peak.svg" />
-            <caption fill="#000000" font-size="12" font-style="bold" k="name"
+            <caption fill="#000000" font-size="12" font-style="bold" k="name" 
                 priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="peak" />
             <rule e="any" k="*" v="*" zoom-min="14">
                 <caption fill="#000000" font-size="12" font-style="bold" k="ele" position="above"
@@ -1760,6 +1756,9 @@
 				</rule>
             </rule>
         </rule>
+        <rule cat="map_detail" e="node" k="highway" v="traffic_signals" zoom-min="15">
+            <symbol src="jar:symbols/transport/traffic_lights.svg" />
+        </rule>
         <rule e="node" k="highway" v="traffic_signals" zoom-min="17">
             <symbol src="jar:symbols/transport/traffic_lights.svg" />
         </rule>
@@ -1887,7 +1886,27 @@
         <symbol src="jar:symbols/railway-crossing.svg" />
     </rule>
     <!-- barriers -->
-    <rule e="any" k="barrier" v="*" zoom-min="17">
+    <rule cat="map_detail" e="any" k="barrier" v="*" zoom-min="16">
+        <rule e="node" k="barrier" v="bollard">
+            <symbol src="jar:symbols/barrier/bollard.svg" />
+        </rule>
+        <rule e="node" k="barrier" v="lift_gate|chain">
+            <symbol src="jar:symbols/barrier/lift_gate.svg" />
+        </rule>
+        <rule e="node" k="barrier" v="stile">
+            <symbol src="jar:symbols/barrier/stile.svg" />
+        </rule>
+        <rule e="node" k="barrier" v="cycle_barrier">
+            <symbol src="jar:symbols/barrier/cycle_barrier.svg" />
+        </rule>
+        <rule e="node" k="barrier" v="gate">
+            <symbol src="jar:symbols/barrier/gate.svg" />
+        </rule>
+        <rule e="any" k="barrier" v="block">
+            <symbol src="jar:symbols/barrier/blocks.svg" />
+        </rule>
+    </rule>
+    <rule e="any" k="barrier" v="*" zoom-min="18">
         <rule e="node" k="barrier" v="bollard">
             <symbol src="jar:symbols/barrier/bollard.svg" />
         </rule>
@@ -2145,7 +2164,7 @@
             <caption fill="#666666" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                 stroke-width="2.0" />
         </rule>-->
-        <rule cat="housenumber" e="any" k="addr:housenumber" v="*" zoom-min="19">
+        <rule cat="housenumber" e="any" k="addr:housenumber" v="*" zoom-min="16">
             <caption fill="#666666" font-size="10" font-style="bold" k="addr:housenumber"
                 stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
