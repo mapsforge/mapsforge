@@ -101,4 +101,7 @@
     <string name="startup_message_twomaps">To run this sample activity, you need also a map with filename second.map installed on storage.</string>
     <string name="startup_message_poi">To run this sample activity, you need any poi with filename berlin.poi installed on storage.\n\nadb push file.poi /Android/media/org.mapsforge.samples.android/berlin.poi</string>
 
+    <string name="warning">Warning</string>
+    <string name="startup_message_mbtiles">To run this sample activity, you need an MBTiles database installed on storage.</string>
+    <string name="exit">Exit</string>
 </resources>

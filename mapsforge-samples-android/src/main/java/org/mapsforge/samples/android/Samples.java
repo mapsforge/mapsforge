@@ -99,6 +99,7 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(LabelLayerUsingLabelCacheMapViewer.class));
         linearLayout.addView(createButton(LabelLayerUsingMapDataStoreMapViewer.class));
         linearLayout.addView(createButton(RotationMapViewer.class));
+        linearLayout.addView(createButton(MBTilesBitmapActivity.class));
 
         linearLayout.addView(createLabel("Overlays"));
         linearLayout.addView(createButton(OverlayMapViewer.class));

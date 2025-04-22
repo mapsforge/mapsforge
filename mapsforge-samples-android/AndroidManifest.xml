@@ -108,6 +108,9 @@
             android:name=".MapsforgeMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
+            android:name=".MBTilesBitmapActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
             android:name=".MultiLingualMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
