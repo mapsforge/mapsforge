@@ -641,6 +641,8 @@
         <osm-tag key="oneway" renderable="false" value="-1"/>
         <osm-tag equivalent-values="0,false" key="oneway" renderable="false" value="no"/>
 
+        <osm-tag key="toll" value="tl_yes" equivalent-values="true,yes" renderable="false"/>
+
         <osm-tag key="piste:difficulty" renderable="false" value="novice"/>
         <osm-tag key="piste:difficulty" renderable="false" value="easy"/>
         <osm-tag key="piste:difficulty" renderable="false" value="intermediate"/>
