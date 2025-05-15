@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 48, 13th April 2025
+    VERSION 50, 14th May 2025
 	this is the default/light Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -315,6 +315,22 @@
             <name lang="zh" value="更多地图详情" />
             <cat id="map_detail" />
         </layer>
+        <layer id="toll_roads">
+            <name lang="ar" value="الطرق ذات الرسوم" />
+            <name lang="ca" value="autopistes de peatge" />
+            <name lang="cs" value="Zpoplatněné silnice" />
+            <name lang="de" value="Mautstraßen" />
+            <name lang="el" value="Δρόμοι με διόδια" />
+            <name lang="en" value="Toll roads" />
+            <name lang="es" value="Autopistas de peaje" />
+            <name lang="fr" value="Routes à péage" />
+            <name lang="it" value="Strade a pedaggio" />
+            <name lang="ko" value="유료 도로" />
+            <name lang="nl" value="Tolwegen" />
+            <name lang="pl" value="Drogi płatne" />
+            <name lang="zh" value="收费公路" />
+            <cat id="toll_roads" />
+        </layer>
         <layer enabled="true" id="nature">
             <name lang="ar" value="الغطاء النباتي" />
             <name lang="ca" value="Vegetació" />
@@ -351,6 +367,7 @@
             <overlay id="housenumber" />
             <overlay id="off_road" />
             <overlay id="map_detail" />
+            <overlay id="toll_roads" />
             <overlay id="nature" />
         </layer>
     </stylemenu>
@@ -990,7 +1007,7 @@
                     <line stroke="#60888888" stroke-width="0.4" />
                 </rule>
                 <rule e="way" k="highway" v="construction" zoom-min="15">
-                    <line stroke="#60888888" stroke-width="1.5" />
+					<line stroke="#60888888" stroke-width="1.5" />
                 </rule>
                 <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="10" zoom-max="10">
                     <line stroke="#000000" stroke-width="0.3" />
@@ -1168,9 +1185,18 @@
             </rule>
             <rule e="way" k="highway" v="motorway|motorway_link" zoom-min="7">
                 <line stroke="#98afcd" stroke-width="2.5" />
-            </rule>
+			</rule>
         </rule>
     </rule>
+
+	<rule cat="toll_roads" e="way" k="highway" v="*">
+		<rule e="way" k="toll" v="tl_yes" zoom-min="6" zoom-max="6">
+			<line stroke="#FF0000" stroke-dasharray="5,10" stroke-linecap="butt" stroke-width="1.5" />
+		</rule>
+		<rule e="way" k="toll" v="tl_yes" zoom-min="7"> 
+			<line stroke="#FF0000" stroke-dasharray="5,10" stroke-linecap="butt" stroke-width="2.5" />
+		</rule>
+	</rule>
 
     <!-- highway captions etc - these parameters define the look and visibility of road names/references -->
     <rule e="node" k="highway" v="motorway_junction" zoom-min="14">
@@ -1345,7 +1371,7 @@
     </rule>
 
     <!-- ferry routes -->
-    <rule e="way" k="route" v="ferry">
+    <rule e="way" k="route" v="ferry" zoom-min="11">
         <line stroke="#5b7ad7" stroke-dasharray="5,5" stroke-linecap="butt" stroke-width="0.8" />
 		<pathText fill="#606060" font-size="12" font-style="bold" k="name" stroke="#FFFFFF" stroke-width="2.0" />
     </rule>
@@ -1926,6 +1952,14 @@
             <symbol src="jar:symbols/barrier/blocks.svg" />
         </rule>
     </rule>
+
+    <!-- this makes toll roads (ie: France) easier to spot -->
+	<rule e="any" k="barrier" v="*" zoom-min="15">
+        <rule e="any" k="barrier" v="toll_booth">
+            <symbol src="jar:symbols/barrier/gate.svg" />
+			<caption fill="#FF0000" font-size="12" font-style="bold" k="name" stroke="#FFFFFF" stroke-width="2.0" symbol-id="shop" />
+        </rule>
+	</rule>
 
     <!-- names for POIs -->
     <rule cat="food" e="any" k="amenity" v="restaurant|fast_food|biergarten|cafe|pub|bar" zoom-min="17">
