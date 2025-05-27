@@ -165,7 +165,7 @@ public class Caption extends RenderInstruction {
                 this.symbolId = value;
             } else if (TEXT_TRANSFORM.equals(name)) {
                 this.textTransform = TextTransform.fromString(value);
-            } else if (TEXT_WRAP_WIDTH .equals(name)) {
+            } else if (TEXT_WRAP_WIDTH.equals(name)) {
                 int maxWidth = (int) (XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor());
                 if (maxWidth == 0) {
                     maxTextWidth = Integer.MAX_VALUE;
@@ -210,6 +210,9 @@ public class Caption extends RenderInstruction {
             if (caption == null) {
                 return;
             }
+            if (displayModel.getThemeCallback() != null) {
+                caption = displayModel.getThemeCallback().getText(poi, caption);
+            }
 
             float horizontalOffset = 0f;
 
@@ -239,6 +242,9 @@ public class Caption extends RenderInstruction {
             String caption = this.textKey.getValue(way.getTags());
             if (caption == null) {
                 return;
+            }
+            if (displayModel.getThemeCallback() != null) {
+                caption = displayModel.getThemeCallback().getText(way, caption);
             }
 
             float horizontalOffset = 0f;

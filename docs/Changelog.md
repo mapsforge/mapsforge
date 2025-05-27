@@ -3,6 +3,7 @@
 ## Next version
 
 - MBTiles raster tile source (Android) [#1687](https://github.com/mapsforge/mapsforge/pull/1687)
+- `ThemeCallback.getText` method [#1700](https://github.com/mapsforge/mapsforge/pull/1700)
 - Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
 - Biker map theme improvements [#1674](https://github.com/mapsforge/mapsforge/issues/1674)
 - Minor improvements and bug fixes
