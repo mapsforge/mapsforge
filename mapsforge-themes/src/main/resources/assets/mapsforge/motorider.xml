@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 50, 14th May 2025
+    VERSION 51, 28th May 2025
 	this is the default/light Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -683,7 +683,7 @@
                 priority="-100" repeat-gap="500" repeat-start="50" stroke="#FFFFFF" stroke-width="2.0" />
             <!--<caption fill="#2564da" font-size="11" font-style="bold" k="name" priority="50" stroke="#FFFFFF" stroke-width="2.0" />-->
         </rule>
-        <rule e="way" k="waterway" v="stream|canal" zoom-min="15">
+        <rule e="way" k="waterway" v="drain|stream|canal" zoom-min="15">
             <pathText display="always" fill="#2564da" font-size="11" font-style="bold" k="name"
                 priority="-100" repeat-gap="250" repeat-start="0" stroke="#FFFFFF" stroke-width="2.0" />
             <!--<caption fill="#2564da" font-size="11" font-style="bold" k="name" priority="50" stroke="#FFFFFF" stroke-width="2.0" />-->
@@ -1462,8 +1462,12 @@
                     k="name" priority="10" stroke="#FFFFFF" stroke-width="0.1" />
             </rule>
         </rule>
-        <rule e="node" k="place" v="island|islet" zoom-min="14">
-            <caption fill="#202020" font-family="serif" font-size="12" font-style="italic" k="name"
+        <rule e="node" k="place" v="island" zoom-min="10" zoom-max="15">
+            <caption fill="#0000FF" font-size="12" font-style="italic" k="name"
+                priority="30" stroke="#FFFFFF" stroke-width="0.1" />
+        </rule>
+        <rule e="node" k="place" v="islet" zoom-min="12" zoom-max="15">
+            <caption fill="#0000FF" font-size="12" font-style="italic" k="name"
                 priority="30" stroke="#FFFFFF" stroke-width="0.1" />
         </rule>
         <rule e="node" k="place" v="suburb" zoom-min="13">
@@ -1480,6 +1484,10 @@
         </rule>
         <rule e="node" k="place" v="village" zoom-min="11">
             <caption font-size="12" font-style="normal" k="name" priority="85"
+                stroke="#FFFFFF" stroke-width="2.0" />
+        </rule>
+        <rule cat="map_detail" e="node" k="place" v="town" zoom-min="8" zoom-max="8">
+            <caption font-size="12" font-style="bold" k="name" priority="85"
                 stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
         <rule e="node" k="place" v="town" zoom-min="9" zoom-max="12">
@@ -1530,8 +1538,8 @@
 
     <!-- natural -->
     <rule e="any" k="*" v="*">
-        <rule e="way" k="natural" v="water" zoom-min="15">
-                <caption fill="#000000" font-size="11" font-style="italic" k="name" priority="10"
+        <rule e="way" k="natural" v="water" zoom-min="14">
+                <caption fill="#2d51bc" font-size="12" k="name" priority="10"
                     stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
         <rule e="way" k="natural" v="wood" zoom-min="16">
