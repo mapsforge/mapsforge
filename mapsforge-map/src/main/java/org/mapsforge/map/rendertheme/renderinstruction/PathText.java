@@ -177,6 +177,9 @@ public class PathText extends RenderInstruction {
             if (caption == null) {
                 return;
             }
+            if (displayModel.getThemeCallback() != null) {
+                caption = displayModel.getThemeCallback().getText(way, caption);
+            }
 
             Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
             if (dyScale == null) {

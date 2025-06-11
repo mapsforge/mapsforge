@@ -15,6 +15,8 @@
 package org.mapsforge.map.rendertheme;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.map.datastore.PointOfInterest;
+import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 
 /**
@@ -30,4 +32,14 @@ public interface ThemeCallback {
      * @return the color-int
      */
     int getColor(RenderInstruction origin, int color);
+
+    /**
+     * @return the text
+     */
+    String getText(PointOfInterest poi, String text);
+
+    /**
+     * @return the text
+     */
+    String getText(PolylineContainer way, String text);
 }
