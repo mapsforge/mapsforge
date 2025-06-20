@@ -93,6 +93,14 @@ public class MapsforgeMapViewer extends Activity {
             loadTheme(MapsforgeThemes.BIKER);
             item.setChecked(true);
             return true;
+        } else if (itemId == R.id.theme_dark) {
+            loadTheme(MapsforgeThemes.DARK);
+            item.setChecked(true);
+            return true;
+        } else if (itemId == R.id.theme_indigo) {
+            loadTheme(MapsforgeThemes.INDIGO);
+            item.setChecked(true);
+            return true;
         } else if (itemId == R.id.theme_default) {
             loadTheme(MapsforgeThemes.DEFAULT);
             item.setChecked(true);
