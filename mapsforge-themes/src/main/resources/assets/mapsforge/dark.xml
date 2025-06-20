@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 51, 28th May 2025
+    VERSION 51, 20th June 2025
     this is the "Dark" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -412,8 +412,12 @@
     </rule>
 
     <!-- landuse, natural -->
+    <rule cat="nature" e="way" k="natural" v="scree" zoom-min="14">
+        <area fill="#BB001a00" />
+        <!--<area src="jar:patterns/quarry.svg" symbol-height="90" symbol-width="90" />-->
+    </rule>
     <rule cat="nature" e="way" k="natural|landuse" v="forest|wood" zoom-min="9">
-        <area fill="#003300" />
+        <area fill="#001a00" />
         <!--<rule e="any" k="*" v="*" zoom-min="12">
             <rule e="any" k="wood" v="coniferous">
                 <area src="jar:patterns/coniferous.svg" symbol-height="50" symbol-width="50" />
@@ -428,10 +432,10 @@
         </rule>-->
     </rule>
     <rule cat="nature" e="way" k="landuse|natural" v="meadow|grassland" zoom-min="11">
-        <area fill="#003300" />
+        <area fill="#001a00" />
     </rule>
     <rule cat="nature" e="way" k="landuse" v="field|farm|farmland|orchard|vineyard" zoom-min="12">
-        <area fill="#001a00" />
+        <area fill="#262626" />
     </rule>
     <rule cat="nature" e="way" k="natural" v="marsh|wetland|mud" zoom-min="12">
         <area fill="#483805" />
@@ -445,19 +449,15 @@
         <!--<area src="jar:patterns/hills.svg" symbol-height="40" symbol-width="40" />-->
     </rule>
     <rule cat="nature" e="way" k="natural" v="heath" zoom-min="10">
-        <area fill="#003300" />
+        <area fill="#262626" />
         <!--<area src="jar:patterns/grass.svg" symbol-percent="30" />-->
     </rule>
     <rule cat="nature" e="way" k="natural" v="scrub" zoom-min="12">
-        <area fill="#003300" />
+        <area fill="#262626" />
         <!--<area src="jar:patterns/scrub.svg" symbol-percent="50" />-->
     </rule>
     <rule cat="nature" e="way" k="natural" v="fell" zoom-min="14">
         <area fill="#BBE9FCE6" />
-        <!--<area src="jar:patterns/quarry.svg" symbol-height="90" symbol-width="90" />-->
-    </rule>
-    <rule cat="nature" e="way" k="natural" v="scree" zoom-min="14">
-        <area fill="#BBF5F5F5" />
         <!--<area src="jar:patterns/quarry.svg" symbol-height="90" symbol-width="90" />-->
     </rule>
     <rule cat="nature" e="way" k="natural" v="glacier" zoom-min="12">
@@ -468,7 +468,7 @@
         <!--<area src="jar:patterns/quarry.svg" symbol-height="90" symbol-width="90" />-->
     </rule>
     <rule cat="nature" e="way" k="landuse|leisure" v="garden|village_green|common|grass" zoom-min="12">
-        <area fill="#003300" />
+        <area fill="#001a00" />
     </rule>
     <rule cat="nature" e="way" k="landuse|leisure" v="allotments|greenfield|golf_course" zoom-min="13">
         <area fill="#003300" />
@@ -755,7 +755,7 @@
     </rule>
 
     <!-- hillshading -->
-    <hillshading color="#FFEEEEEE" zoom-min="9" zoom-max="17" />
+    <hillshading color="#FF444444" zoom-min="9" zoom-max="17" />
 
 	<!-- contour lines LAYER, to work with Freizeitkarte and OpenAndroMaps -->
 	<rule cat="contour" e="any" k="contour_ext" v="*">

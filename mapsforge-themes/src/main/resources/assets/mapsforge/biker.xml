@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 51, 28th May 2025
+    VERSION 51, 20th June 2025
 	this is the "Biker" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -412,6 +412,10 @@
     </rule>
 
     <!-- landuse, natural -->
+    <rule cat="nature" e="way" k="natural" v="scree" zoom-min="14">
+        <area fill="#BBF5F5F5" />
+        <!--<area src="jar:patterns/quarry.svg" symbol-height="90" symbol-width="90" />-->
+    </rule>
     <rule cat="nature" e="way" k="natural|landuse" v="forest|wood" zoom-min="9">
         <area fill="#a6cd98" />
         <!--<rule e="any" k="*" v="*" zoom-min="12">
@@ -454,10 +458,6 @@
     </rule>
     <rule cat="nature" e="way" k="natural" v="fell" zoom-min="14">
         <area fill="#BBE9FCE6" />
-        <!--<area src="jar:patterns/quarry.svg" symbol-height="90" symbol-width="90" />-->
-    </rule>
-    <rule cat="nature" e="way" k="natural" v="scree" zoom-min="14">
-        <area fill="#BBF5F5F5" />
         <!--<area src="jar:patterns/quarry.svg" symbol-height="90" symbol-width="90" />-->
     </rule>
     <rule cat="nature" e="way" k="natural" v="glacier" zoom-min="12">
