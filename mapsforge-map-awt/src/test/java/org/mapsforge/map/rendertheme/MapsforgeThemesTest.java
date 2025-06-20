@@ -53,4 +53,16 @@ public class MapsforgeThemesTest {
         XmlRenderTheme xmlRenderTheme = MapsforgeThemes.BIKER;
         Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
     }
+
+    @Test
+    public void darkTest() throws XmlPullParserException, IOException {
+        XmlRenderTheme xmlRenderTheme = MapsforgeThemes.DARK;
+        Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
+    }
+
+    @Test
+    public void indigoTest() throws XmlPullParserException, IOException {
+        XmlRenderTheme xmlRenderTheme = MapsforgeThemes.INDIGO;
+        Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
+    }
 }
