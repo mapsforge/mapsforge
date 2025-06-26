@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 51, 20th June 2025
+    VERSION 52, 26th June 2025
     this is the "Dark" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -755,45 +755,45 @@
     </rule>
 
     <!-- hillshading -->
-    <hillshading color="#FF444444" zoom-min="9" zoom-max="17" />
+    <hillshading color="#FF606060" zoom-min="9" zoom-max="17" />
 
 	<!-- contour lines LAYER, to work with Freizeitkarte and OpenAndroMaps -->
 	<rule cat="contour" e="any" k="contour_ext" v="*">
 		<rule e="way" k="*" v="*" zoom-max="12">
 			<rule e="way" k="contour_ext" v="elevation_major">
-				<line stroke="#a4998e" stroke-width="0.3" />
+				<line stroke="#8E8072" stroke-width="0.3" />
 			</rule>
 		</rule>
 		<rule e="way" k="*" v="*" zoom-min="12" zoom-max="13">
 			<rule e="way" k="contour_ext" v="elevation_medium">
-				<line stroke="#a4998e" stroke-width="0.2" />
+				<line stroke="#8E8072" stroke-width="0.2" />
 			</rule>
 			<rule e="way" k="contour_ext" v="elevation_major">
-				<line stroke="#a4998e" stroke-width="0.5" />
+				<line stroke="#8E8072" stroke-width="0.5" />
 			</rule>
 		</rule>
 		<rule e="way" k="*" v="*" zoom-min="14" zoom-max="15">
 			<rule e="way" k="contour_ext" v="elevation_minor" zoom-max="15">
-				<line stroke="#a4998e" stroke-width="0.12" curve="cubic" />
+				<line stroke="#8E8072" stroke-width="0.12" curve="cubic" />
 			</rule>
 			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
-				<line stroke="#a4998e" stroke-width="0.3" curve="cubic" />
+				<line stroke="#8E8072" stroke-width="0.3" curve="cubic" />
 			</rule>
 		</rule>
 		<rule e="way" k="*" v="*" zoom-min="16" zoom-max="16">
 			<rule e="way" k="contour_ext" v="elevation_minor">
-				<line stroke="#a4998e" stroke-width="0.08" curve="cubic" />
+				<line stroke="#8E8072" stroke-width="0.08" curve="cubic" />
 			</rule>
 			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
-				<line stroke="#a4998e" stroke-width="0.2" curve="cubic" />
+				<line stroke="#8E8072" stroke-width="0.2" curve="cubic" />
 			</rule>
 		</rule>
 		<rule e="way" k="*" v="*" zoom-min="17">
 			<rule e="way" k="contour_ext" v="elevation_minor">
-				<line stroke="#a4998e" stroke-width="0.06" curve="cubic" />
+				<line stroke="#8E8072" stroke-width="0.06" curve="cubic" />
 			</rule>
 			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
-				<line stroke="#a4998e" stroke-width="0.15" curve="cubic" />
+				<line stroke="#8E8072" stroke-width="0.15" curve="cubic" />
 			</rule>
 		</rule>
 		<!-- captions -->
