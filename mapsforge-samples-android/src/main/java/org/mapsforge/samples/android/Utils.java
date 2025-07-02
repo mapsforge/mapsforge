@@ -18,22 +18,15 @@ package org.mapsforge.samples.android;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.view.View.MeasureSpec;
-import android.widget.Toast;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.Point;
-import org.mapsforge.map.android.graphics.AndroidBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.layer.overlay.Marker;
-import org.mapsforge.map.view.MapView;
 
 /**
  * Utility functions that can be used across different mapsforge based
@@ -69,41 +62,12 @@ public final class Utils {
         }
     }
 
-    static Marker createMarker(Context c, int resourceIdentifier, LatLong latLong) {
-        Bitmap bitmap = new AndroidBitmap(BitmapFactory.decodeResource(c.getResources(), resourceIdentifier));
-        return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2);
-    }
-
     static Paint createPaint(int color, int strokeWidth, Style style) {
         Paint paint = AndroidGraphicFactory.INSTANCE.createPaint();
         paint.setColor(color);
         paint.setStrokeWidth(strokeWidth);
         paint.setStyle(style);
         return paint;
-    }
-
-    static Marker createTappableMarker(Context c, int resourceIdentifier, LatLong latLong, MapView mapView) {
-        Bitmap bitmap = new AndroidBitmap(BitmapFactory.decodeResource(c.getResources(), resourceIdentifier));
-        bitmap.incrementRefCount();
-        return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2) {
-            @Override
-            public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                if (contains(layerXY, tapXY, mapView)) {
-                    Toast.makeText(c, "Marker long press\n" + tapLatLong, Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                if (contains(layerXY, tapXY, mapView)) {
-                    Toast.makeText(c, "Marker tap\n" + tapLatLong, Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                return false;
-            }
-        };
     }
 
     @SuppressWarnings("deprecation")

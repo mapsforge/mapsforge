@@ -19,11 +19,7 @@ import android.graphics.BitmapFactory;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
@@ -35,11 +31,11 @@ import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.ZOrderGroupLayer;
-import org.mapsforge.map.layer.overlay.Circle;
-import org.mapsforge.map.layer.overlay.FixedPixelCircle;
-import org.mapsforge.map.layer.overlay.Marker;
-import org.mapsforge.map.layer.overlay.Polygon;
-import org.mapsforge.map.layer.overlay.Polyline;
+import org.mapsforge.map.layer.overlay.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Map viewer with a few overlays added and map rotation.
@@ -176,7 +172,26 @@ public class OverlayMapViewer extends DownloadLayerViewer {
         latLongs5.add(latLong13);
         polygonWithShaderAligned.setPoints(latLongs5);
 
-        Marker marker1 = Utils.createTappableMarker(this, R.drawable.marker_red, latLong1, mapView);
+        Bitmap bitmap = new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_red));
+        Marker marker = new Marker(latLong1, bitmap, 0, -bitmap.getHeight() / 2) {
+            @Override
+            public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (contains(layerXY, tapXY, mapView)) {
+                    Toast.makeText(OverlayMapViewer.this, "Marker long press\n" + tapLatLong, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (contains(layerXY, tapXY, mapView)) {
+                    Toast.makeText(OverlayMapViewer.this, "Marker tap\n" + tapLatLong, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        };
 
         Circle circle = new Circle(latLong3, 100, Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.WHITE), 0, Style.FILL), null) {
             @Override
@@ -224,7 +239,7 @@ public class OverlayMapViewer extends DownloadLayerViewer {
         layers.add(polygonWithShaderAligned);
         layers.add(polygonWithShaderNonAligned);
         layers.add(circle);
-        layers.add(marker1);
+        layers.add(marker);
         layers.add(fixedPixelCircle);
         layers.add(createPolygonWithHoles(anchorPolygonWithHoles));
         layers.add(createZOrderObjects(anchorZOrderObjects));
@@ -238,8 +253,8 @@ public class OverlayMapViewer extends DownloadLayerViewer {
         final int count = 10;
         for (int i = 0; i < count; i++) {
             Paint paintFill = Utils.createPaint(
-                AndroidGraphicFactory.INSTANCE.createColor(255, 255 - (255 * i) / count, (255 * i) / count, 0), 2,
-                Style.FILL);
+                    AndroidGraphicFactory.INSTANCE.createColor(255, 255 - (255 * i) / count, (255 * i) / count, 0), 2,
+                    Style.FILL);
             Paint paintStroke = Utils.createPaint(
                     AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 2,
                     Style.STROKE);
@@ -323,10 +338,10 @@ public class OverlayMapViewer extends DownloadLayerViewer {
         return polygonWithHoles;
     }
 
-    private static List<LatLong> createPoints(final LatLong base, final int ... latLonAdds) {
+    private static List<LatLong> createPoints(final LatLong base, final int... latLonAdds) {
         final List<LatLong> points = new ArrayList<>(latLonAdds.length / 2);
         for (int pos = 0; pos < latLonAdds.length - 1; pos += 2) {
-            points.add(addFraction(base, latLonAdds[pos], latLonAdds[pos+1]));
+            points.add(addFraction(base, latLonAdds[pos], latLonAdds[pos + 1]));
         }
         return points;
     }
