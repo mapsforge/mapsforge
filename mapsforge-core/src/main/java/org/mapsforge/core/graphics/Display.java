@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,27 +16,33 @@
 package org.mapsforge.core.graphics;
 
 /**
- * The enum Display governs whether map elements should be displayed.
+ * The enum Display governs whether map elements should be displayed and how.
+ * The main choice is between {@link #IFSPACE} and {@link #ALWAYS}.
  * <p/>
- * The main choice is
- * between IFSPACE which means an element is displayed if there is space for it (also depends on
- * priority), while ALWAYS means that an element will always be displayed (so it will be overlapped by
- * others and will not be part of the element placing algorithm). NEVER is a convenience fallback, which
- * means that an element will never be displayed.
+ * <ul>
+ * <li>{@link #IFSPACE} means an element is displayed if there is space for it (also depends on priority). Recommended.</li>
+ * <li>{@link #ALWAYS} means an element will always be displayed at the expense of IFSPACE elements.
+ * If there is another ALWAYS element that collides, a choice will be made (based on priority etc.)
+ * as to which single element will be displayed to prevent overlap.</li>
+ * <li>{@link #FORCED} is a convenience fallback, which means that an element will always be displayed
+ * regardless of whether there is an overlap or not (so others can easily cover it).</li>
+ * <li>{@link #NEVER} is also a convenience fallback, which means that an element will never be displayed.</li>
+ * </ul>
  */
 
 public enum Display {
-    NEVER, ALWAYS, IFSPACE;
+    IFSPACE, ALWAYS, FORCED, NEVER;
 
     public static Display fromString(String value) {
-        if ("never".equals(value)) {
-            return NEVER;
-        } else if (("always").equals(value)) {
-            return ALWAYS;
-        } else if (("ifspace").equals(value)) {
+        if ("ifspace".equals(value)) {
             return IFSPACE;
+        } else if ("always".equals(value)) {
+            return ALWAYS;
+        } else if ("forced".equals(value)) {
+            return FORCED;
+        } else if ("never".equals(value)) {
+            return NEVER;
         }
         throw new IllegalArgumentException("Invalid value for Display: " + value);
     }
-
 }
