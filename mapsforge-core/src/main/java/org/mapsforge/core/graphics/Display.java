@@ -20,7 +20,7 @@ package org.mapsforge.core.graphics;
  * The main choice is between {@link #IFSPACE} and {@link #ALWAYS}.
  * <p/>
  * <ul>
- * <li>{@link #IFSPACE} means an element is displayed if there is space for it (also depends on priority). Recommended.</li>
+ * <li>{@link #IFSPACE} means an element is displayed if there is space for it (also depends on priority). Default.</li>
  * <li>{@link #ALWAYS} means an element will always be displayed at the expense of IFSPACE elements.
  * If there is another ALWAYS element that collides, a choice will be made (based on priority etc.)
  * as to which single element will be displayed to prevent overlap.</li>
