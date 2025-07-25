@@ -273,10 +273,11 @@ Labels and icons are now drawn in order of priority, higher priorities first. Th
 ```
 
 ## Display
-The display directive has been added whereever priorities can be used. The following values can be used:
- - always: an element will always be displayed regardless of space. 
- - ifspace: an element will only be displayed if the layout algorithm determines there is space and no higher priority element will take it. 
- - never: an element is not displayed. This is useful to blank out elements.
+The display directive has been added wherever priorities can be used. The following values can be used:
+- ifspace: An element is displayed if there is space for it and no higher priority element will take it. Recommended.
+- always: An element will always be displayed at the expense of "ifspace" elements. If there is another "always" element that collides, a choice will be made (based on priority etc.) as to which single element will be displayed to prevent overlap.
+- forced: A convenience fallback, which means that an element will always be displayed regardless of whether there is an overlap or not (so others can easily cover it).
+- never: A convenience fallback, which means that an element will never be displayed.
 
 ## SVG Symbols
 
