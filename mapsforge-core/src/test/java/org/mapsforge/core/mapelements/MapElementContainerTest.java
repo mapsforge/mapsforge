@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Sublimis
+ * Copyright 2024-2025 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -56,6 +56,8 @@ public class MapElementContainerTest {
         final MapElementContainer container2 = new MyDummyContainer(new Point(10, 0), Display.ALWAYS, 0);
         final MapElementContainer container3 = new MyDummyContainer(new Point(10, 10), Display.ALWAYS, 0);
         final MapElementContainer container3_2 = new MyDummyContainer(new Point(10, 10), Display.ALWAYS, 0);
+        final MapElementContainer container4 = new MyDummyContainer(new Point(0, 0), Display.FORCED, 0);
+        final MapElementContainer container5 = new MyDummyContainer(new Point(10, 0), Display.FORCED, 0);
 
         // The containers all have equal priorities, but should not be considered equal
         Assert.assertTrue(0 > container1.compareTo(container2));
@@ -64,12 +66,14 @@ public class MapElementContainerTest {
         Assert.assertTrue(0 < container3.compareTo(container1));
         Assert.assertTrue(0 > container2.compareTo(container3));
         Assert.assertTrue(0 < container3.compareTo(container2));
+        Assert.assertTrue(0 > container4.compareTo(container5));
+        Assert.assertTrue(0 < container5.compareTo(container4));
 
         // The containers should be equal
         Assert.assertEquals(0, container3.compareTo(container3_2));
 
         // The list is already sorted
-        final List<MapElementContainer> list1 = Arrays.asList(container1, container2, container3, container3_2);
+        final List<MapElementContainer> list1 = Arrays.asList(container1, container2, container3, container3_2, container4, container5);
         final List<MapElementContainer> list2 = new ArrayList<>(list1);
 
         // This sort should not change an already sorted list (guaranteed to be stable)
@@ -78,5 +82,7 @@ public class MapElementContainerTest {
         Assert.assertSame(list1.get(0), list2.get(0));
         Assert.assertSame(list1.get(1), list2.get(1));
         Assert.assertSame(list2.get(2), container3);
+        Assert.assertSame(list1.get(4), list2.get(4));
+        Assert.assertSame(list1.get(5), list2.get(5));
     }
 }
