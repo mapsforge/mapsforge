@@ -14,14 +14,15 @@ dependencies {
 jar {
     from('src/main/config/') {
         filter {
-            line -> line.replace('${poi.writer.version}', project.version)
+            line -> line.replace('${poi.writer.version}', version)
         }
     }
 }
 
-task fatJar(type: Jar, dependsOn: configurations.runtimeClasspath) {
+tasks.register('fatJar', Jar) {
+    dependsOn configurations.runtimeClasspath
     archiveClassifier = 'jar-with-dependencies'
-    duplicatesStrategy DuplicatesStrategy.INCLUDE
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from {
         configurations.runtimeClasspath.collect {
             it.isDirectory() ? it : zipTree(it)
