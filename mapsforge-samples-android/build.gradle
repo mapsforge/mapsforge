@@ -11,8 +11,8 @@ dependencies {
 }
 
 android {
-    namespace 'org.mapsforge.samples.android'
-    compileSdk androidCompileSdk()
+    namespace = 'org.mapsforge.samples.android'
+    compileSdkVersion androidCompileSdk()
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -22,8 +22,8 @@ android {
     defaultConfig {
         versionCode project.versionCode()
         versionName project.versionName()
-        minSdk androidMinSdk()
-        targetSdk androidTargetSdk()
+        minSdkVersion androidMinSdk()
+        targetSdkVersion androidTargetSdk()
         testApplicationId "org.mapsforge.samples.android.test"
         testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
@@ -42,6 +42,6 @@ android {
     }
 
     lint {
-        abortOnError false
+        abortOnError = false
     }
 }
