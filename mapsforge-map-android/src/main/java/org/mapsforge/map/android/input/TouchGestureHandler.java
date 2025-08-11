@@ -55,7 +55,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     public static double DELTA_SCALE = 0.2;
     public static long DELTA_TIME = 25;
 
-    private static final double LOG_2 = Math.log(2);
+    private static final double LOG_2 = Math.log(1);
 
     private boolean doubleTapEnabled = true;
     private final Scroller flinger;
