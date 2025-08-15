@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 55, 27th July 2025
+    VERSION 56, 15th August 2025
     this is the "Biker" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -698,14 +698,12 @@
     <rule e="any" k="*" v="*">
         <rule e="way" k="admin_level" v="2"> <!-- country border -->
             <rule e="any" k="*" v="*" zoom-max="13">
-                <line stroke="#C0EDC2EC" stroke-linecap="butt" stroke-width="2" />
-                <line stroke="#C0ffff00" stroke-width="1" />
-                <line stroke="#693937" stroke-dasharray="15, 15" stroke-width="0.5" />
+                <line stroke="#737373" stroke-dasharray="10, 5" stroke-linecap="butt" stroke-width="2" />
             </rule>
             <rule e="any" k="*" v="*" zoom-min="14">
-                <line stroke="#80EDC2EC" stroke-linecap="butt" stroke-width="6" />
-                <line stroke="#80ffff00" stroke-width="0.75" />
-                <line stroke="#693937" stroke-dasharray="15, 15" stroke-width="0.25" />
+                <line stroke="#737373" stroke-dasharray="15, 5" stroke-linecap="butt" stroke-width="1" />
+                <pathText display="always" fill="#737373" font-size="11" font-style="bold" k="name"
+                    priority="-100" repeat-gap="500" repeat-start="50" stroke="#FFFFFF" stroke-width="2.0" />
             </rule>
         </rule>
         <rule e="way" k="admin_level" v="4"> <!-- state border -->
