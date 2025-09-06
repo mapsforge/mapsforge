@@ -131,15 +131,6 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="textKey">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="ele" />
-            <xs:enumeration value="addr:housenumber" />
-            <xs:enumeration value="name" />
-            <xs:enumeration value="ref" />
-        </xs:restriction>
-    </xs:simpleType>
-
     <xs:simpleType name="textOrientation">
         <xs:restriction base="xs:string">
             <xs:enumeration value="auto" />
@@ -174,7 +165,7 @@
     <xs:complexType name="caption">
         <xs:attribute name="cat" type="xs:string" use="optional" />
         <xs:attribute name="priority" default="0" type="xs:integer" use="optional" />
-        <xs:attribute name="k" type="tns:textKey" use="required" />
+        <xs:attribute name="k" type="xs:string" use="required" />
         <xs:attribute name="display" default="ifspace" type="tns:display" use="optional" />
         <xs:attribute name="dy" default="0" type="xs:float" use="optional" />
         <xs:attribute name="font-family" default="default" type="tns:fontFamily" use="optional" />
@@ -264,7 +255,7 @@
     <xs:complexType name="pathText">
         <xs:attribute name="cat" type="xs:string" use="optional" />
         <xs:attribute name="display" default="ifspace" type="tns:display" use="optional" />
-        <xs:attribute name="k" type="tns:textKey" use="required" />
+        <xs:attribute name="k" type="xs:string" use="required" />
         <xs:attribute name="dy" default="0" type="xs:float" use="optional" />
         <xs:attribute name="font-family" default="default" type="tns:fontFamily" use="optional" />
         <xs:attribute name="font-style" default="normal" type="tns:fontStyle" use="optional" />
