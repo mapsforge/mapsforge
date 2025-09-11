@@ -23,7 +23,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
-import org.mapsforge.map.layer.labels.MapDataStoreLabelStore;
+import org.mapsforge.map.layer.labels.LabelStore;
 
 /**
  * The DirectRenderer renders map tiles by reading from a {@link MapDataStore}.
@@ -44,7 +44,7 @@ public class DirectRenderer extends DatabaseRenderer {
      * @param renderLabels      if labels should be rendered.
      * @param hillsRenderConfig the hillshading setup to be used (can be null).
      */
-    public DirectRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory, MapDataStoreLabelStore labelStore, boolean renderLabels, HillsRenderConfig hillsRenderConfig) {
+    public DirectRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory, LabelStore labelStore, boolean renderLabels, HillsRenderConfig hillsRenderConfig) {
         super(mapDataStore, graphicFactory, null, labelStore, renderLabels, false, hillsRenderConfig);
     }
 
