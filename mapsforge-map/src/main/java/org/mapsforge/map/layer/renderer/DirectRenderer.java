@@ -42,6 +42,7 @@ public class DirectRenderer extends DatabaseRenderer {
      * @param graphicFactory    the graphic factory.
      * @param labelStore        from where labels are read.
      * @param renderLabels      if labels should be rendered.
+     * @param cacheLabels       if labels should be cached.
      * @param hillsRenderConfig the hillshading setup to be used (can be null).
      */
     public DirectRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory, LabelStore labelStore, boolean renderLabels, boolean cacheLabels, HillsRenderConfig hillsRenderConfig) {
