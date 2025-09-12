@@ -44,8 +44,8 @@ public class DirectRenderer extends DatabaseRenderer {
      * @param renderLabels      if labels should be rendered.
      * @param hillsRenderConfig the hillshading setup to be used (can be null).
      */
-    public DirectRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory, LabelStore labelStore, boolean renderLabels, HillsRenderConfig hillsRenderConfig) {
-        super(mapDataStore, graphicFactory, null, labelStore, renderLabels, true, hillsRenderConfig);
+    public DirectRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory, LabelStore labelStore, boolean renderLabels, boolean cacheLabels, HillsRenderConfig hillsRenderConfig) {
+        super(mapDataStore, graphicFactory, null, labelStore, renderLabels, cacheLabels, hillsRenderConfig);
     }
 
     /**
