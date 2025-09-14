@@ -17,29 +17,29 @@ package org.mapsforge.core.graphics;
 
 /**
  * The enum Display governs whether map elements should be displayed and how.
- * The main choice is between {@link #IFSPACE} and {@link #ALWAYS}.
+ * The main choice is between {@link #IFSPACE} and {@link #ORDER}.
  * <p/>
  * <ul>
  * <li>{@link #IFSPACE} means an element is displayed if there is space for it (also depends on priority). Default.</li>
- * <li>{@link #ALWAYS} means an element will always be displayed at the expense of IFSPACE elements.
- * If there is another ALWAYS element that collides, a choice will be made (based on priority etc.)
+ * <li>{@link #ORDER} means an element will always be displayed at the expense of {@link #IFSPACE} elements.
+ * If there is another {@link #ORDER} element that collides, a choice will be made (based on priority etc.)
  * as to which single element will be displayed to prevent overlap.</li>
- * <li>{@link #FORCED} is a convenience fallback, which means that an element will always be displayed
+ * <li>{@link #ALWAYS} is a convenience fallback, which means that an element will always be displayed
  * regardless of whether there is an overlap or not (so others can easily cover it).</li>
  * <li>{@link #NEVER} is also a convenience fallback, which means that an element will never be displayed.</li>
  * </ul>
  */
 
 public enum Display {
-    IFSPACE, ALWAYS, FORCED, NEVER;
+    IFSPACE, ORDER, ALWAYS, NEVER;
 
     public static Display fromString(String value) {
         if ("ifspace".equals(value)) {
             return IFSPACE;
+        } else if ("order".equals(value)) {
+            return ORDER;
         } else if ("always".equals(value)) {
             return ALWAYS;
-        } else if ("forced".equals(value)) {
-            return FORCED;
         } else if ("never".equals(value)) {
             return NEVER;
         }

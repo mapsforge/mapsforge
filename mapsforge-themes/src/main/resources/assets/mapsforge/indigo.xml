@@ -679,12 +679,12 @@
             <area fill="#002a4d" />
         </rule>
         <rule e="way" k="waterway" v="river" zoom-min="14">
-            <pathText display="always" fill="#FFFFFF" font-size="11" font-style="bold" k="name"
+            <pathText display="order" fill="#FFFFFF" font-size="11" font-style="bold" k="name"
                 priority="-100" repeat-gap="500" repeat-start="50" stroke="#000000" stroke-width="2.0" />
             <!--<caption fill="#1a98ff" font-size="11" font-style="bold" k="name" priority="50" stroke="#000000" stroke-width="2.0" />-->
         </rule>
         <rule e="way" k="waterway" v="drain|stream|canal" zoom-min="15">
-            <pathText display="always" fill="#FFFFFF" font-size="11" font-style="bold" k="name"
+            <pathText display="order" fill="#FFFFFF" font-size="11" font-style="bold" k="name"
                 priority="-100" repeat-gap="250" repeat-start="0" stroke="#000000" stroke-width="2.0" />
             <!--<caption fill="#1a98ff" font-size="11" font-style="bold" k="name" priority="50" stroke="#000000" stroke-width="2.0" />-->
         </rule>
@@ -702,7 +702,7 @@
             </rule>
             <rule e="any" k="*" v="*" zoom-min="14">
                 <line stroke="#737373" stroke-dasharray="15, 5" stroke-linecap="butt" stroke-width="1" />
-                <pathText display="always" fill="#b3b3b3" font-size="11" font-style="bold" k="name"
+                <pathText display="order" fill="#b3b3b3" font-size="11" font-style="bold" k="name"
                     priority="-100" repeat-gap="500" repeat-start="50" stroke="#000000" stroke-width="2.0" />
             </rule>
         </rule>
@@ -1254,7 +1254,7 @@
                 <line src="jar:patterns/access-private.png" stroke-width="1.0" />
             </rule>
             <rule e="way" k="oneway" v="yes|true|1" zoom-min="16">
-                <lineSymbol position="center" display="always" priority="-50" repeat="true" src="jar:symbols/oneway.svg" />
+                <lineSymbol position="center" display="order" priority="-50" repeat="true" src="jar:symbols/oneway.svg" />
             </rule>
         </rule>
     </rule>
@@ -1265,7 +1265,7 @@
         <rule e="way" k="highway" v="footway|path|track|bridleway|steps|byway" zoom-min="15">
             <pathText fill="#FFFFFF" font-size="12" font-style="bold" k="name" priority="40" stroke="#000000" stroke-width="2" />
             <rule e="way" k="oneway" v="yes|true|1">
-                <lineSymbol position="center" display="always" priority="-50" repeat="true" src="jar:symbols/oneway.svg" />
+                <lineSymbol position="center" display="order" priority="-50" repeat="true" src="jar:symbols/oneway.svg" />
             </rule>
         </rule>
         <!--off-road/track casings/outlines-->
@@ -1700,14 +1700,14 @@
 
     <!-- fuel and charging stations LAYER -->
     <rule cat="fuel" e="any" k="amenity" v="fuel" zoom-min="10">
-        <symbol display="always" id="fuel" priority="80" src="jar:symbols/transport/fuel.svg" />
+        <symbol display="order" id="fuel" priority="80" src="jar:symbols/transport/fuel.svg" />
         <rule e="any" k="*" v="*" zoom-min="17">
             <caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#ac39ac"
                 stroke-width="2.0" symbol-id="fuel" />
         </rule>
     </rule>
     <rule cat="charging_station" e="any" k="amenity" v="charging_station" zoom-min="10">
-        <symbol display="always" id="charging_station" priority="80" src="jar:symbols/custom/transport/charging_station.svg" />
+        <symbol display="order" id="charging_station" priority="80" src="jar:symbols/custom/transport/charging_station.svg" />
         <rule e="any" k="*" v="*" zoom-min="17">
             <caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#ac39ac"
                 stroke-width="2.0" symbol-id="charging_station" />
@@ -1773,14 +1773,14 @@
     <rule e="any" k="*" v="*">
         <!-- parking LAYER -->
         <rule cat="parking" e="any" k="amenity" v="motorcycle_parking" zoom-min="14">
-            <symbol display="always" src="jar:symbols/custom/transport/parking_motorcycle.svg" />
+            <symbol display="order" src="jar:symbols/custom/transport/parking_motorcycle.svg" />
         </rule>
         <rule cat="parking" e="any" k="amenity" v="parking" zoom-min="14">
             <rule e="any" k="access" v="private">
-                <symbol display="always" src="jar:symbols/transport/parking_private.svg" />
+                <symbol display="order" src="jar:symbols/transport/parking_private.svg" />
             </rule>
             <rule e="any" k="*" v="*">
-                <symbol display="always" src="jar:symbols/transport/parking.svg" />
+                <symbol display="order" src="jar:symbols/transport/parking.svg" />
                 <rule e="any" k="*" v="*" zoom-min="15">
                     <caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#0066cc" stroke-width="2.0" symbol-id="shop" />
                 </rule>

@@ -202,17 +202,17 @@
             <area fill="#B3DDFF" />
         </rule>
         <rule e="way" k="waterway" v="river" zoom-min="12">
-            <pathText display="always" fill="#6C96E6" font-size="14" font-style="bold" k="name"
+            <pathText display="order" fill="#6C96E6" font-size="14" font-style="bold" k="name"
                 priority="-100" stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
         <rule e="way" k="waterway" v="stream|canal" zoom-min="15">
-            <pathText display="always" fill="#6C96E6" font-size="12" font-style="bold" k="name"
+            <pathText display="order" fill="#6C96E6" font-size="12" font-style="bold" k="name"
                 priority="-100" stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
         <rule e="way" k="natural|landuse" v="water|reservoir|basin">
             <area fill="#B3DDFF" />
             <rule e="any" k="*" v="*" zoom-min="14">
-                <caption display="always" fill="#6C96E6" font-size="12" k="name" priority="-100"
+                <caption display="order" fill="#6C96E6" font-size="12" k="name" priority="-100"
                     stroke="#FFFFFF" stroke-width="2.0" />
             </rule>
         </rule>
@@ -687,7 +687,7 @@
                 <line src="jar:patterns/access-private.png" stroke-width="1.0" />
             </rule>
             <rule e="way" k="oneway" v="yes|true|1" zoom-min="16">
-                <lineSymbol position="center" display="always" priority="-50" repeat="true"
+                <lineSymbol position="center" display="order" priority="-50" repeat="true"
                     src="jar:symbols/oneway.svg" />
             </rule>
         </rule>
