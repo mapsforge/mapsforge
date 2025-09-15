@@ -34,6 +34,11 @@ public interface ThemeCallback {
     int getColor(RenderInstruction origin, int color);
 
     /**
+     * @return the color-int
+     */
+    int getColor(PolylineContainer way, int color);
+
+    /**
      * @return the text
      */
     String getText(PointOfInterest poi, String text);
