@@ -54,8 +54,8 @@
         <xs:restriction base="xs:string">
             <xs:enumeration value="never" />
             <xs:enumeration value="ifspace" />
+            <xs:enumeration value="order" />
             <xs:enumeration value="always" />
-            <xs:enumeration value="forced" />
         </xs:restriction>
     </xs:simpleType>
 
