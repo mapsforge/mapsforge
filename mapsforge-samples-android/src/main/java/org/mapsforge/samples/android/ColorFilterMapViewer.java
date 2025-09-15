@@ -61,6 +61,11 @@ public class ColorFilterMapViewer extends DefaultTheme {
             }
 
             @Override
+            public int getColor(PolylineContainer way, int color) {
+                return color;
+            }
+
+            @Override
             public String getText(PointOfInterest poi, String text) {
                 return text;
             }
