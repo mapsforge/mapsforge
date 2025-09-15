@@ -2,10 +2,15 @@
 
 ## Next version
 
+- Minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.27.0)
+
+## Version 0.26.1 (2025-09-15)
+
 - Render themes: restore `display="always"` [#1736](https://github.com/mapsforge/mapsforge/pull/1736)
   - Add `display="order"`
 - Minor improvements and bug fixes
-- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.27.0)
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.26.1)
 
 ## Version 0.26.0 (2025-09-14)
 
