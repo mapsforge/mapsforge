@@ -127,6 +127,20 @@ public final class OSMTagMapping {
         }
     }
 
+    /**
+     * Type of the variable stored in the key/value pair.
+     */
+    private enum ValueType {
+        /**
+         * Number value. May be "byte", "short", "integer", "float".
+         */
+        NUMBER,
+        /**
+         * Plain text value (also used as fallback).
+         */
+        TEXT
+    }
+
     private static final Logger LOGGER = Logger.getLogger(OSMTagMapping.class.getName());
 
     private static OSMTagMapping mapping;
@@ -412,27 +426,7 @@ public final class OSMTagMapping {
      * @return the corresponding {@link OSMTag}
      */
     public OSMTag getPoiTag(String key, String value) {
-        OSMTag tag = this.stringToPoiTag.get(OSMTag.tagKey(key, value));
-        if (tag != null) {
-            return tag;
-        }
-        if (!this.tagValues) {
-            return null;
-        }
-        String vType = OSMUtils.getValueType(key, value);
-        if (vType.charAt(1) != 's') {
-            tag = this.stringToPoiTag.get(OSMTag.tagKey(key, "%f"));
-            if (tag == null) {
-                return null;
-            }
-            tag = getPoiTagAlternative(key, vType, tag);
-        } else {
-            tag = this.stringToPoiTag.get(OSMTag.tagKey(key, vType));
-            if (tag != null) {
-                LOGGER.fine(key + ":\t" + value);
-            }
-        }
-        return tag;
+        return getTag(key, value, stringToPoiTag, this::getPoiTagAlternative);
     }
 
     private OSMTag getPoiTagAlternative(String key, String value, OSMTag original) {
@@ -490,27 +484,7 @@ public final class OSMTagMapping {
      * @return the corresponding {@link OSMTag}
      */
     public OSMTag getWayTag(String key, String value) {
-        OSMTag tag = this.stringToWayTag.get(OSMTag.tagKey(key, value));
-        if (tag != null) {
-            return tag;
-        }
-        if (!this.tagValues) {
-            return null;
-        }
-        String vType = OSMUtils.getValueType(key, value);
-        if (vType.charAt(1) != 's') {
-            tag = this.stringToWayTag.get(OSMTag.tagKey(key, "%f"));
-            if (tag == null) {
-                return null;
-            }
-            tag = getWayTagAlternative(key, vType, tag);
-        } else {
-            tag = this.stringToWayTag.get(OSMTag.tagKey(key, vType));
-            if (tag != null) {
-                LOGGER.fine(key + ":\t" + value);
-            }
-        }
-        return tag;
+        return getTag(key, value, stringToWayTag, this::getWayTagAlternative);
     }
 
     private OSMTag getWayTagAlternative(String key, String value, OSMTag original) {
@@ -672,6 +646,82 @@ public final class OSMTagMapping {
             LOGGER.finer("adding way tag: " + currentTag.tagKey() + " id:" + tmpWayID + " amount: "
                     + histogramEntry.amount);
             tmpWayID++;
+        }
+    }
+
+    /**
+     * Functional interface to retrieve an alternative {@link OSMTag} if the original one
+     * based on key and value is not found. This is typically used to handle wildcard values
+     * or to create new tags on-the-fly if they are not predefined.
+     */
+    public interface GetTagAlternative {
+
+        /**
+         * Retrieves an OSMTag based on the provided key, value, and original tag.
+         *
+         * @param key      The key of the tag.
+         * @param value    The value of the tag.
+         * @param original The original OSMTag, used if a specific match is not found.
+         * @return The corresponding OSMTag.
+         */
+        OSMTag get(String key, String value, OSMTag original);
+    }
+
+    /**
+     * @param key   the key
+     * @param value the value
+     * @return the corresponding {@link OSMTag}
+     */
+    private OSMTag getTag(String key, String value, Map<String, OSMTag> tags, GetTagAlternative tagAlternative) {
+        OSMTag tag = tags.get(OSMTag.tagKey(key, value));
+        if (tag != null) {
+            return tag;
+        }
+
+        if (!this.tagValues) {
+            return null;
+        }
+
+        ValueType vType = getValueType(key, value);
+        switch (vType) {
+            case NUMBER:
+                tag = tags.get(OSMTag.tagKey(key, "%i"));
+                if (tag == null) {
+                    tag = tags.get(OSMTag.tagKey(key, "%h"));
+                }
+                if (tag == null) {
+                    tag = tags.get(OSMTag.tagKey(key, "%f"));
+                }
+                if (tag == null) {
+                    tag = tags.get(OSMTag.tagKey(key, "%b"));
+                }
+                break;
+            case TEXT:
+                tag = tags.get(OSMTag.tagKey(key, "%f"));
+                if (tag == null) {
+                    return null;
+                }
+                tag = tagAlternative.get(key, "%s", tag);
+                break;
+        }
+        return tag;
+    }
+
+    /**
+     * Get type of the value stored in the variable.
+     *
+     * @param key   the key of the tag
+     * @param value string represented value
+     * @return a ValueType enum representing the type of the value
+     */
+    private ValueType getValueType(String key, String value) {
+        Double f = OSMUtils.parseDoubleUnit(value);
+        if (f != null) {
+            return ValueType.NUMBER;
+        } else if (OSMUtils.isColorValue(key, value)) {
+            return ValueType.NUMBER;
+        } else {
+            return ValueType.TEXT;
         }
     }
 
