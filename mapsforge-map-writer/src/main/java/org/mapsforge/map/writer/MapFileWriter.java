@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -90,6 +91,13 @@ public final class MapFileWriter {
                 way.setInvalid(true);
                 throw new Exception("cannot create geometry for way with id: " + way.getId());
             }
+            if (!geometry.isValid()) {
+                geometry = JTSUtils.repairInvalidPolygon(geometry);
+                if (!geometry.isValid()) {
+                    way.setInvalid(true);
+                    throw new Exception("invalid geometry even after attempt to fix " + way.getId());
+                }
+            }
             return geometry;
         }
     }
@@ -99,6 +107,7 @@ public final class MapFileWriter {
         private final LoadingCache<TDWay, Geometry> jtsGeometryCache;
         private final byte maxZoomInterval;
         private final TileCoordinate tile;
+        private final Geometry tileAsGeometry;
         private final TDWay way;
 
         /**
@@ -108,11 +117,12 @@ public final class MapFileWriter {
          * @param jtsGeometryCache the {@link LoadingCache} for {@link Geometry} objects
          * @param configuration    the {@link MapWriterConfiguration}
          */
-        WayPreprocessingCallable(TDWay way, TileCoordinate tile, byte maxZoomInterval,
-                                 LoadingCache<TDWay, Geometry> jtsGeometryCache, MapWriterConfiguration configuration) {
+        WayPreprocessingCallable(TDWay way, TileCoordinate tile, Geometry tileAsGeometry, byte maxZoomInterval,
+                LoadingCache<TDWay, Geometry> jtsGeometryCache, MapWriterConfiguration configuration) {
             super();
             this.way = way;
             this.tile = tile;
+            this.tileAsGeometry = tileAsGeometry;
             this.maxZoomInterval = maxZoomInterval;
             this.jtsGeometryCache = jtsGeometryCache;
             this.configuration = configuration;
@@ -148,14 +158,12 @@ public final class MapFileWriter {
             if ((originalGeometry instanceof Polygon || originalGeometry instanceof MultiPolygon) && this.configuration.isPolygonClipping()
                     || (originalGeometry instanceof LineString || originalGeometry instanceof MultiLineString)
                     && this.configuration.isWayClipping()) {
-                processedGeometry = GeoUtils.clipToTile(this.way, originalGeometry, this.tile,
-                        this.configuration.getBboxEnlargement());
+                processedGeometry = GeoUtils.clipToTile(this.way, originalGeometry, this.tileAsGeometry);
                 if (processedGeometry == null) {
                     return null;
                 }
             }
 
-            // TODO is this the right place to simplify, or is it better before clipping?
             if (this.configuration.getSimplification() > 0
                     && this.tile.getZoomlevel() <= this.configuration.getSimplificationMaxZoom()) {
                 processedGeometry = GeoUtils.simplifyGeometry(this.way, processedGeometry, this.maxZoomInterval,
@@ -341,7 +349,7 @@ public final class MapFileWriter {
 
     private static final int tileSize = 256; // needed for optimal simplification, but set to constant here TODO
 
-    private static final Charset UTF8_CHARSET = Charset.forName("utf8");
+    private static final Charset UTF8_CHARSET = StandardCharsets.UTF_8;
 
     /**
      * Writes the map file according to the given configuration using the given data processor.
@@ -721,11 +729,11 @@ public final class MapFileWriter {
 
         // PREFERRED LANGUAGE
         if (configuration.getPreferredLanguages() != null && !configuration.getPreferredLanguages().isEmpty()) {
-            String langStr = "";
+            StringBuilder langStr = new StringBuilder();
             for (String preferredLanguage : configuration.getPreferredLanguages()) {
-                langStr += (langStr.length() > 0 ? "," : "") + preferredLanguage;
+                langStr.append((langStr.length() > 0) ? "," : "").append(preferredLanguage);
             }
-            writeUTF8(langStr, containerHeaderBuffer);
+            writeUTF8(langStr.toString(), containerHeaderBuffer);
         }
 
         // COMMENT
@@ -866,6 +874,12 @@ public final class MapFileWriter {
             }
 
             // WRITE WAYS
+            Geometry tileAsGeometry = GeoUtils.tileToJTSGeometry(
+                    tileCoordinate.getX(),
+                    tileCoordinate.getY(),
+                    tileCoordinate.getZoomlevel(),
+                    configuration.getBboxEnlargement()
+            );
             for (byte zoomlevel = minZoomCurrentInterval; zoomlevel <= maxZoomCurrentInterval; zoomlevel++) {
                 int indexEntitiesPerZoomLevelTable = zoomlevel - minZoomCurrentInterval;
 
@@ -874,8 +888,8 @@ public final class MapFileWriter {
                     List<WayPreprocessingCallable> callables = new ArrayList<>();
                     for (TDWay way : ways) {
                         if (!way.isInvalid()) {
-                            callables.add(new WayPreprocessingCallable(way, tileCoordinate, maxZoomCurrentInterval,
-                                    jtsGeometryCache, configuration));
+                            callables.add(new WayPreprocessingCallable(way, tileCoordinate, tileAsGeometry,
+                                    maxZoomCurrentInterval, jtsGeometryCache, configuration));
                         }
                     }
                     try {
