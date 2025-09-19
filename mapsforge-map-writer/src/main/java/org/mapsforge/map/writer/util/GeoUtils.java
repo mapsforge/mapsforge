@@ -77,35 +77,24 @@ public final class GeoUtils {
      *
      * @param way                 the way
      * @param geometry            the geometry
-     * @param tileCoordinate      the tile coordinate
-     * @param enlargementInMeters the bounding box buffer
+     * @param tileAsGeometry      the tile coordinate
      * @return the clipped geometry
      */
-    public static Geometry clipToTile(TDWay way, Geometry geometry, TileCoordinate tileCoordinate,
-                                      int enlargementInMeters) {
-        Geometry tileBBJTS = null;
-        Geometry ret = null;
-
-        // create tile bounding box
-        tileBBJTS = tileToJTSGeometry(tileCoordinate.getX(), tileCoordinate.getY(), tileCoordinate.getZoomlevel(),
-                enlargementInMeters);
+    public static Geometry clipToTile(TDWay way, Geometry geometry, Geometry tileAsGeometry) {
+        Geometry ret;
 
         // clip the geometry by intersection with the bounding box of the tile
         // may throw a TopologyException
         try {
-            if (!geometry.isValid()) {
-                // this should stop the problem of non-noded intersections that trigger an error when
-                // clipping
-                LOGGER.warning("invalid geometry prior to tile clipping, trying to repair " + way.getId());
-                geometry = JTSUtils.repairInvalidPolygon(geometry);
-                if (!geometry.isValid()) {
-                    LOGGER.warning("invalid geometry even after attempt to fix " + way.getId());
-                }
+            if (tileAsGeometry.getEnvelopeInternal().contains(geometry.getEnvelopeInternal())) {
+                ret = geometry;
+            } else {
+                ret = tileAsGeometry.intersection(geometry);
             }
-            ret = tileBBJTS.intersection(geometry);
+
             // according to Ludwig (see issue332) valid polygons may become invalid by clipping (at least
             // in the Python shapely library
-            // we need to investigate this more closely and write approriate test cases
+            // we need to investigate this more closely and write appropriate test cases
             // for now, I check whether the resulting polygon is valid and if not try to repair it
             if ((ret instanceof Polygon || ret instanceof MultiPolygon) && !ret.isValid()) {
                 LOGGER.warning("clipped way is not valid, trying to repair it: " + way.getId());
@@ -145,7 +134,7 @@ public final class GeoUtils {
             Geometry bbox = tileToJTSGeometry(subtile.getX(), subtile.getY(), subtile.getZoomlevel(),
                     enlargementInMeter);
             if (bbox.intersects(geometry)) {
-                bitmask |= TILE_BITMASK_VALUES[tileCounter];
+                bitmask |= (short) TILE_BITMASK_VALUES[tileCounter];
             }
             tileCounter++;
         }
@@ -187,12 +176,8 @@ public final class GeoUtils {
      * @return true, if the geometry is covered completely by this tile
      */
     public static boolean coveredByTile(final Geometry geometry, final TileCoordinate tile, final int enlargementInMeter) {
-        Geometry bbox = tileToJTSGeometry(tile.getX(), tile.getY(), tile.getZoomlevel(), enlargementInMeter);
-        if (bbox.covers(geometry)) {
-            return true;
-        }
-
-        return false;
+        return tileToJTSGeometry(tile.getX(), tile.getY(), tile.getZoomlevel(), enlargementInMeter)
+                .covers(geometry);
     }
 
     // **************** WAY OR POI IN TILE *****************
@@ -217,7 +202,7 @@ public final class GeoUtils {
             }
             return bb;
         } catch (IllegalArgumentException ex) {
-            LOGGER.warning("wrong coordinates on way: " + way.toString()
+            LOGGER.warning("wrong coordinates on way: " + way
                     + "\nLat: " + LatLongUtils.microdegreesToDegrees(wayNodes[0].getLatitude())
                     + " Lon: " + LatLongUtils.microdegreesToDegrees(wayNodes[0].getLongitude()));
         }
@@ -464,7 +449,7 @@ public final class GeoUtils {
         return bbox;
     }
 
-    private static Geometry tileToJTSGeometry(long tileX, long tileY, byte zoom, int enlargementInMeter) {
+    public static Geometry tileToJTSGeometry(long tileX, long tileY, byte zoom, int enlargementInMeter) {
         double minLat = MercatorProjection.tileYToLatitude(tileY + 1, zoom);
         double maxLat = MercatorProjection.tileYToLatitude(tileY, zoom);
         double minLon = MercatorProjection.tileXToLongitude(tileX, zoom);
