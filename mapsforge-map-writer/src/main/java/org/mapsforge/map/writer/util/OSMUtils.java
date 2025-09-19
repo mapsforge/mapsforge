@@ -316,31 +316,20 @@ public final class OSMUtils {
         return value;
     }
 
+
     /**
-     * @param value string represented value
-     * @return a string represented primitive type
+     * Check if certain key/value define a color value.
+     *
+     * @param key   the key of the tag
+     * @param value the value of the tag
+     * @return true if the key/value pair represents a color value, false otherwise.
      */
-    public static String getValueType(String key, String value) {
-        Double f = OSMUtils.parseDoubleUnit(value);
-        if (f != null) {
-            if (Math.round(f) == f) {
-                if (f.byteValue() == f) {
-                    return "%b";
-                } else if (f.shortValue() == f) {
-                    return "%h";
-                } else {
-                    return "%i";
-                }
-            }
-            return "%f";
-        }
+    public static boolean isColorValue(String key, String value) {
         if (key.contains("colour")) {
             Matcher matcher = COLOR_PATTERN.matcher(value); // Encode color as integer
-            if (matcher.matches() || ColorsCSS.get(value) != null) {
-                return "%i";
-            }
+            return matcher.matches() || ColorsCSS.get(value) != null;
         }
-        return "%s";
+        return false;
     }
 
     /**
