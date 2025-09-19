@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 56, 15th August 2025
+    VERSION 57, 16th September 2025
     this is the default/light Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -26,6 +26,22 @@
             <name lang="pl" value="Zakwaterowanie" />
             <name lang="zh" value="住宿" />
             <cat id="accommodation" />
+        </layer>
+        <layer id="camping">
+            <name lang="ar" value="موقع التخييم والقوافل" />
+            <name lang="ca" value="露营和旅行车营地" />
+            <name lang="cs" value="Kemp a karavan" />
+            <name lang="de" value="Camping- und Caravanplatz" />
+            <name lang="el" value="Χώρος για κάμπινγκ και τροχόσπιτα" />
+            <name lang="en" value="Camping and Caravan site" />
+            <name lang="es" value="Camping y zona de caravanas" />
+            <name lang="fr" value="Camping et caravaning" />
+            <name lang="it" value="Campeggio e area roulotte" />
+            <name lang="ko" value="캠핑 및 캐러밴 사이트" />
+            <name lang="nl" value="Camping en caravanterrein" />
+            <name lang="pl" value="Pole namiotowe i kempingowe" />
+            <name lang="zh" value="露营和旅行车营地" />
+            <cat id="camping" />
         </layer>
         <layer id="money">
             <name lang="ar" value="البنوك وأجهزة الصراف الآلي" />
@@ -138,6 +154,22 @@
             <name lang="pl" value="Miejsca parkingowe" />
             <name lang="zh" value="停车场" />
             <cat id="parking" />
+        </layer>
+        <layer id="moto-parking">
+            <name lang="ar" value="موقف الدراجات النارية" />
+            <name lang="ca" value="Aparcament de motos" />
+            <name lang="cs" value="Parkování motocyklů" />
+            <name lang="de" value="Motorradparkplatz" />
+            <name lang="el" value="Πάρκινγκ μοτοσικλετών" />
+            <name lang="en" value="Motorcycle parking" />
+            <name lang="es" value="Estacionamiento de motocicletas" />
+            <name lang="fr" value="Parking moto" />
+            <name lang="it" value="Parcheggio per moto" />
+            <name lang="ko" value="오토바이 주차" />
+            <name lang="nl" value="Motorfietsparkeerplaats" />
+            <name lang="pl" value="Parking dla motocykli" />
+            <name lang="zh" value="摩托车停车场" />
+            <cat id="moto-parking" />
         </layer>
         <layer id="misc">
             <name lang="ar" value="متنوع" />
@@ -349,6 +381,7 @@
         </layer>
         <layer id="normal" visible="true">
             <overlay id="accommodation" />
+            <overlay id="camping" />
             <overlay id="money" />
             <overlay id="entertainment" />
             <overlay id="food" />
@@ -356,6 +389,7 @@
             <overlay id="fuel" />
             <overlay id="charging_station" />
             <overlay id="parking" />
+            <overlay id="moto-parking" />
             <overlay id="misc" />
             <overlay id="mountain_pass" />
             <overlay id="mountain_peak" />
@@ -1622,7 +1656,7 @@
     </rule>
 
     <!-- accommodation / camping / caravan / hut LAYER -->
-    <rule cat="accommodation" e="any" k="*" v="*">
+    <rule cat="camping" e="any" k="*" v="*">
         <rule e="any" k="tourism" v="camp_site" zoom-min="12">
             <symbol id="camping" src="jar:symbols/accommodation/camping.svg" />
             <rule e="node" k="*" v="*" zoom-min="12">
@@ -1652,6 +1686,8 @@
             <caption fill="#ff0066" font-size="12" font-style="bold" k="ele" position="above"
                 stroke="#FFFFFF" stroke-width="2.0" symbol-id="alpine-hut" />
         </rule>
+    </rule>
+    <rule cat="accommodation" e="any" k="*" v="*">
         <rule e="any" k="tourism" v="chalet" zoom-min="12">
             <symbol id="chalet" src="jar:symbols/accommodation/chalet.svg" />
             <rule e="any" k="*" v="*" zoom-min="15">
@@ -1772,7 +1808,7 @@
     <!-- highway -->
     <rule e="any" k="*" v="*">
         <!-- parking LAYER -->
-        <rule cat="parking" e="any" k="amenity" v="motorcycle_parking" zoom-min="14">
+        <rule cat="moto-parking" e="any" k="amenity" v="motorcycle_parking" zoom-min="14">
             <symbol display="order" src="jar:symbols/custom/transport/parking_motorcycle.svg" />
         </rule>
         <rule cat="parking" e="any" k="amenity" v="parking" zoom-min="14">
