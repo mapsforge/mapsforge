@@ -90,11 +90,12 @@ public final class MapFileWriter {
             if (geometry == null) {
                 way.setInvalid(true);
                 throw new Exception("cannot create geometry for way with id: " + way.getId());
-            } else if (!geometry.isValid()) {
+            }
+            if (!geometry.isValid()) {
                 geometry = JTSUtils.repairInvalidPolygon(geometry);
                 if (!geometry.isValid()) {
-                    LOGGER.warning("load(), invalid geometry even after attempt to fix " + way.getId());
-                    return null;
+                    way.setInvalid(true);
+                    throw new Exception("invalid geometry even after attempt to fix " + way.getId());
                 }
             }
             return geometry;
