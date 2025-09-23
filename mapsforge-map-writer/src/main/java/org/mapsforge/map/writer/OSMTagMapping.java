@@ -132,6 +132,10 @@ public final class OSMTagMapping {
      */
     private enum ValueType {
         /**
+         * Color value.
+         */
+        COLOR,
+        /**
          * Number value. May be "byte", "short", "integer", "float".
          */
         NUMBER,
@@ -684,6 +688,9 @@ public final class OSMTagMapping {
 
         ValueType vType = getValueType(key, value);
         switch (vType) {
+            case COLOR:
+                tag = tags.get(OSMTag.tagKey(key, "%i"));
+                break;
             case NUMBER:
                 tag = tags.get(OSMTag.tagKey(key, "%i"));
                 if (tag == null) {
@@ -719,7 +726,7 @@ public final class OSMTagMapping {
         if (f != null) {
             return ValueType.NUMBER;
         } else if (OSMUtils.isColorValue(key, value)) {
-            return ValueType.NUMBER;
+            return ValueType.COLOR;
         } else {
             return ValueType.TEXT;
         }
