@@ -27,6 +27,9 @@ import org.mapsforge.map.view.MapView;
  * A {@code Marker} draws a {@link Bitmap} at a given geographical position.
  */
 public class Marker extends Layer {
+
+    public static int TOUCH_SIZE = 20;
+
     private boolean billboard = true;
     private Bitmap bitmap;
     private int horizontalOffset;
@@ -52,8 +55,8 @@ public class Marker extends Layer {
         double scaleFactor = Math.pow(2, mapView.getModel().mapViewPosition.getZoom())
                 / Math.pow(2, mapView.getModel().mapViewPosition.getZoomLevel());
         // Touch min 20x20 px at baseline mdpi (160dpi)
-        double width = Math.max(20 * this.displayModel.getScaleFactor(), this.bitmap.getWidth() * scaleFactor);
-        double height = Math.max(20 * this.displayModel.getScaleFactor(), this.bitmap.getHeight() * scaleFactor);
+        double width = Math.max(TOUCH_SIZE * this.displayModel.getScaleFactor(), this.bitmap.getWidth() * scaleFactor);
+        double height = Math.max(TOUCH_SIZE * this.displayModel.getScaleFactor(), this.bitmap.getHeight() * scaleFactor);
         Rectangle r = new Rectangle(
                 center.x - width / 2 + this.horizontalOffset * scaleFactor,
                 center.y - height / 2 + this.verticalOffset * scaleFactor,
