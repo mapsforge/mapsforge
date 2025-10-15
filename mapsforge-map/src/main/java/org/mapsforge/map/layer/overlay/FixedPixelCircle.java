@@ -26,6 +26,8 @@ import org.mapsforge.map.view.MapView;
  */
 public class FixedPixelCircle extends Circle {
 
+    public static int TOUCH_SIZE = 20;
+
     private boolean scaleRadius = true;
 
     /**
@@ -56,7 +58,7 @@ public class FixedPixelCircle extends Circle {
         double scaleFactor = Math.pow(2, mapView.getModel().mapViewPosition.getZoom())
                 / Math.pow(2, mapView.getModel().mapViewPosition.getZoomLevel());
         // Touch min 20x20 px at baseline mdpi (160dpi)
-        double distance = Math.max(20 * 0.5 * this.displayModel.getScaleFactor(),
+        double distance = Math.max(TOUCH_SIZE * 0.5 * this.displayModel.getScaleFactor(),
                 getRadius() * (this.scaleRadius ? this.displayModel.getScaleFactor() : 1) * scaleFactor);
         return center.distance(point) < distance;
     }
