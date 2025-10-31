@@ -5,6 +5,8 @@
 
 <img src="docs/logo/Mapsforge.svg" style="bottom:0;" width="200" align="right">
 
+Vector map library and writer - running on Android and Desktop.
+
 See the **[integration guide](docs/Integration.md)** and [changelog](docs/Changelog.md). And read through [how to contribute](docs/CONTRIBUTING.md) guidelines.
 
 If you have any questions or problems, don't hesitate to ask the [forum](https://github.com/mapsforge/mapsforge/discussions) for help.
