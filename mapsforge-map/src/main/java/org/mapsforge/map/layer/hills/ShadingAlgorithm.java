@@ -35,9 +35,18 @@ public interface ShadingAlgorithm {
      * @param zoomLevel Zoom level (to determine shading quality requirements)
      * @param pxPerLat  Tile pixels per degree of latitude (to determine shading quality requirements)
      * @param pxPerLon  Tile pixels per degree of longitude (to determine shading quality requirements)
-     * @return Length of a side of a (square) output array, including padding.
+     * @return Width of a rectangular output array, including padding.
      */
     int getOutputWidth(HgtFileInfo hgtFileInfo, int padding, int zoomLevel, double pxPerLat, double pxPerLon);
+
+    /**
+     * @param padding   Padding of the output, useful to minimize border interpolation artifacts (no need to be larger than 1)
+     * @param zoomLevel Zoom level (to determine shading quality requirements)
+     * @param pxPerLat  Tile pixels per degree of latitude (to determine shading quality requirements)
+     * @param pxPerLon  Tile pixels per degree of longitude (to determine shading quality requirements)
+     * @return Height of a rectangular output array, including padding.
+     */
+    int getOutputHeight(HgtFileInfo hgtFileInfo, int padding, int zoomLevel, double pxPerLat, double pxPerLon);
 
     /**
      * @param padding   Padding of the output, useful to minimize border interpolation artifacts (no need to be larger than 1)
