@@ -22,6 +22,7 @@
             <name lang="es" value="Alojamiento" />
             <name lang="fr" value="Hébergement" />
             <name lang="it" value="Alloggio" />
+            <name lang="ja" value="宿泊施設" />
             <name lang="ko" value="숙소" />
             <name lang="nl" value="Onderkomen" />
             <name lang="pl" value="Zakwaterowanie" />
@@ -41,6 +42,7 @@
             <name lang="es" value="Camping y zona de caravanas" />
             <name lang="fr" value="Camping et caravaning" />
             <name lang="it" value="Campeggio e area roulotte" />
+            <name lang="ja" value="キャンプ場とキャラバンサイト" />
             <name lang="ko" value="캠핑 및 캐러밴 사이트" />
             <name lang="nl" value="Camping en caravanterrein" />
             <name lang="pl" value="Pole namiotowe i kempingowe" />
@@ -60,6 +62,7 @@
             <name lang="es" value="Bancos y cajeros automáticos" />
             <name lang="fr" value="Banques et distributeurs automatiques de billets" />
             <name lang="it" value="Banche e bancomat" />
+            <name lang="ja" value="銀行とATM" />
             <name lang="ko" value="은행 및 ATM" />
             <name lang="nl" value="Banken en geldautomaten" />
             <name lang="pl" value="Banki i bankomaty" />
@@ -79,6 +82,7 @@
             <name lang="es" value="Entretenimiento" />
             <name lang="fr" value="Divertissement" />
             <name lang="it" value="Divertimento" />
+            <name lang="ja" value="エンターテインメント" />
             <name lang="ko" value="오락" />
             <name lang="nl" value="Vermaak" />
             <name lang="pl" value="Rozrywka" />
@@ -98,6 +102,7 @@
             <name lang="es" value="Comida y bebida" />
             <name lang="fr" value="Nourriture et boisson" />
             <name lang="it" value="Cibo e bevande" />
+            <name lang="ja" value="飲食" />
             <name lang="ko" value="주식" />
             <name lang="nl" value="Eten en drinken" />
             <name lang="pl" value="Jedzenie i picie" />
@@ -117,6 +122,7 @@
             <name lang="es" value="Servicios de emergencia" />
             <name lang="fr" value="Services d'urgence" />
             <name lang="it" value="Servizi di emergenza" />
+            <name lang="ja" value="緊急サービス" />
             <name lang="ko" value="응급 서비스" />
             <name lang="nl" value="Hulpdiensten" />
             <name lang="pl" value="Służby ratunkowe" />
@@ -136,6 +142,7 @@
             <name lang="es" value="Estaciones de combustible" />
             <name lang="fr" value="Stations de carburant" />
             <name lang="it" value="Stazioni di carburante" />
+            <name lang="ja" value="ガソリンスタンド" />
             <name lang="ko" value="주유소" />
             <name lang="nl" value="Tankstations" />
             <name lang="pl" value="Stacje paliw" />
@@ -155,6 +162,7 @@
             <name lang="es" value="Estaciones de carga" />
             <name lang="fr" value="Stations de charge" />
             <name lang="it" value="Stazioni di carica" />
+            <name lang="ja" value="充電ステーション" />
             <name lang="ko" value="충전소" />
             <name lang="nl" value="Laadstations" />
             <name lang="pl" value="Stacje ładowania" />
@@ -174,6 +182,7 @@
             <name lang="es" value="Estacionamientos" />
             <name lang="fr" value="Aires de stationnement" />
             <name lang="it" value="Aree di parcheggio" />
+            <name lang="ja" value="駐車場" />
             <name lang="ko" value="주차장" />
             <name lang="nl" value="Parkeerplaatsen" />
             <name lang="pl" value="Miejsca parkingowe" />
@@ -193,6 +202,7 @@
             <name lang="es" value="Estacionamiento de motocicletas" />
             <name lang="fr" value="Parking moto" />
             <name lang="it" value="Parcheggio per moto" />
+            <name lang="ja" value="バイク駐車場" />
             <name lang="ko" value="오토바이 주차" />
             <name lang="nl" value="Motorfietsparkeerplaats" />
             <name lang="pl" value="Parking dla motocykli" />
@@ -212,6 +222,7 @@
             <name lang="es" value="Misceláneos" />
             <name lang="fr" value="Divers" />
             <name lang="it" value="Varie" />
+            <name lang="ja" value="その他" />
             <name lang="ko" value="여러 가지 잡다한" />
             <name lang="nl" value="Gemengd" />
             <name lang="pl" value="Różnorodny" />
@@ -231,6 +242,7 @@
             <name lang="es" value="Pasos de montaña" />
             <name lang="fr" value="Cols de montagne" />
             <name lang="it" value="Passi di montagna" />
+            <name lang="ja" value="峠" />
             <name lang="ko" value="산악 패스" />
             <name lang="nl" value="Bergpassen" />
             <name lang="pl" value="Przełęcze górskie" />
@@ -250,6 +262,7 @@
             <name lang="es" value="Picos de montaña" />
             <name lang="fr" value="Sommets de montagne" />
             <name lang="it" value="Vette di montagna" />
+            <name lang="ja" value="山頂" />
             <name lang="ko" value="산봉우리" />
             <name lang="nl" value="Bergpieken" />
             <name lang="pl" value="Szczyty górskie" />
@@ -269,6 +282,7 @@
             <name lang="es" value="Transporte público" />
             <name lang="fr" value="Transports en commun" />
             <name lang="it" value="Trasporto pubblico" />
+            <name lang="ja" value="公共交通機関" />
             <name lang="ko" value="대중 교통" />
             <name lang="nl" value="Openbaar vervoer" />
             <name lang="pl" value="Transport publiczny" />
@@ -288,6 +302,7 @@
             <name lang="es" value="Tiendas" />
             <name lang="fr" value="Boutiques" />
             <name lang="it" value="Negozi" />
+            <name lang="ja" value="ショップ" />
             <name lang="ko" value="상점" />
             <name lang="nl" value="Winkels" />
             <name lang="pl" value="Sklepy" />
@@ -307,6 +322,7 @@
             <name lang="es" value="Atracciones turísticas" />
             <name lang="fr" value="Attractions touristiques" />
             <name lang="it" value="Attrazioni turistiche" />
+            <name lang="ja" value="観光名所" />
             <name lang="ko" value="관광 명소" />
             <name lang="nl" value="Touristische attracties" />
             <name lang="pl" value="Atrakcje turystyczne" />
@@ -326,6 +342,7 @@
             <name lang="es" value="Miradores" />
             <name lang="fr" value="Points de vue" />
             <name lang="it" value="Punti di vista" />
+            <name lang="ja" value="視点" />
             <name lang="ko" value="뷰 포인트" />
             <name lang="nl" value="Uitzichtspunten" />
             <name lang="pl" value="Punkty widokowe" />
@@ -345,6 +362,7 @@
             <name lang="es" value="Líneas de contorno" />
             <name lang="fr" value="Courbes de niveau" />
             <name lang="it" value="Linee di contorno" />
+            <name lang="ja" value="等高線" />
             <name lang="ko" value="등고선" />
             <name lang="nl" value="Contourlijnen" />
             <name lang="pl" value="Linie konturowe" />
@@ -364,6 +382,7 @@
             <name lang="es" value="Números de casa" />
             <name lang="fr" value="Numéros de maison" />
             <name lang="it" value="Numeri civici" />
+            <name lang="ja" value="家番号" />
             <name lang="ko" value="집 번호" />
             <name lang="nl" value="Huis nummers" />
             <name lang="pl" value="Numery domów" />
@@ -383,6 +402,7 @@
             <name lang="es" value="Pistas todoterreno" />
             <name lang="fr" value="Pistes hors route" />
             <name lang="it" value="Piste fuoristrada" />
+            <name lang="ja" value="オフロードトラック" />
             <name lang="ko" value="오프로드 트랙" />
             <name lang="nl" value="Off-road/circuitdetails" />
             <name lang="pl" value="Trasy terenowe" />
@@ -402,6 +422,7 @@
             <name lang="es" value="Más detalles del mapa" />
             <name lang="fr" value="Plus de détails sur la carte" />
             <name lang="it" value="Maggiori dettagli sulla mappa" />
+            <name lang="ja" value="地図の詳細" />
             <name lang="ko" value="더 많은 지도 세부 정보" />
             <name lang="nl" value="Meer kaartdetails" />
             <name lang="pl" value="Więcej szczegółów mapy" />
@@ -421,6 +442,7 @@
             <name lang="es" value="Autopistas de peaje" />
             <name lang="fr" value="Routes à péage" />
             <name lang="it" value="Strade a pedaggio" />
+            <name lang="ja" value="有料道路" />
             <name lang="ko" value="유료 도로" />
             <name lang="nl" value="Tolwegen" />
             <name lang="pl" value="Drogi płatne" />
@@ -440,6 +462,7 @@
             <name lang="es" value="Vegetación" />
             <name lang="fr" value="Végétation" />
             <name lang="it" value="Vegetazione" />
+            <name lang="ja" value="植生" />
             <name lang="ko" value="식생" />
             <name lang="nl" value="Vegetatie" />
             <name lang="pl" value="Wegetacja" />
