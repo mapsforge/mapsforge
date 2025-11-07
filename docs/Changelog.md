@@ -3,6 +3,7 @@
 ## Next version
 
 - `ThemeCallback.getColor` method [#1737](https://github.com/mapsforge/mapsforge/pull/1737)
+- Map writer performance improvements [#1741](https://github.com/mapsforge/mapsforge/pull/1741)
 - Map theme improvements
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.27.0)
