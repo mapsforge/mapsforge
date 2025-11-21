@@ -62,13 +62,13 @@ public abstract class PointTextContainer extends MapElementContainer {
 
     @Override
     public boolean clashesWith(MapElementContainer other, Rotation rotation) {
-        // If any element is forced drawn, the elements do not clash, otherwise do more checks
-        if (Display.FORCED == this.display || Display.FORCED == other.display) {
+        // If any element is always drawn, the elements do not clash, otherwise do more checks
+        if (Display.ALWAYS == this.display || Display.ALWAYS == other.display) {
             return false;
         }
 
-        // If exactly one of the elements is always drawn, the elements do not clash, otherwise do more checks
-        if (Display.ALWAYS == this.display ^ Display.ALWAYS == other.display) {
+        // If exactly one of the elements is order drawn, the elements do not clash, otherwise do more checks
+        if (Display.ORDER == this.display ^ Display.ORDER == other.display) {
             return false;
         }
 

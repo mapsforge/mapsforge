@@ -77,9 +77,9 @@ public class LayerUtilTest {
         final Tile tile = new Tile(0, 0, (byte) 1, 256);
         final Point tileOrigin = tile.getOrigin();
 
-        final MapElementContainer container1 = new MyDummyContainer(new Point(220, 105).offset(tileOrigin.x, tileOrigin.y), Display.ALWAYS, 1);
-        final MapElementContainer container2 = new MyDummyContainer(new Point(200, 100).offset(tileOrigin.x, tileOrigin.y), Display.ALWAYS, 1);
-        final MapElementContainer container3 = new MyDummyContainer(new Point(200, 200).offset(tileOrigin.x, tileOrigin.y), Display.ALWAYS, 0);
+        final MapElementContainer container1 = new MyDummyContainer(new Point(220, 105).offset(tileOrigin.x, tileOrigin.y), Display.ORDER, 1);
+        final MapElementContainer container2 = new MyDummyContainer(new Point(200, 100).offset(tileOrigin.x, tileOrigin.y), Display.ORDER, 1);
+        final MapElementContainer container3 = new MyDummyContainer(new Point(200, 200).offset(tileOrigin.x, tileOrigin.y), Display.ORDER, 0);
 
         final List<MapElementContainer> mainList = Arrays.asList(container1, container2, container3);
 

@@ -18,9 +18,7 @@ import android.graphics.*;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.map.android.graphics.AndroidBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.datastore.PointOfInterest;
-import org.mapsforge.map.layer.renderer.PolylineContainer;
-import org.mapsforge.map.rendertheme.ThemeCallback;
+import org.mapsforge.map.rendertheme.ThemeCallbackAdapter;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 
 /**
@@ -39,7 +37,7 @@ public class ColorFilterMapViewer extends DefaultTheme {
         Paint paint = new Paint();
         paint.setColorFilter(colorFilter);
 
-        mapView.getModel().displayModel.setThemeCallback(new ThemeCallback() {
+        mapView.getModel().displayModel.setThemeCallback(new ThemeCallbackAdapter() {
             @Override
             public Bitmap getBitmap(Bitmap bitmap) {
                 android.graphics.Bitmap immutable = AndroidGraphicFactory.getBitmap(bitmap);
@@ -58,16 +56,6 @@ public class ColorFilterMapViewer extends DefaultTheme {
                 // Grayscale
                 r = g = b = (int) (0.213f * r + 0.715f * g + 0.072f * b);
                 return (a << 24) | (r << 16) | (g << 8) | b;
-            }
-
-            @Override
-            public String getText(PointOfInterest poi, String text) {
-                return text;
-            }
-
-            @Override
-            public String getText(PolylineContainer way, String text) {
-                return text;
             }
         });
     }

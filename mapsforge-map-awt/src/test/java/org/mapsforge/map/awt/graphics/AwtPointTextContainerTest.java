@@ -41,7 +41,7 @@ public class AwtPointTextContainerTest {
         final Rotation rotation = new Rotation(37, 115, 93);
 
         // Some container ("label") positioned ABOVE
-        final AwtPointTextContainer container = new AwtPointTextContainer(new Point(211, 143), 9, 17, Display.ALWAYS, 5, "some label", paint, null, null, Position.ABOVE, 150);
+        final AwtPointTextContainer container = new AwtPointTextContainer(new Point(211, 143), 9, 17, Display.ORDER, 5, "some label", paint, null, null, Position.ABOVE, 150);
 
         // Some origin
         final Point origin = new Point(17, 19);
@@ -81,8 +81,8 @@ public class AwtPointTextContainerTest {
         // Single-line
         {
             // Some containers ("labels") positioned ABOVE
-            final AwtPointTextContainer container1 = new AwtPointTextContainer(new Point(211, 143), 9, 17, Display.ALWAYS, 5, "12345 67890", paint, null, null, Position.ABOVE, 150);
-            final AwtPointTextContainer container2 = new AwtPointTextContainer(new Point(207, 140), 9, 17, Display.ALWAYS, 5, "12345 67890", paint, null, null, Position.ABOVE, 150);
+            final AwtPointTextContainer container1 = new AwtPointTextContainer(new Point(211, 143), 9, 17, Display.ORDER, 5, "12345 67890", paint, null, null, Position.ABOVE, 150);
+            final AwtPointTextContainer container2 = new AwtPointTextContainer(new Point(207, 140), 9, 17, Display.ORDER, 5, "12345 67890", paint, null, null, Position.ABOVE, 150);
 
             final int lines1 = container1.boxWidth / container1.maxTextWidth + 1;
             final int lines2 = container2.boxWidth / container2.maxTextWidth + 1;
@@ -109,8 +109,8 @@ public class AwtPointTextContainerTest {
         // Multi-line
         {
             // Some *narrow* containers ("labels") positioned ABOVE
-            final AwtPointTextContainer container1 = new AwtPointTextContainer(new Point(211, 143), 9, 17, Display.ALWAYS, 5, "12345 67890", paint, null, null, Position.ABOVE, 20);
-            final AwtPointTextContainer container2 = new AwtPointTextContainer(new Point(207, 140), 9, 17, Display.ALWAYS, 5, "12345 67890", paint, null, null, Position.ABOVE, 20);
+            final AwtPointTextContainer container1 = new AwtPointTextContainer(new Point(211, 143), 9, 17, Display.ORDER, 5, "12345 67890", paint, null, null, Position.ABOVE, 20);
+            final AwtPointTextContainer container2 = new AwtPointTextContainer(new Point(207, 140), 9, 17, Display.ORDER, 5, "12345 67890", paint, null, null, Position.ABOVE, 20);
 
             final int lines1 = container1.boxWidth / container1.maxTextWidth + 1;
             final int lines2 = container2.boxWidth / container2.maxTextWidth + 1;

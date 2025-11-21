@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rendertheme xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" map-background="#F8F8F8"
-    map-background-outside="#DDDDDD" version="5" xmlns="http://mapsforge.org/renderTheme"
+    map-background-outside="#222222" version="5" xmlns="http://mapsforge.org/renderTheme"
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 56, 15th August 2025
+    VERSION 57, 16th September 2025
     this is the "Dark" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -15,31 +15,59 @@
             <name lang="ar" value="أماكن إقامة" />
             <name lang="ca" value="Allotjament" />
             <name lang="cs" value="Ubytování" />
+            <name lang="da" value="Indkvartering" />
             <name lang="de" value="Unterkünfte" />
             <name lang="el" value="Διαμονή" />
             <name lang="en" value="Accommodation" />
             <name lang="es" value="Alojamiento" />
             <name lang="fr" value="Hébergement" />
             <name lang="it" value="Alloggio" />
+            <name lang="ja" value="宿泊施設" />
             <name lang="ko" value="숙소" />
             <name lang="nl" value="Onderkomen" />
             <name lang="pl" value="Zakwaterowanie" />
+            <name lang="pt" value="Alojamento" />
+            <name lang="sv" value="Logi" />
             <name lang="zh" value="住宿" />
             <cat id="accommodation" />
+        </layer>
+        <layer id="camping">
+            <name lang="ar" value="موقع التخييم والقوافل" />
+            <name lang="ca" value="露营和旅行车营地" />
+            <name lang="cs" value="Kemp a karavan" />
+            <name lang="da" value="Campingplads og campingvognsplads" />
+            <name lang="de" value="Camping- und Caravanplatz" />
+            <name lang="el" value="Χώρος για κάμπινγκ και τροχόσπιτα" />
+            <name lang="en" value="Camping and Caravan site" />
+            <name lang="es" value="Camping y zona de caravanas" />
+            <name lang="fr" value="Camping et caravaning" />
+            <name lang="it" value="Campeggio e area roulotte" />
+            <name lang="ja" value="キャンプ場とキャラバンサイト" />
+            <name lang="ko" value="캠핑 및 캐러밴 사이트" />
+            <name lang="nl" value="Camping en caravanterrein" />
+            <name lang="pl" value="Pole namiotowe i kempingowe" />
+            <name lang="pt" value="Parque de campismo e caravanismo" />
+            <name lang="sv" value="Camping och husvagnsplats" />
+            <name lang="zh" value="露营和旅行车营地" />
+            <cat id="camping" />
         </layer>
         <layer id="money">
             <name lang="ar" value="البنوك وأجهزة الصراف الآلي" />
             <name lang="ca" value="Bancs i caixers automàtics" />
             <name lang="cs" value="Banky a bankomaty" />
+            <name lang="da" value="Banker og hæveautomater" />
             <name lang="de" value="Banken und Geldautomaten" />
             <name lang="el" value="Τράπεζες και ΑΤΜ" />
             <name lang="en" value="Banks and ATM" />
             <name lang="es" value="Bancos y cajeros automáticos" />
             <name lang="fr" value="Banques et distributeurs automatiques de billets" />
             <name lang="it" value="Banche e bancomat" />
+            <name lang="ja" value="銀行とATM" />
             <name lang="ko" value="은행 및 ATM" />
             <name lang="nl" value="Banken en geldautomaten" />
             <name lang="pl" value="Banki i bankomaty" />
+            <name lang="pt" value="Bancos e caixas automáticas" />
+            <name lang="sv" value="Banker och bankomater" />
             <name lang="zh" value="银行和 ATM" />
             <cat id="money" />
         </layer>
@@ -47,15 +75,19 @@
             <name lang="ar" value="ترفيه" />
             <name lang="ca" value="Entreteniment" />
             <name lang="cs" value="Zábava" />
+            <name lang="da" value="Underholdning" />
             <name lang="de" value="Unterhaltung" />
             <name lang="el" value="Ψυχαγωγία" />
             <name lang="en" value="Entertainment" />
             <name lang="es" value="Entretenimiento" />
             <name lang="fr" value="Divertissement" />
             <name lang="it" value="Divertimento" />
+            <name lang="ja" value="エンターテインメント" />
             <name lang="ko" value="오락" />
             <name lang="nl" value="Vermaak" />
             <name lang="pl" value="Rozrywka" />
+            <name lang="pt" value="Entretenimento" />
+            <name lang="sv" value="Underhållning" />
             <name lang="zh" value="娱乐" />
             <cat id="entertainment" />
         </layer>
@@ -63,15 +95,19 @@
             <name lang="ar" value="الطعام والشراب" />
             <name lang="ca" value="Menjar i beure" />
             <name lang="cs" value="Jídlo a nápoje" />
+            <name lang="da" value="Mad og drikke" />
             <name lang="de" value="Essen und Trinken" />
             <name lang="el" value="Φαγητό και ποτό" />
             <name lang="en" value="Food and drink" />
             <name lang="es" value="Comida y bebida" />
             <name lang="fr" value="Nourriture et boisson" />
             <name lang="it" value="Cibo e bevande" />
+            <name lang="ja" value="飲食" />
             <name lang="ko" value="주식" />
             <name lang="nl" value="Eten en drinken" />
             <name lang="pl" value="Jedzenie i picie" />
+            <name lang="pt" value="Comida e bebida" />
+            <name lang="sv" value="Mat och dryck" />
             <name lang="zh" value="餐饮" />
             <cat id="food" />
         </layer>
@@ -79,15 +115,19 @@
             <name lang="ar" value="خدمات الطوارئ" />
             <name lang="ca" value="Serveis d'emergència" />
             <name lang="cs" value="Pohotovostní služby" />
+            <name lang="da" value="Nødtjenester" />
             <name lang="de" value="Gesundheit und Notdienste" />
             <name lang="el" value="Υπηρεσίες έκτακτης ανάγκης" />
             <name lang="en" value="Emergency services" />
             <name lang="es" value="Servicios de emergencia" />
             <name lang="fr" value="Services d'urgence" />
             <name lang="it" value="Servizi di emergenza" />
+            <name lang="ja" value="緊急サービス" />
             <name lang="ko" value="응급 서비스" />
             <name lang="nl" value="Hulpdiensten" />
             <name lang="pl" value="Służby ratunkowe" />
+            <name lang="pt" value="Serviços de emergência" />
+            <name lang="sv" value="Räddningstjänst" />
             <name lang="zh" value="紧急服务" />
             <cat id="emergency" />
         </layer>
@@ -95,15 +135,19 @@
             <name lang="ar" value="محطات وقود" />
             <name lang="ca" value="Benzineres" />
             <name lang="cs" value="Čerpací stanice" />
+            <name lang="da" value="Tankstationer" />
             <name lang="de" value="Tankstellen" />
             <name lang="el" value="Πρατήρια καυσίμων" />
             <name lang="en" value="Fuel stations" />
             <name lang="es" value="Estaciones de combustible" />
             <name lang="fr" value="Stations de carburant" />
             <name lang="it" value="Stazioni di carburante" />
+            <name lang="ja" value="ガソリンスタンド" />
             <name lang="ko" value="주유소" />
             <name lang="nl" value="Tankstations" />
             <name lang="pl" value="Stacje paliw" />
+            <name lang="pt" value="Postos de combustível" />
+            <name lang="sv" value="Bensinstationer" />
             <name lang="zh" value="加油站" />
             <cat id="fuel" />
         </layer>
@@ -111,15 +155,19 @@
             <name lang="ar" value="محطات شحن" />
             <name lang="ca" value="Estacions de càrrega" />
             <name lang="cs" value="Nabíjecí stanice" />
+            <name lang="da" value="Ladestationer" />
             <name lang="de" value="Ladestationen" />
             <name lang="el" value="Πρατήρια φόρτισης" />
             <name lang="en" value="Charging stations" />
             <name lang="es" value="Estaciones de carga" />
             <name lang="fr" value="Stations de charge" />
             <name lang="it" value="Stazioni di carica" />
+            <name lang="ja" value="充電ステーション" />
             <name lang="ko" value="충전소" />
             <name lang="nl" value="Laadstations" />
             <name lang="pl" value="Stacje ładowania" />
+            <name lang="pt" value="Estações de carregamento" />
+            <name lang="sv" value="Laddstationer" />
             <name lang="zh" value="充电站" />
             <cat id="charging_station" />
         </layer>
@@ -127,31 +175,59 @@
             <name lang="ar" value="مواقف" />
             <name lang="ca" value="Zones d'aparcament" />
             <name lang="cs" value="Parkovací plochy" />
+            <name lang="da" value="Parkeringsområder" />
             <name lang="de" value="Parkplätze" />
             <name lang="el" value="Χώροι στάθμευσης" />
             <name lang="en" value="Parking areas" />
             <name lang="es" value="Estacionamientos" />
             <name lang="fr" value="Aires de stationnement" />
             <name lang="it" value="Aree di parcheggio" />
+            <name lang="ja" value="駐車場" />
             <name lang="ko" value="주차장" />
             <name lang="nl" value="Parkeerplaatsen" />
             <name lang="pl" value="Miejsca parkingowe" />
+            <name lang="pt" value="Áreas de estacionamento" />
+            <name lang="sv" value="Parkeringsplatser" />
             <name lang="zh" value="停车场" />
             <cat id="parking" />
+        </layer>
+        <layer id="moto-parking">
+            <name lang="ar" value="موقف الدراجات النارية" />
+            <name lang="ca" value="Aparcament de motos" />
+            <name lang="cs" value="Parkování motocyklů" />
+            <name lang="da" value="Parkering for motorcykler" />
+            <name lang="de" value="Motorradparkplatz" />
+            <name lang="el" value="Πάρκινγκ μοτοσικλετών" />
+            <name lang="en" value="Motorcycle parking" />
+            <name lang="es" value="Estacionamiento de motocicletas" />
+            <name lang="fr" value="Parking moto" />
+            <name lang="it" value="Parcheggio per moto" />
+            <name lang="ja" value="バイク駐車場" />
+            <name lang="ko" value="오토바이 주차" />
+            <name lang="nl" value="Motorfietsparkeerplaats" />
+            <name lang="pl" value="Parking dla motocykli" />
+            <name lang="pt" value="Estacionamento de motociclos" />
+            <name lang="sv" value="Parkering för motorcyklar" />
+            <name lang="zh" value="摩托车停车场" />
+            <cat id="moto-parking" />
         </layer>
         <layer id="misc">
             <name lang="ar" value="متنوع" />
             <name lang="ca" value="Diversos" />
             <name lang="cs" value="Různé" />
+            <name lang="da" value="Diverse" />
             <name lang="de" value="Verschiedenes" />
             <name lang="el" value="Διάφορα" />
             <name lang="en" value="Miscellaneous" />
             <name lang="es" value="Misceláneos" />
             <name lang="fr" value="Divers" />
             <name lang="it" value="Varie" />
+            <name lang="ja" value="その他" />
             <name lang="ko" value="여러 가지 잡다한" />
             <name lang="nl" value="Gemengd" />
             <name lang="pl" value="Różnorodny" />
+            <name lang="pt" value="Diversos" />
+            <name lang="sv" value="Diversew" />
             <name lang="zh" value="杂项" />
             <cat id="misc" />
         </layer>
@@ -159,15 +235,19 @@
             <name lang="ar" value="معابر جبلية" />
             <name lang="ca" value="Passos de muntanya" />
             <name lang="cs" value="Horské průsmyky" />
+            <name lang="da" value="Bjergpas" />
             <name lang="de" value="Bergpässe" />
             <name lang="el" value="Ορεινά περάσματα" />
             <name lang="en" value="Mountain passes" />
             <name lang="es" value="Pasos de montaña" />
             <name lang="fr" value="Cols de montagne" />
             <name lang="it" value="Passi di montagna" />
+            <name lang="ja" value="峠" />
             <name lang="ko" value="산악 패스" />
             <name lang="nl" value="Bergpassen" />
             <name lang="pl" value="Przełęcze górskie" />
+            <name lang="pt" value="Passagens de montanha" />
+            <name lang="sv" value="Bergspass" />
             <name lang="zh" value="垭口" />
             <cat id="mountain_pass" />
         </layer>
@@ -175,15 +255,19 @@
             <name lang="ar" value="قمم الجبال" />
             <name lang="ca" value="Cims de muntanya" />
             <name lang="cs" value="Horské vrcholy" />
+            <name lang="da" value="Bjergtoppe" />
             <name lang="de" value="Bergspitzen" />
             <name lang="el" value="Ορεινές κορυφές" />
             <name lang="en" value="Mountain peaks" />
             <name lang="es" value="Picos de montaña" />
             <name lang="fr" value="Sommets de montagne" />
             <name lang="it" value="Vette di montagna" />
+            <name lang="ja" value="山頂" />
             <name lang="ko" value="산봉우리" />
             <name lang="nl" value="Bergpieken" />
             <name lang="pl" value="Szczyty górskie" />
+            <name lang="pt" value="Picos de montanhas" />
+            <name lang="sv" value="Bergstoppar" />
             <name lang="zh" value="山峰" />
             <cat id="mountain_peak" />
         </layer>
@@ -191,15 +275,19 @@
             <name lang="ar" value="المواصلات العامة" />
             <name lang="ca" value="Transport públic" />
             <name lang="cs" value="Veřejná doprava" />
+            <name lang="da" value="Offentlig transport" />
             <name lang="de" value="Öffentliche Verkehrsmittel" />
             <name lang="el" value="Μέσα μαζικής μεταφοράς" />
             <name lang="en" value="Public transport" />
             <name lang="es" value="Transporte público" />
             <name lang="fr" value="Transports en commun" />
             <name lang="it" value="Trasporto pubblico" />
+            <name lang="ja" value="公共交通機関" />
             <name lang="ko" value="대중 교통" />
             <name lang="nl" value="Openbaar vervoer" />
             <name lang="pl" value="Transport publiczny" />
+            <name lang="pt" value="Transporte público" />
+            <name lang="sv" value="Kollektivtrafik" />
             <name lang="zh" value="公共交通" />
             <cat id="public_transport" />
         </layer>
@@ -207,15 +295,19 @@
             <name lang="ar" value="محل" />
             <name lang="ca" value="Botigues" />
             <name lang="cs" value="Obchody" />
+            <name lang="da" value="Butikker" />
             <name lang="de" value="Shops" />
             <name lang="el" value="Καταστήματα" />
             <name lang="en" value="Shops" />
             <name lang="es" value="Tiendas" />
             <name lang="fr" value="Boutiques" />
             <name lang="it" value="Negozi" />
+            <name lang="ja" value="ショップ" />
             <name lang="ko" value="상점" />
             <name lang="nl" value="Winkels" />
             <name lang="pl" value="Sklepy" />
+            <name lang="pt" value="Lojas" />
+            <name lang="sv" value="Butiker" />
             <name lang="zh" value="商店" />
             <cat id="shop" />
         </layer>
@@ -223,15 +315,19 @@
             <name lang="ar" value="أماكن جذب سياحي" />
             <name lang="ca" value="Atraccions turístiques" />
             <name lang="cs" value="Turistické atrakce" />
+            <name lang="da" value="Turistattraktioner" />
             <name lang="de" value="Touristenattraktionen" />
             <name lang="el" value="Τουριστικά αξιοθέατα" />
             <name lang="en" value="Tourist attractions" />
             <name lang="es" value="Atracciones turísticas" />
             <name lang="fr" value="Attractions touristiques" />
             <name lang="it" value="Attrazioni turistiche" />
+            <name lang="ja" value="観光名所" />
             <name lang="ko" value="관광 명소" />
             <name lang="nl" value="Touristische attracties" />
             <name lang="pl" value="Atrakcje turystyczne" />
+            <name lang="pt" value="Atrações turísticas" />
+            <name lang="sv" value="Turistattraktioner" />
             <name lang="zh" value="旅游景点" />
             <cat id="attraction" />
         </layer>
@@ -239,15 +335,19 @@
             <name lang="ar" value="مطلات" />
             <name lang="ca" value="Miradors" />
             <name lang="cs" value="Vyhlídky" />
+            <name lang="da" value="Synspunkter" />
             <name lang="de" value="Aussichtspunkte" />
             <name lang="el" value="Σημεία θέασης" />
             <name lang="en" value="Viewpoints" />
             <name lang="es" value="Miradores" />
             <name lang="fr" value="Points de vue" />
             <name lang="it" value="Punti di vista" />
+            <name lang="ja" value="視点" />
             <name lang="ko" value="뷰 포인트" />
             <name lang="nl" value="Uitzichtspunten" />
             <name lang="pl" value="Punkty widokowe" />
+            <name lang="pt" value="Pontos de vista" />
+            <name lang="sv" value="Synpunkter" />
             <name lang="zh" value="观景点" />
             <cat id="view" />
         </layer>
@@ -255,15 +355,19 @@
             <name lang="ar" value="خطوط الكنتور" />
             <name lang="ca" value="Línies de contorn" />
             <name lang="cs" value="Vrstevnice" />
+            <name lang="da" value="Konturlinjer" />
             <name lang="de" value="Höhenlinien" />
             <name lang="el" value="Γραμμές περιγράμματος" />
             <name lang="en" value="Contour lines" />
             <name lang="es" value="Líneas de contorno" />
             <name lang="fr" value="Courbes de niveau" />
             <name lang="it" value="Linee di contorno" />
+            <name lang="ja" value="等高線" />
             <name lang="ko" value="등고선" />
             <name lang="nl" value="Contourlijnen" />
             <name lang="pl" value="Linie konturowe" />
+            <name lang="pt" value="Linhas de contorno" />
+            <name lang="sv" value="Konturlinjer" />
             <name lang="zh" value="等高线" />
             <cat id="contour" />
         </layer>
@@ -271,15 +375,19 @@
             <name lang="ar" value="أرقام المنازل" />
             <name lang="ca" value="Números de casa" />
             <name lang="cs" value="Čísla domů" />
+            <name lang="da" value="Husnumre" />
             <name lang="de" value="Hausnummern" />
             <name lang="el" value="Αριθμοί κατοικιών" />
             <name lang="en" value="House numbers" />
             <name lang="es" value="Números de casa" />
             <name lang="fr" value="Numéros de maison" />
             <name lang="it" value="Numeri civici" />
+            <name lang="ja" value="家番号" />
             <name lang="ko" value="집 번호" />
             <name lang="nl" value="Huis nummers" />
             <name lang="pl" value="Numery domów" />
+            <name lang="pt" value="Números de casas" />
+            <name lang="sv" value="Husnummer" />
             <name lang="zh" value="门牌号" />
             <cat id="housenumber" />
         </layer>
@@ -287,15 +395,19 @@
             <name lang="ar" value="مسارات الطرق الوعرة" />
             <name lang="ca" value="Pistes fora de carretera" />
             <name lang="cs" value="Terénní cesty" />
+            <name lang="da" value="Offroad-spor" />
             <name lang="de" value="Offroad-Strecken" />
             <name lang="el" value="Διαδρομές εκτός δρόμου" />
             <name lang="en" value="Off road tracks" />
             <name lang="es" value="Pistas todoterreno" />
             <name lang="fr" value="Pistes hors route" />
             <name lang="it" value="Piste fuoristrada" />
+            <name lang="ja" value="オフロードトラック" />
             <name lang="ko" value="오프로드 트랙" />
             <name lang="nl" value="Off-road/circuitdetails" />
             <name lang="pl" value="Trasy terenowe" />
+            <name lang="pt" value="Trilhos off-road" />
+            <name lang="sv" value="Terrängbanor" />
             <name lang="zh" value="非铺装/越野路线" />
             <cat id="off_road" />
         </layer>
@@ -303,15 +415,19 @@
             <name lang="ar" value="مزيد من تفاصيل الخريطة" />
             <name lang="ca" value="Més detalls del mapa" />
             <name lang="cs" value="Více detailů v mapě" />
+            <name lang="da" value="Flere kortoplysninger" />
             <name lang="de" value="Weitere Kartendetails" />
             <name lang="el" value="Περισσότερες λεπτομέρειες χάρτη" />
             <name lang="en" value="More map details" />
             <name lang="es" value="Más detalles del mapa" />
             <name lang="fr" value="Plus de détails sur la carte" />
             <name lang="it" value="Maggiori dettagli sulla mappa" />
+            <name lang="ja" value="地図の詳細" />
             <name lang="ko" value="더 많은 지도 세부 정보" />
             <name lang="nl" value="Meer kaartdetails" />
             <name lang="pl" value="Więcej szczegółów mapy" />
+            <name lang="pt" value="Mais detalhes do mapa" />
+            <name lang="sv" value="Mer kartinformation" />
             <name lang="zh" value="更多地图详情" />
             <cat id="map_detail" />
         </layer>
@@ -319,15 +435,19 @@
             <name lang="ar" value="الطرق ذات الرسوم" />
             <name lang="ca" value="autopistes de peatge" />
             <name lang="cs" value="Zpoplatněné silnice" />
+            <name lang="da" value="Betalingsveje" />
             <name lang="de" value="Mautstraßen" />
             <name lang="el" value="Δρόμοι με διόδια" />
             <name lang="en" value="Toll roads" />
             <name lang="es" value="Autopistas de peaje" />
             <name lang="fr" value="Routes à péage" />
             <name lang="it" value="Strade a pedaggio" />
+            <name lang="ja" value="有料道路" />
             <name lang="ko" value="유료 도로" />
             <name lang="nl" value="Tolwegen" />
             <name lang="pl" value="Drogi płatne" />
+            <name lang="pt" value="Estradas com portagem" />
+            <name lang="sv" value="Avgiftsbelagda vägar" />
             <name lang="zh" value="收费公路" />
             <cat id="toll_roads" />
         </layer>
@@ -335,20 +455,25 @@
             <name lang="ar" value="الغطاء النباتي" />
             <name lang="ca" value="Vegetació" />
             <name lang="cs" value="Vegetace" />
+            <name lang="da" value="Vegetation" />
             <name lang="de" value="Vegetation" />
             <name lang="el" value="Βλάστηση" />
             <name lang="en" value="Vegetation" />
             <name lang="es" value="Vegetación" />
             <name lang="fr" value="Végétation" />
             <name lang="it" value="Vegetazione" />
+            <name lang="ja" value="植生" />
             <name lang="ko" value="식생" />
             <name lang="nl" value="Vegetatie" />
             <name lang="pl" value="Wegetacja" />
+            <name lang="pt" value="Vegetação" />
+            <name lang="sv" value="Vegetation" />
             <name lang="zh" value="植被" />
             <cat id="nature" />
         </layer>
         <layer id="normal" visible="true">
             <overlay id="accommodation" />
+            <overlay id="camping" />
             <overlay id="money" />
             <overlay id="entertainment" />
             <overlay id="food" />
@@ -356,6 +481,7 @@
             <overlay id="fuel" />
             <overlay id="charging_station" />
             <overlay id="parking" />
+            <overlay id="moto-parking" />
             <overlay id="misc" />
             <overlay id="mountain_pass" />
             <overlay id="mountain_peak" />
@@ -679,12 +805,12 @@
             <area fill="#002a4d" />
         </rule>
         <rule e="way" k="waterway" v="river" zoom-min="14">
-            <pathText display="always" fill="#b3b3b3" font-size="11" font-style="bold" k="name"
+            <pathText display="order" fill="#b3b3b3" font-size="11" font-style="bold" k="name"
                 priority="-100" repeat-gap="500" repeat-start="50" stroke="#000000" stroke-width="2.0" />
             <!--<caption fill="#1a98ff" font-size="11" font-style="bold" k="name" priority="50" stroke="#000000" stroke-width="2.0" />-->
         </rule>
         <rule e="way" k="waterway" v="drain|stream|canal" zoom-min="15">
-            <pathText display="always" fill="#b3b3b3" font-size="11" font-style="bold" k="name"
+            <pathText display="order" fill="#b3b3b3" font-size="11" font-style="bold" k="name"
                 priority="-100" repeat-gap="250" repeat-start="0" stroke="#000000" stroke-width="2.0" />
             <!--<caption fill="#1a98ff" font-size="11" font-style="bold" k="name" priority="50" stroke="#000000" stroke-width="2.0" />-->
         </rule>
@@ -702,7 +828,7 @@
             </rule>
             <rule e="any" k="*" v="*" zoom-min="14">
                 <line stroke="#737373" stroke-dasharray="15, 5" stroke-linecap="butt" stroke-width="1" />
-                <pathText display="always" fill="#b3b3b3" font-size="11" font-style="bold" k="name"
+                <pathText display="order" fill="#b3b3b3" font-size="11" font-style="bold" k="name"
                     priority="-100" repeat-gap="500" repeat-start="50" stroke="#000000" stroke-width="2.0" />
             </rule>
         </rule>
@@ -1254,7 +1380,7 @@
                 <line src="jar:patterns/access-private.png" stroke-width="1.0" />
             </rule>
             <rule e="way" k="oneway" v="yes|true|1" zoom-min="16">
-                <lineSymbol position="center" display="always" priority="-50" repeat="true" src="jar:symbols/oneway.svg" />
+                <lineSymbol position="center" display="order" priority="-50" repeat="true" src="jar:symbols/oneway.svg" />
             </rule>
         </rule>
     </rule>
@@ -1265,7 +1391,7 @@
         <rule e="way" k="highway" v="footway|path|track|bridleway|steps|byway" zoom-min="15">
             <pathText fill="#FFFFFF" font-size="12" font-style="bold" k="name" priority="40" stroke="#000000" stroke-width="2" />
             <rule e="way" k="oneway" v="yes|true|1">
-                <lineSymbol position="center" display="always" priority="-50" repeat="true" src="jar:symbols/oneway.svg" />
+                <lineSymbol position="center" display="order" priority="-50" repeat="true" src="jar:symbols/oneway.svg" />
             </rule>
         </rule>
         <!--off-road/track casings/outlines-->
@@ -1622,7 +1748,7 @@
     </rule>
 
     <!-- accommodation / camping / caravan / hut LAYER -->
-    <rule cat="accommodation" e="any" k="*" v="*">
+    <rule cat="camping" e="any" k="*" v="*">
         <rule e="any" k="tourism" v="camp_site" zoom-min="12">
             <symbol id="camping" src="jar:symbols/accommodation/camping.svg" />
             <rule e="node" k="*" v="*" zoom-min="12">
@@ -1652,6 +1778,8 @@
             <caption fill="#FFFFFF" font-size="12" font-style="bold" k="ele" position="above"
                 stroke="#ff0066" stroke-width="2.0" symbol-id="alpine-hut" />
         </rule>
+    </rule>
+    <rule cat="accommodation" e="any" k="*" v="*">
         <rule e="any" k="tourism" v="chalet" zoom-min="12">
             <symbol id="chalet" src="jar:symbols/accommodation/chalet.svg" />
             <rule e="any" k="*" v="*" zoom-min="15">
@@ -1700,14 +1828,14 @@
 
     <!-- fuel and charging stations LAYER -->
     <rule cat="fuel" e="any" k="amenity" v="fuel" zoom-min="10">
-        <symbol display="always" id="fuel" priority="80" src="jar:symbols/transport/fuel.svg" />
+        <symbol display="order" id="fuel" priority="80" src="jar:symbols/transport/fuel.svg" />
         <rule e="any" k="*" v="*" zoom-min="16">
             <caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#ac39ac"
                 stroke-width="2.0" symbol-id="fuel" />
         </rule>
     </rule>
     <rule cat="charging_station" e="any" k="amenity" v="charging_station" zoom-min="10">
-        <symbol display="always" id="charging_station" priority="80" src="jar:symbols/custom/transport/charging_station.svg" />
+        <symbol display="order" id="charging_station" priority="80" src="jar:symbols/custom/transport/charging_station.svg" />
         <rule e="any" k="*" v="*" zoom-min="16">
             <caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#ac39ac"
                 stroke-width="2.0" symbol-id="charging_station" />
@@ -1772,15 +1900,15 @@
     <!-- highway -->
     <rule e="any" k="*" v="*">
         <!-- parking LAYER -->
-        <rule cat="parking" e="any" k="amenity" v="motorcycle_parking" zoom-min="14">
-            <symbol display="always" src="jar:symbols/custom/transport/parking_motorcycle.svg" />
+        <rule cat="moto-parking" e="any" k="amenity" v="motorcycle_parking" zoom-min="14">
+            <symbol display="order" src="jar:symbols/custom/transport/parking_motorcycle.svg" />
         </rule>
         <rule cat="parking" e="any" k="amenity" v="parking" zoom-min="14">
             <rule e="any" k="access" v="private">
-                <symbol display="always" src="jar:symbols/transport/parking_private.svg" />
+                <symbol display="order" src="jar:symbols/transport/parking_private.svg" />
             </rule>
             <rule e="any" k="*" v="*">
-                <symbol display="always" src="jar:symbols/transport/parking.svg" />
+                <symbol display="order" src="jar:symbols/transport/parking.svg" />
                 <rule e="any" k="*" v="*" zoom-min="15">
                     <caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#0066cc" stroke-width="2.0" symbol-id="shop" />
                 </rule>

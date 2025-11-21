@@ -22,29 +22,44 @@ import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 /**
  * Callback methods for render theme.
  */
-public interface ThemeCallback {
+public abstract class ThemeCallbackAdapter implements ThemeCallback {
     /**
      * @return the resource {@link Bitmap}
      */
-    Bitmap getBitmap(Bitmap bitmap);
+    @Override
+    public Bitmap getBitmap(Bitmap bitmap) {
+        return bitmap;
+    }
 
     /**
      * @return the color-int
      */
-    int getColor(RenderInstruction origin, int color);
+    @Override
+    public int getColor(RenderInstruction origin, int color) {
+        return color;
+    }
 
     /**
      * @return the color-int
      */
-    int getColor(PolylineContainer way, int color);
+    @Override
+    public int getColor(PolylineContainer way, int color) {
+        return color;
+    }
 
     /**
      * @return the text
      */
-    String getText(PointOfInterest poi, String text);
+    @Override
+    public String getText(PointOfInterest poi, String text) {
+        return text;
+    }
 
     /**
      * @return the text
      */
-    String getText(PolylineContainer way, String text);
+    @Override
+    public String getText(PolylineContainer way, String text) {
+        return text;
+    }
 }

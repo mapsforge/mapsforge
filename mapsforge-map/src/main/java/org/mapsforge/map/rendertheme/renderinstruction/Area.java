@@ -150,6 +150,13 @@ public class Area extends RenderInstruction {
                 fillPaint.setBitmapShaderShift(way.getUpperLeft().getOrigin());
             }
 
+            if (displayModel.getThemeCallback() != null) {
+                fillPaint.setColor(displayModel.getThemeCallback().getColor(way, fillPaint.getColor()));
+                stroke.setColor(displayModel.getThemeCallback().getColor(way, stroke.getColor()));
+                for (Paint stroke : strokes.values()) {
+                    stroke.setColor(displayModel.getThemeCallback().getColor(way, stroke.getColor()));
+                }
+            }
             renderCallback.renderArea(renderContext, fillPaint, getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, way);
         }
     }

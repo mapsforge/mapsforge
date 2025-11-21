@@ -52,12 +52,12 @@ public class MapElementContainerTest {
     public void testCompareTo() {
 
         // Some map element containers
-        final MapElementContainer container1 = new MyDummyContainer(new Point(0, 0), Display.ALWAYS, 0);
-        final MapElementContainer container2 = new MyDummyContainer(new Point(10, 0), Display.ALWAYS, 0);
-        final MapElementContainer container3 = new MyDummyContainer(new Point(10, 10), Display.ALWAYS, 0);
-        final MapElementContainer container3_2 = new MyDummyContainer(new Point(10, 10), Display.ALWAYS, 0);
-        final MapElementContainer container4 = new MyDummyContainer(new Point(0, 0), Display.FORCED, 0);
-        final MapElementContainer container5 = new MyDummyContainer(new Point(10, 0), Display.FORCED, 0);
+        final MapElementContainer container1 = new MyDummyContainer(new Point(0, 0), Display.ORDER, 0);
+        final MapElementContainer container2 = new MyDummyContainer(new Point(10, 0), Display.ORDER, 0);
+        final MapElementContainer container3 = new MyDummyContainer(new Point(10, 10), Display.ORDER, 0);
+        final MapElementContainer container3_2 = new MyDummyContainer(new Point(10, 10), Display.ORDER, 0);
+        final MapElementContainer container4 = new MyDummyContainer(new Point(0, 0), Display.ALWAYS, 0);
+        final MapElementContainer container5 = new MyDummyContainer(new Point(10, 0), Display.ALWAYS, 0);
 
         // The containers all have equal priorities, but should not be considered equal
         Assert.assertTrue(0 > container1.compareTo(container2));

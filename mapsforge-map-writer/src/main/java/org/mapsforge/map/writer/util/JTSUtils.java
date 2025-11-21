@@ -154,7 +154,7 @@ public final class JTSUtils {
         return null;
     }
 
-    static Geometry repairInvalidPolygon(Geometry p) {
+    public static Geometry repairInvalidPolygon(Geometry p) {
         if (p instanceof Polygon || p instanceof MultiPolygon) {
             // apply zero buffer trick
             Geometry ret = p.buffer(0);

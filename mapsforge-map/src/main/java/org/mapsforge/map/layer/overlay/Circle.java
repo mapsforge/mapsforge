@@ -31,6 +31,8 @@ import org.mapsforge.map.view.MapView;
  */
 public class Circle extends Layer {
 
+    public static int TOUCH_SIZE = 20;
+
     private final boolean keepAligned;
     private LatLong latLong;
     private Paint paintFill;
@@ -71,7 +73,7 @@ public class Circle extends Layer {
         double scaleFactor = Math.pow(2, mapView.getModel().mapViewPosition.getZoom())
                 / Math.pow(2, mapView.getModel().mapViewPosition.getZoomLevel());
         // Touch min 20x20 px at baseline mdpi (160dpi)
-        double distance = Math.max(20 * 0.5 * this.displayModel.getScaleFactor(),
+        double distance = Math.max(TOUCH_SIZE * 0.5 * this.displayModel.getScaleFactor(),
                 getRadiusInPixels(latitude, mapView.getModel().mapViewPosition.getZoomLevel()) * scaleFactor);
         return center.distance(point) < distance;
     }

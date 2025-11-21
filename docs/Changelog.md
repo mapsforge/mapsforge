@@ -2,8 +2,22 @@
 
 ## Next version
 
+- `ThemeCallback.getColor` method [#1737](https://github.com/mapsforge/mapsforge/pull/1737)
+- Map writer performance improvements [#1741](https://github.com/mapsforge/mapsforge/pull/1741)
+- Map theme improvements
+- Minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.27.0)
+
+## Version 0.26.1 (2025-09-15)
+
+- Render themes: restore `display="always"` [#1736](https://github.com/mapsforge/mapsforge/pull/1736)
+  - Add `display="order"`
+- Minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.26.1)
+
+## Version 0.26.0 (2025-09-14)
+
 - MBTiles raster tile source (Android) [#1687](https://github.com/mapsforge/mapsforge/pull/1687)
-- Render themes: `Display.FORCED` parameter [#1717](https://github.com/mapsforge/mapsforge/pull/1717)
 - `ThemeCallback.getText` method [#1700](https://github.com/mapsforge/mapsforge/pull/1700)
 - Dark and Indigo map themes [#1704](https://github.com/mapsforge/mapsforge/issues/1704)
 - Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
