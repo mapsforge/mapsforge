@@ -66,6 +66,13 @@ public class HillShadingUtils {
     }
 
     /**
+     * @return Approximation to {@code Math.sqrt()}, often significantly faster.
+     */
+    public static double sqrtApprox(final double x) {
+        return Double.longBitsToDouble(((Double.doubleToLongBits(x) - (1L << 52)) >> 1) + (1L << 61));
+    }
+
+    /**
      * @return {@code x * x}
      */
     public static double square(final double x) {
