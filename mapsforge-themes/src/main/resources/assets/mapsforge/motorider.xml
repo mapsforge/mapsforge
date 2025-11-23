@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 57, 16th September 2025
+    VERSION 58, 18th November 2025
     this is the default/light Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -1064,11 +1064,6 @@
         </rule>
     </rule>
 
-    <!-- turning circle casing -->
-    <!--<rule e="node" k="highway" v="turning_circle">
-        <circle fill="#000000" radius="1.45" scale-radius="true" />
-    </rule>-->
-
     <!-- highway casings / outlines  - determines the look/visibility of the road edges -->
     <rule e="way" k="tunnel" v="~|no|false">
         <rule e="way" k="area" v="~|no|false">
@@ -1323,6 +1318,11 @@
         <rule e="way" k="toll" v="tl_yes" zoom-min="7"> 
             <line stroke="#FF0000" stroke-dasharray="5,10" stroke-linecap="butt" stroke-width="2.5" />
         </rule>
+    </rule>
+
+    <!-- mini roundabout -->
+    <rule e="node" k="highway" v="mini_roundabout" zoom-min="17">
+        <circle radius="0.55" scale-radius="true" fill="#737373"/>
     </rule>
 
     <!-- highway captions etc - these parameters define the look and visibility of road names/references -->
