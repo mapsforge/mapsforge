@@ -31,7 +31,7 @@ class NegativeMatcher implements AttributeMatcher {
 
     @Override
     public boolean matches(Tag tag) {
-        return Utils.contains(valueList, tag.valueCode);
+        return Utils.contains(keyList, tag.keyCode) && Utils.contains(valueList, tag.valueCode);
     }
 
     boolean keyListDoesNotContainKeys(List<Tag> tags) {
