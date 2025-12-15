@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 58, 18th November 2025
+    VERSION 59, 14th December 2025
     this is the "Dark" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -518,9 +518,6 @@
     </rule>
 
     <!-- landuse, human -->
-    <rule e="way" k="landuse" v="military" zoom-min="12">
-        <area fill="#4d0000" stroke="#ff3333" stroke-width="0.4" />
-    </rule>
     <rule e="way" k="landuse" v="residential" zoom-min="12">
         <area fill="#333333" />
     </rule>
@@ -856,19 +853,8 @@
         </rule>
 
         <!-- special areas -->
-        <rule e="way" k="military" v="*">
-            <area fill="#4d1300" />
-            <!--<rule e="any" k="*" v="*" zoom-min="13">
-                <area src="jar:patterns/military.png" />
-            </rule>-->
-        </rule>
-        <rule e="way" k="military" v="~">
-            <rule e="way" k="landuse" v="military">
-                <area fill="#4d1300" />
-                <!--<rule e="any" k="*" v="*" zoom-min="13">
-                    <area src="jar:patterns/military.png" />
-                </rule>-->
-            </rule>
+        <rule e="way" k="landuse" v="military" zoom-min="12">
+                <area fill="#25ff3333" />
         </rule>
         <rule e="way" k="leisure|boundary" v="nature_reserve|national_park|protected_area">
             <rule e="any" k="protect_class" v="1|2|3|4|5|6|7|97|98|99|~" zoom-min="16">
@@ -1925,9 +1911,9 @@
     <!-- tourism & POI -->
     <rule e="any" k="*" v="*">
         <!-- viewpoint LAYER -->
-        <rule cat="view" e="node" k="tourism" v="viewpoint" zoom-min="15">
+        <rule cat="view" e="node" k="tourism" v="viewpoint" zoom-min="13">
             <symbol id="viewpoint" src="jar:symbols/tourist/view_point.svg" />
-            <rule e="any" k="natural" v="~" zoom-min="17">
+            <rule e="any" k="natural" v="~" zoom-min="13">
                 <caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#734A08"
                     stroke-width="2.0" symbol-id="viewpoint" />
                 <caption fill="#FFFFFF" font-size="12" font-style="bold" k="ele" position="above"
