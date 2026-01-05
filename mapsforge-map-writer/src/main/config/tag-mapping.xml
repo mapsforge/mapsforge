@@ -148,7 +148,6 @@
 
         <osm-tag key="power" value="generator" zoom-appear="17"/>
         <osm-tag key="power" value="tower" zoom-appear="17"/>
-        <osm-tag key="power" value="pole" zoom-appear="17"/>
     </pois>
 
     <!-- AIRPORT TAGS -->
@@ -361,8 +360,8 @@
 
     <!-- POWER-LINES -->
     <ways>
-        <osm-tag key="power" value="line" zoom-appear="12"/>
-        <osm-tag key="power" value="minor_line" zoom-appear="13"/>
+        <osm-tag key="power" value="line" zoom-appear="13"/>
+        <osm-tag key="power" value="minor_line" zoom-appear="14"/>
     </ways>
 
     <!-- BUILDINGS -->
