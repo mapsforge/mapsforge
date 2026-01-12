@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 59, 14th December 2025
+    VERSION 60, 12 January 2026
     this is the "Ingigo" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -1659,7 +1659,7 @@
                 <caption fill="#FFFFFF" font-size="12" font-style="italic" k="name" priority="10"
                     stroke="#000000" stroke-width="2.0" />
         </rule>
-        <rule e="node" k="natural" v="volcano" zoom-min="11">
+        <rule e="node" k="natural" v="volcano" zoom-min="12">
             <symbol id="volcano" src="jar:symbols/volcano.svg" />
             <caption fill="#FFFFFF" font-size="14" font-style="bold" k="name"
                 stroke="#000000" stroke-width="2.0" symbol-id="volcano" />
@@ -1668,7 +1668,7 @@
                     priority="10" stroke="#000000" stroke-width="2.0" symbol-id="volcano" />
             </rule>
         </rule>
-        <rule cat="mountain_peak" e="node" k="natural" v="peak" zoom-min="11">
+        <rule cat="mountain_peak" e="node" k="natural" v="peak" zoom-min="12">
             <symbol id="peak" src="jar:symbols/peak.svg" />
             <caption fill="#FFFFFF" font-size="12" font-style="bold" k="name"
                 priority="10" stroke="#000000" stroke-width="2.0" symbol-id="peak" />
