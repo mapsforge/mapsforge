@@ -2,6 +2,7 @@
 
 ## Next version
 
+- POI writer: way-filtering off by default [#1773](https://github.com/mapsforge/mapsforge/pull/1773)
 - Map theme improvements
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.28.0)
