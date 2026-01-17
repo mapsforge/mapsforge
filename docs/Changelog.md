@@ -2,6 +2,7 @@
 
 ## Next version
 
+- Map theme improvements
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.28.0)
 
