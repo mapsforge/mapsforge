@@ -55,9 +55,7 @@ The `--poi-writer`, or short `--pw` task indicates that the POI writer plugin sh
 
 ### Example
 
-With the POI database created you can now use it with mapsforge. For testing purposes, you may also use one of our ready-to-use POI databases from our [server](https://download.mapsforge.org/pois/) (not suitable for mass downloads). You will also need the SQLite Android Bindings native library files in your project. You can use the Samples project as a boilerplate, as it already has all necessary files and dependencies. The library files are located each within a separate sub-folder for each target architecture (_armeabi-v7a_, _arm64-v8a_, _x86_, _x86_64_). You can delete unneeded architectures to reduce file size.
-
-The sources for those libraries can be found at [SQLite Android Bindings](https://sqlite.org/android/) site. To compile these manually you need the [Android NDK](https://developer.android.com/ndk/). The compilation process can be started with `ndk-build` from within the `jni` directory. The compiling process also moves the library files to their correct (sub)folders.
+With the POI database created you can now use it with mapsforge. For testing purposes, you may also use one of our ready-to-use POI databases from our [server](https://download.mapsforge.org/pois/) (not suitable for mass downloads).
 
 With everything set up you can check the ['POI search' example](https://github.com/mapsforge/mapsforge/blob/master/mapsforge-samples-android/src/main/java/org/mapsforge/samples/android/PoiSearchViewer.java) for:
 - How a database is opened for read access. Any access to the database is encapsulated via classes implementing `PoiPersistenceManager`. The instantiation of these classes is done via a factory class. The categories and their hierarchy are maintained via classes implementing `PoiCategoryManager`. The category configuration is read-only.
