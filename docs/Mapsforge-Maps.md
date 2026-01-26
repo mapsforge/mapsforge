@@ -1,5 +1,6 @@
 # Mapsforge map providers (in lexical order)
 
+- [alternativaslibres](https://alternativaslibres.org/en/downloads-mf.php)
 - [AndroidMaps](https://www.androidmaps.co.uk/)
 - [BBBike](https://extract.bbbike.org/?format=mapsforge-osm.zip)
 - [Freizeitkarte](https://www.freizeitkarte-osm.de/android/en/index.html)
