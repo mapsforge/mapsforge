@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 60, 12 January 2026
+    VERSION 61, 26th January 2026
     this is the default/light Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -1659,7 +1659,7 @@
                 <caption fill="#000000" font-size="12" font-style="italic" k="name" priority="10"
                     stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
-        <rule e="node" k="natural" v="volcano" zoom-min="12">
+        <rule cat="mountain_peak" e="node" k="natural" v="volcano" zoom-min="12">
             <symbol id="volcano" src="jar:symbols/volcano.svg" />
             <caption fill="#000000" font-size="14" font-style="bold" k="name"
                 stroke="#FFFFFF" stroke-width="2.0" symbol-id="volcano" />
