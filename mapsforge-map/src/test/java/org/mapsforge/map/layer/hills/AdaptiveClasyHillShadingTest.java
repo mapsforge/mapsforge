@@ -73,7 +73,7 @@ public class AdaptiveClasyHillShadingTest extends TestCase {
 
         // Optimized method as used in the algorithm
         {
-            final AThreadedHillShading.ComputingParams params = new AThreadedHillShading.ComputingParams.Builder().setOutput(output).setOutputWidth(2).build();
+            final AThreadedHillShading.ComputingParams params = new AThreadedHillShading.ComputingParams.Builder().setOutput(output).setOutputWidthBytes(2).build();
 
             algorithm.processUnitElement_4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, dsf, 0, params);
         }
