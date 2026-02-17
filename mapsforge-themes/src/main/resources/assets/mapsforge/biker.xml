@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 57, 16th September 2025
+    VERSION 61, 26th January 2026
     this is the "Biker" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -518,9 +518,6 @@
     </rule>
 
     <!-- landuse, human -->
-    <rule e="way" k="landuse" v="military" zoom-min="12">
-        <area fill="#bbffe6e6" stroke="#ff3333" stroke-width="0.4" />
-    </rule>
     <rule e="way" k="landuse" v="residential" zoom-min="12">
         <area fill="#e6e6e6" />
     </rule>
@@ -856,19 +853,8 @@
         </rule>
 
         <!-- special areas -->
-        <rule e="way" k="military" v="*">
-            <area fill="#15DF003F" />
-            <!--<rule e="any" k="*" v="*" zoom-min="13">
-                <area src="jar:patterns/military.png" />
-            </rule>-->
-        </rule>
-        <rule e="way" k="military" v="~">
-            <rule e="way" k="landuse" v="military">
-                <area fill="#ffe6e6" />
-                <!--<rule e="any" k="*" v="*" zoom-min="13">
-                    <area src="jar:patterns/military.png" />
-                </rule>-->
-            </rule>
+        <rule e="way" k="landuse" v="military" zoom-min="12">
+                <area fill="#25ff3333" />
         </rule>
         <rule e="way" k="leisure|boundary" v="nature_reserve|national_park|protected_area">
             <rule e="any" k="protect_class" v="1|2|3|4|5|6|7|97|98|99|~" zoom-min="16">
@@ -1063,11 +1049,6 @@
             <line stroke="#EEEEEE" stroke-linecap="butt" stroke-width="2.5" />
         </rule>
     </rule>
-
-    <!-- turning circle casing -->
-    <!--<rule e="node" k="highway" v="turning_circle">
-        <circle fill="#000000" radius="1.45" scale-radius="true" />
-    </rule>-->
 
     <!-- highway casings / outlines  - determines the look/visibility of the road edges -->
     <rule e="way" k="tunnel" v="~|no|false">
@@ -1323,6 +1304,11 @@
         <rule e="way" k="toll" v="tl_yes" zoom-min="7">
             <line stroke="#FF0000" stroke-dasharray="5,10" stroke-linecap="butt" stroke-width="2.5" />
         </rule>
+    </rule>
+
+    <!-- mini roundabout -->
+    <rule e="node" k="highway" v="mini_roundabout" zoom-min="17">
+        <circle radius="0.55" scale-radius="true" fill="#737373"/>
     </rule>
 
     <!-- highway captions etc - these parameters define the look and visibility of road names/references -->
@@ -1673,7 +1659,7 @@
                 <caption fill="#000000" font-size="12" font-style="italic" k="name" priority="10"
                     stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
-        <rule e="node" k="natural" v="volcano" zoom-min="11">
+        <rule cat="mountain_peak" e="node" k="natural" v="volcano" zoom-min="12">
             <symbol id="volcano" src="jar:symbols/volcano.svg" />
             <caption fill="#000000" font-size="14" font-style="bold" k="name"
                 stroke="#FFFFFF" stroke-width="2.0" symbol-id="volcano" />
@@ -1682,7 +1668,7 @@
                     priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="volcano" />
             </rule>
         </rule>
-        <rule cat="mountain_peak" e="node" k="natural" v="peak" zoom-min="11">
+        <rule cat="mountain_peak" e="node" k="natural" v="peak" zoom-min="12">
             <symbol id="peak" src="jar:symbols/peak.svg" />
             <caption fill="#000000" font-size="12" font-style="bold" k="name"
                 priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="peak" />
@@ -1925,9 +1911,9 @@
     <!-- tourism & POI -->
     <rule e="any" k="*" v="*">
         <!-- viewpoint LAYER -->
-        <rule cat="view" e="node" k="tourism" v="viewpoint" zoom-min="15">
+        <rule cat="view" e="node" k="tourism" v="viewpoint" zoom-min="13">
             <symbol id="viewpoint" src="jar:symbols/tourist/view_point.svg" />
-            <rule e="any" k="natural" v="~" zoom-min="17">
+            <rule e="any" k="natural" v="~" zoom-min="13">
                 <caption fill="#734A08" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                     stroke-width="2.0" symbol-id="viewpoint" />
                 <caption fill="#734A08" font-size="12" font-style="bold" k="ele" position="above"

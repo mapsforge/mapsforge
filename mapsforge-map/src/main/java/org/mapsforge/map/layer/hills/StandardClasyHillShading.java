@@ -127,7 +127,8 @@ public class StandardClasyHillShading extends AClasyHillShading {
             final double normalZInv = dsf;
 
             // Always greater than zero due to checks above
-            final double normalXYLen = Math.sqrt(normalX * normalX + normalY * normalY);
+//            final double normalXYLen = Math.sqrt(normalX * normalX + normalY * normalY);
+            final double normalXYLen = sqrt(normalX * normalX + normalY * normalY);
 
             // Tangent of the angle between the 3D normal and the z-axis.
             // Z-component of the normal is always above zero due to hills being a graph of a function; thus no abs() and no special checks needed.
@@ -147,5 +148,10 @@ public class StandardClasyHillShading extends AClasyHillShading {
         // Crude rounding of small positive numbers. Rounding mode is "half away from zero".
         // Intended to be faster than Math.round() for small positive numbers.
         return (byte) (shade + 0.5);
+    }
+
+    protected double sqrt(final double x) {
+//        return Math.sqrt(x);
+        return HillShadingUtils.sqrtApprox(x);
     }
 }

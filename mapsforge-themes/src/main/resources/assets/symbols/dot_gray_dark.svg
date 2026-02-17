@@ -10,6 +10,6 @@
    </cc:Work>
   </rdf:RDF>
  </metadata>
- <circle opacity=".8" cx="290" cy="290" r="145" fill="#444"/>
- <circle cy="290" cx="290" r="116" fill="#fff"/>
+ <circle opacity=".8" cx="290" cy="290" r="145" fill="#fff"/>
+ <circle cy="290" cx="290" r="116" fill="#444"/>
 </svg>

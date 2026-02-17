@@ -358,6 +358,12 @@
         <osm-tag key="route" value="ferry" zoom-appear="11"/>
     </ways>
 
+    <!-- POWER-LINES -->
+    <ways>
+        <osm-tag key="power" value="line" zoom-appear="13"/>
+        <osm-tag key="power" value="minor_line" zoom-appear="14"/>
+    </ways>
+
     <!-- BUILDINGS -->
     <ways>
         <osm-tag key="building" label-position="true" value="apartment" zoom-appear="15"/>
