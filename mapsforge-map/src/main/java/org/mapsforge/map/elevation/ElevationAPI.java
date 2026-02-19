@@ -19,6 +19,8 @@ import org.mapsforge.map.layer.hills.DemFolder;
 import org.mapsforge.map.layer.hills.HiResClasyHillShading;
 import org.mapsforge.map.rendertheme.renderinstruction.Hillshading;
 
+import java.util.List;
+
 /**
  * Get elevations of geographic points using offline digital elevation model data (DEM/SRTM).
  */
@@ -77,6 +79,49 @@ public class ElevationAPI {
                 final double lon = latLon[2 * i + 1];
 
                 final double elevation = getElevation(lat, lon, elevationBitmapRef, mode);
+
+                output[i] = elevation;
+
+                if (isValid(elevation)) {
+                    ++retVal;
+                }
+            }
+        }
+
+        return retVal;
+    }
+
+    /**
+     * Get elevations for a set of location points using {@link Mode#BICUBIC} interpolation mode.
+     *
+     * @param latLon Input list of latitude-longitude pairs. Eg. one point is {@code latLon[0] = lat, latLon[1] = lon}.
+     * @param output Output array, with the length exactly the length of the input list.
+     * @return Number of valid elevations found. If there is no missing data, this will be equal to the length of the output array (i.e. the number of points in the input list).
+     * In any case, each output array element will contain the elevation in meters (referenced to the WGS84/EGM96 geoid) for the corresponding input array point, or {@link ElevationAPI#INVALID_VALUE} if data is missing.
+     */
+    public int getElevation(final List<double[]> latLon, final double[] output) {
+        return getElevation(latLon, output, Mode.BICUBIC);
+    }
+
+    /**
+     * Get elevations for a set of location points.
+     *
+     * @param latLon Input list of latitude-longitude pairs. Eg. one point is {@code latLon[0] = lat, latLon[1] = lon}.
+     * @param output Output array, with the length exactly the length of the input list.
+     * @param mode   Interpolation mode, either {@link Mode#BICUBIC} (default) or {@link Mode#BILINEAR}.
+     * @return Number of valid elevations found. If there is no missing data, this will be equal to the length of the output array (i.e. the number of points in the input list).
+     * In any case, each output array element will contain the elevation in meters (referenced to the WGS84/EGM96 geoid) for the corresponding input array point, or {@link ElevationAPI#INVALID_VALUE} if data is missing.
+     */
+    public int getElevation(final List<double[]> latLon, final double[] output, Mode mode) {
+        int retVal = 0;
+
+        if (latLon != null) {
+            final ElevationBitmap[] elevationBitmapRef = new ElevationBitmap[]{null};
+
+            for (int i = 0; i < latLon.size(); i++) {
+                final double[] latLonPoint = latLon.get(i);
+
+                final double elevation = getElevation(latLonPoint[0], latLonPoint[1], elevationBitmapRef, mode);
 
                 output[i] = elevation;
 
