@@ -557,6 +557,14 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
         return Math.max(1, inputAxisLen / outputAxisLen);
     }
 
+    protected int getResolutionFactor(int inputAxisLen, int outputAxisLen) {
+        return Math.max(1, outputAxisLen / inputAxisLen);
+    }
+
+    protected int getOutputElementSizeBytes() {
+        return 1;
+    }
+
     /**
      * Implementation note: Reading an entire line into a buffer and then performing skips turns out to be faster than directly skipping on an unbuffered (raw) stream.
      *
@@ -652,23 +660,26 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
 
         final int outputAxisLen = getOutputAxisLen(hgtFileInfo, zoomLevel, pxPerLat, pxPerLon);
         final int inputAxisLen = getInputAxisLen(hgtFileInfo);
-        final int resolutionFactor = Math.max(1, outputAxisLen / inputAxisLen);
+        final int resolutionFactor = getResolutionFactor(inputAxisLen, outputAxisLen);
         final int strideFactor = getStrideFactor(inputAxisLen, outputAxisLen);
         final int inputAxisLenScaled = inputAxisLen / strideFactor;
         final int outputWidth = getOutputWidth(hgtFileInfo, padding, zoomLevel, pxPerLat, pxPerLon);
+        final int outputHeight = getOutputHeight(hgtFileInfo, padding, zoomLevel, pxPerLat, pxPerLon);
         final int inputWidth = inputAxisLen + 1;
         final int inputWidthScaled = inputAxisLenScaled + 1;
         final double northUnitDistancePerLine = getLatUnitDistance(hgtFileInfo.northLat(), inputAxisLenScaled) / inputAxisLenScaled;
         final double southUnitDistancePerLine = getLatUnitDistance(hgtFileInfo.southLat(), inputAxisLenScaled) / inputAxisLenScaled;
-        final int outputIxInit = outputWidth * padding + padding;
+        final int outputElementSizeBytes = getOutputElementSizeBytes();
+        final int outputWidthBytes = outputElementSizeBytes * outputWidth;
+        final int outputIxInit = outputElementSizeBytes * (outputWidth * padding + padding);
         // Must add two additional paddings (after possibly skipping a line) to get to a starting position of the next line
-        final int outputIxIncrement = (resolutionFactor - 1) * outputWidth + 2 * padding;
+        final int outputIxIncrement = outputElementSizeBytes * ((resolutionFactor - 1) * outputWidth + 2 * padding);
 
         if (isZoomLevelSupported(zoomLevel, hgtFileInfo) && isNotStopped()) {
 
             createThreadPoolsMaybe();
 
-            output = new byte[outputWidth * outputWidth];
+            output = new byte[outputWidthBytes * outputHeight];
 
             final Semaphore activeTasksCount = new Semaphore(mActiveTasksCountMax);
             final ShortArraysPool inputArraysPool = new ShortArraysPool((1 + mActiveTasksCountMax) * mReadingThreadsCount);
@@ -678,6 +689,7 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
                     .setInputAxisLen(inputAxisLenScaled)
                     .setOutputAxisLen(outputAxisLen)
                     .setOutputWidth(outputWidth)
+                    .setOutputWidthBytes(outputWidthBytes)
                     .setInputWidth(inputWidth)
                     .setInputWidthScaled(inputWidthScaled)
                     .setPadding(padding)
@@ -1283,7 +1295,7 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
                 final int fourthLineOffset = thirdLineOffset + mComputingParams.mInputWidthScaled;
 
                 int outputIx = mComputingParams.mOutputIxInit;
-                outputIx += resolutionFactor * mLineFrom * mComputingParams.mOutputWidth;
+                outputIx += resolutionFactor * mLineFrom * mComputingParams.mOutputWidthBytes;
 
                 int line = mLineFrom;
 
@@ -1628,7 +1640,7 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
                 final int secondLineOffset = mComputingParams.mInputWidthScaled;
 
                 int outputIx = mComputingParams.mOutputIxInit;
-                outputIx += resolutionFactor * mLineFrom * mComputingParams.mOutputWidth;
+                outputIx += resolutionFactor * mLineFrom * mComputingParams.mOutputWidthBytes;
 
                 int inputIx = 0;
 
@@ -1668,6 +1680,7 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
         public final int mInputWidth;
         public final int mInputWidthScaled;
         public final int mOutputWidth;
+        public final int mOutputWidthBytes;
         public final int mPadding;
         public final int mResolutionFactor;
         public final int mStrideFactor;
@@ -1686,6 +1699,7 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
             mInputWidth = builder.mInputWidth;
             mInputWidthScaled = builder.mInputWidthScaled;
             mOutputWidth = builder.mOutputWidth;
+            mOutputWidthBytes = builder.mOutputWidthBytes;
             mPadding = builder.mPadding;
             mResolutionFactor = builder.mResolutionFactor;
             mStrideFactor = builder.mStrideFactor;
@@ -1705,6 +1719,7 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
             protected volatile int mInputWidth;
             protected volatile int mInputWidthScaled;
             protected volatile int mOutputWidth;
+            protected volatile int mOutputWidthBytes;
             protected volatile int mPadding;
             protected volatile int mResolutionFactor;
             protected volatile int mStrideFactor;
@@ -1756,6 +1771,11 @@ public abstract class AThreadedHillShading extends AShadingAlgorithm {
 
             public Builder setOutputWidth(int outputWidth) {
                 this.mOutputWidth = outputWidth;
+                return this;
+            }
+
+            public Builder setOutputWidthBytes(int outputWidthBytes) {
+                this.mOutputWidthBytes = outputWidthBytes;
                 return this;
             }
 

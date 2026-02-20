@@ -203,9 +203,9 @@ public class HiResClasyHillShading extends StandardClasyHillShading {
             // NW corner
             computingParams.mOutput[outputIx] = unitElementToShadePixel(nw, nwswHalf, center, nwneHalf, dsfDouble);
             // SW corner
-            computingParams.mOutput[outputIx + computingParams.mOutputWidth] = unitElementToShadePixel(nwswHalf, sw, swseHalf, center, dsfDouble);
+            computingParams.mOutput[outputIx + computingParams.mOutputWidthBytes] = unitElementToShadePixel(nwswHalf, sw, swseHalf, center, dsfDouble);
             // SE corner
-            computingParams.mOutput[1 + outputIx + computingParams.mOutputWidth] = unitElementToShadePixel(center, swseHalf, se, neseHalf, dsfDouble);
+            computingParams.mOutput[1 + outputIx + computingParams.mOutputWidthBytes] = unitElementToShadePixel(center, swseHalf, se, neseHalf, dsfDouble);
             // NE corner
             computingParams.mOutput[1 + outputIx] = unitElementToShadePixel(nwneHalf, center, neseHalf, ne, dsfDouble);
 
@@ -351,9 +351,9 @@ public class HiResClasyHillShading extends StandardClasyHillShading {
         // NW corner
         computingParams.mOutput[outputIx] = unitElementToShadePixel(nw, nwswHalf, center, nwneHalf, dsfDouble);
         // SW corner
-        computingParams.mOutput[outputIx + computingParams.mOutputWidth] = unitElementToShadePixel(nwswHalf, sw, swseHalf, center, dsfDouble);
+        computingParams.mOutput[outputIx + computingParams.mOutputWidthBytes] = unitElementToShadePixel(nwswHalf, sw, swseHalf, center, dsfDouble);
         // SE corner
-        computingParams.mOutput[1 + outputIx + computingParams.mOutputWidth] = unitElementToShadePixel(center, swseHalf, se, neseHalf, dsfDouble);
+        computingParams.mOutput[1 + outputIx + computingParams.mOutputWidthBytes] = unitElementToShadePixel(center, swseHalf, se, neseHalf, dsfDouble);
         // NE corner
         computingParams.mOutput[1 + outputIx] = unitElementToShadePixel(nwneHalf, center, neseHalf, ne, dsfDouble);
 
@@ -398,7 +398,7 @@ public class HiResClasyHillShading extends StandardClasyHillShading {
      * @param nnw  North-north-west value.
      * @return Bicubic interpolated value from a 4x4 unit element corresponding to coordinates (x,y).
      */
-    public double getBicubicPoint(double x, double y, double nw, double sw, double se, double ne, double nwnw, double wnw, double wsw, double swsw, double ssw, double sse, double sese, double ese, double ene, double nene, double nne, double nnw) {
+    public static double getBicubicPoint(double x, double y, double nw, double sw, double se, double ne, double nwnw, double wnw, double wsw, double swsw, double ssw, double sse, double sese, double ese, double ene, double nene, double nne, double nnw) {
         final double f00 = sw;
         final double f10 = se;
         final double f01 = nw;

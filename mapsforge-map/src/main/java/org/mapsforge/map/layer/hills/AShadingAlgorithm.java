@@ -75,10 +75,16 @@ public abstract class AShadingAlgorithm implements ShadingAlgorithm {
     }
 
     @Override
+    public int getOutputHeight(HgtFileInfo hgtFileInfo, int padding, int zoomLevel, double pxPerLat, double pxPerLon) {
+        return 2 * padding + getOutputAxisLen(hgtFileInfo, zoomLevel, pxPerLat, pxPerLon);
+    }
+
+    @Override
     public long getOutputSizeBytes(HgtFileInfo hgtFileInfo, int padding, int zoomLevel, double pxPerLat, double pxPerLon) {
         final long outputWidth = getOutputWidth(hgtFileInfo, padding, zoomLevel, pxPerLat, pxPerLon);
+        final long outputHeight = getOutputHeight(hgtFileInfo, padding, zoomLevel, pxPerLat, pxPerLon);
 
-        return outputWidth * outputWidth;
+        return outputWidth * outputHeight;
     }
 
     @Override
