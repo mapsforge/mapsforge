@@ -2,6 +2,7 @@
 
 ## Next version
 
+- Hillshading elevation API [#1777](https://github.com/mapsforge/mapsforge/pull/1777)
 - POI writer: way-filtering off by default [#1773](https://github.com/mapsforge/mapsforge/pull/1773)
 - Map theme improvements
 - Minor improvements and bug fixes
