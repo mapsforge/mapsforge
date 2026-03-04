@@ -118,7 +118,8 @@
         <osm-tag key="place" value="city" zoom-appear="6"/>
         <osm-tag key="place" value="country" zoom-appear="3"/>
         <osm-tag key="place" value="hamlet" zoom-appear="12"/>
-        <osm-tag key="place" value="island" zoom-appear="12"/>
+        <osm-tag key="place" value="island" zoom-appear="8"/>
+        <osm-tag key="place" value="islet" zoom-appear="8"/>
         <osm-tag key="place" value="locality" zoom-appear="12"/>
         <osm-tag key="place" value="suburb" zoom-appear="11"/>
         <osm-tag key="place" value="town" zoom-appear="9"/>
@@ -629,6 +630,8 @@
         <osm-tag key="military" value="barracks" zoom-appear="12"/>
         <osm-tag key="military" value="naval_base" zoom-appear="12"/>
 
+        <osm-tag key="place" label-position="true" value="island" zoom-appear="8"/>
+        <osm-tag key="place" label-position="true" value="islet" zoom-appear="8"/>
         <osm-tag key="place" value="locality" zoom-appear="17"/>
 
         <osm-tag key="area" value="yes" zoom-appear="12"/>
