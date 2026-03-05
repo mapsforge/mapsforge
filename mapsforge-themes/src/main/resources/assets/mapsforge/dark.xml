@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 61, 26th January 2026
+    VERSION 62, 5th March 2026
     this is the "Dark" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -1575,11 +1575,11 @@
                     k="name" priority="10" stroke="#000000" stroke-width="0.1" />
             </rule>
         </rule>
-        <rule e="any" k="place" v="island" zoom-min="10" zoom-max="15">
+        <rule e="any" k="place" v="island" zoom-min="10" zoom-max="13">
             <caption fill="#FFFFFF" font-size="12" font-style="italic" k="name"
                 priority="30" stroke="#000000" stroke-width="0.1" />
         </rule>
-        <rule e="any" k="place" v="islet" zoom-min="12" zoom-max="15">
+        <rule e="any" k="place" v="islet" zoom-min="12" zoom-max="13">
             <caption fill="#FFFFFF" font-size="12" font-style="italic" k="name"
                 priority="30" stroke="#000000" stroke-width="0.1" />
         </rule>
