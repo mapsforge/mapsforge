@@ -1549,6 +1549,7 @@
     <!--<category title="Address">
         <mapping tag="addr:street" />
         <mapping tag="addr:housenumber" />
+        <mapping tag="addr:postcode" />
     </category>-->
 
 </category>
