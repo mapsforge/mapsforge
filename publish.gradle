@@ -1,0 +1,55 @@
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            pom {
+                name = 'Mapsforge'
+                description = 'Vector map library and writer - running on Android and Desktop.'
+                url = 'https://github.com/mapsforge/mapsforge'
+                licenses {
+                    license {
+                        name = 'GNU Lesser GPL'
+                        url = 'https://www.gnu.org/licenses/lgpl.html'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'thilo.muehlberg'
+                        name = 'Thilo Mühlberg'
+                        email = 'thilo.muehlberg@gmail.com'
+                    }
+                    developer {
+                        id = 'jjbross'
+                        name = 'Jürgen Broß'
+                        email = 'jjbross@gmail.com'
+                    }
+                    developer {
+                        id = 'ludwigbrinckmann'
+                        name = 'Ludwig M Brinckmann'
+                        email = 'ludwigbrinckmann@gmail.com'
+                    }
+                    developer {
+                        id = 'devemux86'
+                        name = 'Emux'
+                        email = 'devemux86@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/mapsforge/mapsforge'
+                    developerConnection = 'scm:git:https://github.com/mapsforge/mapsforge'
+                    url = 'https://github.com/mapsforge/mapsforge'
+                }
+            }
+        }
+    }
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
