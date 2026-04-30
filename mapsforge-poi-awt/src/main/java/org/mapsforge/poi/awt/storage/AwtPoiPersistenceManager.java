@@ -207,21 +207,19 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         Statement stmt = this.conn.createStatement();
 
         stmt.execute(DbConstants.DROP_METADATA_STATEMENT);
-        stmt.execute(DbConstants.DROP_INDEX_IDX_LAT_STATEMENT);
-        stmt.execute(DbConstants.DROP_INDEX_IDX_LON_STATEMENT);
         stmt.execute(DbConstants.DROP_INDEX_STATEMENT);
+        stmt.execute(DbConstants.DROP_CATEGORY_MAP_IDX_STATEMENT);
         stmt.execute(DbConstants.DROP_CATEGORY_MAP_STATEMENT);
-        //stmt.execute(DbConstants.DROP_DATA_IDX_STATEMENT);
+        stmt.execute(DbConstants.DROP_DATA_FTS_STATEMENT);
         stmt.execute(DbConstants.DROP_DATA_STATEMENT);
         stmt.execute(DbConstants.DROP_CATEGORIES_STATEMENT);
 
         stmt.execute(DbConstants.CREATE_CATEGORIES_STATEMENT);
         stmt.execute(DbConstants.CREATE_DATA_STATEMENT);
-        //stmt.execute(DbConstants.CREATE_DATA_IDX_STATEMENT);
+        stmt.execute(DbConstants.CREATE_DATA_FTS_STATEMENT);
         stmt.execute(DbConstants.CREATE_CATEGORY_MAP_STATEMENT);
+        stmt.execute(DbConstants.CREATE_CATEGORY_MAP_IDX_STATEMENT);
         stmt.execute(DbConstants.CREATE_INDEX_STATEMENT);
-        stmt.execute(DbConstants.CREATE_INDEX_IDX_LAT_STATEMENT);
-        stmt.execute(DbConstants.CREATE_INDEX_IDX_LON_STATEMENT);
         stmt.execute(DbConstants.CREATE_METADATA_STATEMENT);
 
         stmt.close();
@@ -309,7 +307,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         ResultSet rs = null;
         try {
             int pSize = patterns == null ? 0 : patterns.size();
-            stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, orderBy));
+            stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, orderBy, getPoiFileInfo().version));
 
             stmt.clearParameters();
 
@@ -320,15 +318,37 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
             int i = 0; // i is only counted, if pattern is not null
             if (pSize > 0) {
-                for (Tag tag : patterns) {
-                    if (tag == null) {
-                        continue;
+                if (getPoiFileInfo().version <= 3) {
+                    for (Tag tag : patterns) {
+                        if (tag == null) {
+                            continue;
+                        }
+                        stmt.setString(5 + i, "%" + (tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value + "%");
+                        i++;
                     }
-                    stmt.setString(5 + i, "%" + (tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value + "%");
+                } else {
+                    StringBuilder sb = new StringBuilder();
+                    for (Tag tag : patterns) {
+                        if (tag == null) {
+                            continue;
+                        }
+                        if (sb.length() > 0) {
+                            sb.append(" OR ");
+                        }
+                        String text = (tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value;
+                        if (!tag.key.equals("*") || text.contains("=")) {
+                            text = "\"" + text + "\"";
+                        }
+                        sb.append(text);
+                    }
+                    stmt.setString(5, sb.toString());
                     i++;
                 }
             }
             stmt.setInt(5 + i, limit);
+
+            if (DEBUG)
+                LOGGER.info(stmt.toString());
 
             rs = stmt.executeQuery();
             while (rs.next()) {
@@ -366,7 +386,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         ResultSet rs = null;
         try {
             if (this.findLocByIDStatement == null) {
-                this.findLocByIDStatement = this.conn.prepareStatement(DbConstants.FIND_LOCATION_BY_ID_STATEMENT);
+                this.findLocByIDStatement = this.conn.prepareStatement(getPoiFileInfo().version <= 3 ? DbConstants.FIND_LOCATION_BY_ID_STATEMENT_V3 : DbConstants.FIND_LOCATION_BY_ID_STATEMENT);
             }
 
             this.findLocByIDStatement.clearParameters();
@@ -449,7 +469,9 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 // POI location
                 this.insertPoiLocStatement.setLong(1, poi.getId());
                 this.insertPoiLocStatement.setDouble(2, poi.getLatitude());
-                this.insertPoiLocStatement.setDouble(3, poi.getLongitude());
+                this.insertPoiLocStatement.setDouble(3, poi.getLatitude());
+                this.insertPoiLocStatement.setDouble(4, poi.getLongitude());
+                this.insertPoiLocStatement.setDouble(5, poi.getLongitude());
                 this.insertPoiLocStatement.executeUpdate();
 
                 // POI data
@@ -463,6 +485,12 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     this.insertPoiCatStatement.setLong(2, cat.getID());
                     this.insertPoiCatStatement.executeUpdate();
                 }
+            }
+
+            if (getPoiFileInfo().version >= 4) {
+                this.conn.createStatement().execute(DbConstants.INSERT_DATA_FTS_REBUILD_STATEMENT);
+                this.conn.createStatement().execute(DbConstants.INSERT_DATA_FTS_OPTIMIZE_STATEMENT);
+                this.conn.createStatement().execute(DbConstants.INSERT_DATA_FTS_INTEGRITY_CHECK_STATEMENT);
             }
 
             stmt.execute("COMMIT;");
@@ -604,6 +632,12 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             this.deletePoiLocStatement.executeUpdate();
             this.deletePoiDataStatement.executeUpdate();
             this.deletePoiCatStatement.executeUpdate();
+
+            if (getPoiFileInfo().version >= 4) {
+                this.conn.createStatement().execute(DbConstants.INSERT_DATA_FTS_REBUILD_STATEMENT);
+                this.conn.createStatement().execute(DbConstants.INSERT_DATA_FTS_OPTIMIZE_STATEMENT);
+                this.conn.createStatement().execute(DbConstants.INSERT_DATA_FTS_INTEGRITY_CHECK_STATEMENT);
+            }
 
             stmt.execute("COMMIT;");
             stmt.close();

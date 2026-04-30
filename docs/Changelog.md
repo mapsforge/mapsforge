@@ -2,6 +2,7 @@
 
 ## Next version
 
+- POI: **v4** with R-Tree and FTS5
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.29.0)
 

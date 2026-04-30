@@ -28,6 +28,8 @@ import java.util.*;
  * provides functionality for accessing the SQLite database.
  */
 public abstract class AbstractPoiPersistenceManager implements PoiPersistenceManager {
+    public static boolean DEBUG = false;
+
     protected PoiCategoryManager categoryManager = null;
     protected String poiFile;
     protected PoiFileInfo poiFileInfo;
@@ -89,26 +91,42 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
      * @param filter  The filter object for determining all wanted categories (may be null).
      * @param count   Count of patterns to search in points of interest data (may be 0).
      * @param orderBy {@link LatLong} location of the sort.
+     * @param version POI specification version.
      * @return The SQL query.
      */
-    protected static String getSQLSelectString(PoiCategoryFilter filter, int count, LatLong orderBy) {
+    protected static String getSQLSelectString(PoiCategoryFilter filter, int count, LatLong orderBy, int version) {
         if (filter != null) {
-            return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, count, orderBy);
+            return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, count, orderBy, version);
         }
         StringBuilder sb = new StringBuilder();
-        sb.append(DbConstants.FIND_IN_BOX_CLAUSE_SELECT);
+        sb.append(version <= 3 ? DbConstants.FIND_IN_BOX_CLAUSE_SELECT_V3 : DbConstants.FIND_IN_BOX_CLAUSE_SELECT);
         sb.append(DbConstants.JOIN_DATA_CLAUSE);
-        sb.append(DbConstants.FIND_IN_BOX_CLAUSE_WHERE);
-        for (int i = 0; i < count; i++) {
-            sb.append(i == 0 ? " AND (" : " OR ");
-            sb.append(DbConstants.FIND_BY_DATA_CLAUSE);
-            if (i == count - 1) {
-                sb.append(")");
+        if (version >= 4 && count > 0) {
+            sb.append(DbConstants.JOIN_DATA_FTS_CLAUSE);
+        }
+        sb.append(version <= 3 ? DbConstants.FIND_IN_BOX_CLAUSE_WHERE_V3 : DbConstants.FIND_IN_BOX_CLAUSE_WHERE);
+        if (version <= 3) {
+            for (int i = 0; i < count; i++) {
+                sb.append(i == 0 ? " AND (" : " OR ");
+                sb.append(DbConstants.FIND_BY_DATA_CLAUSE_V3);
+                if (i == count - 1) {
+                    sb.append(")");
+                }
+            }
+        } else {
+            if (count > 0) {
+                sb.append(" AND ");
+                sb.append(DbConstants.FIND_BY_DATA_CLAUSE);
             }
         }
         if (orderBy != null) {
-            sb.append(" ORDER BY ((").append(orderBy.latitude).append(" - poi_index.lat) * (").append(orderBy.latitude).append(" - poi_index.lat))")
-                    .append(" + ((").append(orderBy.longitude).append(" - poi_index.lon) * (").append(orderBy.longitude).append(" - poi_index.lon)) ASC");
+            if (version <= 3) {
+                sb.append(" ORDER BY ((").append(orderBy.latitude).append(" - poi_index.lat) * (").append(orderBy.latitude).append(" - poi_index.lat))")
+                        .append(" + ((").append(orderBy.longitude).append(" - poi_index.lon) * (").append(orderBy.longitude).append(" - poi_index.lon)) ASC");
+            } else {
+                sb.append(" ORDER BY ((").append(orderBy.latitude).append(" - poi_index.minLat) * (").append(orderBy.latitude).append(" - poi_index.minLat))")
+                        .append(" + ((").append(orderBy.longitude).append(" - poi_index.minLon) * (").append(orderBy.longitude).append(" - poi_index.minLon)) ASC");
+            }
         }
         return sb.append(" LIMIT ?;").toString();
     }

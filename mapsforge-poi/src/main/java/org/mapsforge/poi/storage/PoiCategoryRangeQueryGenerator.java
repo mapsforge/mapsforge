@@ -37,25 +37,41 @@ public final class PoiCategoryRangeQueryGenerator {
      * @param filter  The filter object for determining all wanted categories.
      * @param count   Count of patterns to search in points of interest names (may be 0).
      * @param orderBy {@link LatLong} location of the sort.
+     * @param version POI specification version.
      * @return The SQL query.
      */
-    public static String getSQLSelectString(PoiCategoryFilter filter, int count, LatLong orderBy) {
+    public static String getSQLSelectString(PoiCategoryFilter filter, int count, LatLong orderBy, int version) {
         StringBuilder sb = new StringBuilder();
-        sb.append(DbConstants.FIND_IN_BOX_CLAUSE_SELECT);
+        sb.append(version <= 3 ? DbConstants.FIND_IN_BOX_CLAUSE_SELECT_V3 : DbConstants.FIND_IN_BOX_CLAUSE_SELECT);
         sb.append(DbConstants.JOIN_CATEGORY_CLAUSE);
         sb.append(DbConstants.JOIN_DATA_CLAUSE);
-        sb.append(DbConstants.FIND_IN_BOX_CLAUSE_WHERE);
+        if (version >= 4 && count > 0) {
+            sb.append(DbConstants.JOIN_DATA_FTS_CLAUSE);
+        }
+        sb.append(version <= 3 ? DbConstants.FIND_IN_BOX_CLAUSE_WHERE_V3 : DbConstants.FIND_IN_BOX_CLAUSE_WHERE);
         sb.append(getSQLWhereClauseString(filter));
-        for (int i = 0; i < count; i++) {
-            sb.append(i == 0 ? " AND (" : " OR ");
-            sb.append(DbConstants.FIND_BY_DATA_CLAUSE);
-            if (i == count - 1) {
-                sb.append(")");
+        if (version <= 3) {
+            for (int i = 0; i < count; i++) {
+                sb.append(i == 0 ? " AND (" : " OR ");
+                sb.append(DbConstants.FIND_BY_DATA_CLAUSE_V3);
+                if (i == count - 1) {
+                    sb.append(")");
+                }
+            }
+        } else {
+            if (count > 0) {
+                sb.append(" AND ");
+                sb.append(DbConstants.FIND_BY_DATA_CLAUSE);
             }
         }
         if (orderBy != null) {
-            sb.append(" ORDER BY ((").append(orderBy.latitude).append(" - poi_index.lat) * (").append(orderBy.latitude).append(" - poi_index.lat))")
-                    .append(" + ((").append(orderBy.longitude).append(" - poi_index.lon) * (").append(orderBy.longitude).append(" - poi_index.lon)) ASC");
+            if (version <= 3) {
+                sb.append(" ORDER BY ((").append(orderBy.latitude).append(" - poi_index.lat) * (").append(orderBy.latitude).append(" - poi_index.lat))")
+                        .append(" + ((").append(orderBy.longitude).append(" - poi_index.lon) * (").append(orderBy.longitude).append(" - poi_index.lon)) ASC");
+            } else {
+                sb.append(" ORDER BY ((").append(orderBy.latitude).append(" - poi_index.minLat) * (").append(orderBy.latitude).append(" - poi_index.minLat))")
+                        .append(" + ((").append(orderBy.longitude).append(" - poi_index.minLon) * (").append(orderBy.longitude).append(" - poi_index.minLon)) ASC");
+            }
         }
         return (sb.append(" LIMIT ?;").toString());
     }
@@ -74,7 +90,8 @@ public final class PoiCategoryRangeQueryGenerator {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append(" AND (");
+        sb.append(" AND ");
+        sb.append(DbConstants.FIND_IN_BOX_CLAUSE_WHERE_CATEGORY_IN);
         // for each super category
         for (Iterator<PoiCategory> superCatIter = superCategories.iterator(); superCatIter.hasNext(); ) {
             PoiCategory superCat = superCatIter.next();
@@ -84,7 +101,6 @@ public final class PoiCategoryRangeQueryGenerator {
             // Don't forget the super category itself in the search!
             categories.add(superCat);
 
-            sb.append(DbConstants.FIND_IN_BOX_CLAUSE_WHERE_CATEGORY_IN);
             // for each category
             for (Iterator<PoiCategory> catIter = categories.iterator(); catIter.hasNext(); ) {
                 PoiCategory cat = catIter.next();
@@ -93,11 +109,9 @@ public final class PoiCategoryRangeQueryGenerator {
                     sb.append(", ");
                 }
             }
-            sb.append(")");
 
-            // append OR if it is not the last
             if (superCatIter.hasNext()) {
-                sb.append(" OR ");
+                sb.append(", ");
             }
         }
         sb.append(")");

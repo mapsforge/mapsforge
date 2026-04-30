@@ -45,13 +45,14 @@ implementation 'com.github.mapsforge.mapsforge:mapsforge-poi:[CURRENT-VERSION]@j
 
 ```groovy
 implementation 'com.github.mapsforge.mapsforge:mapsforge-poi-android:[CURRENT-VERSION]@jar'
+implementation 'androidx.sqlite:sqlite-bundled:2.6.2'
 ```
 
 ### Desktop
 
 ```groovy
 implementation 'com.github.mapsforge.mapsforge:mapsforge-poi-awt:[CURRENT-VERSION]@jar'
-implementation 'org.xerial:sqlite-jdbc:3.43.0.0'
+implementation 'org.xerial:sqlite-jdbc:3.53.0.0'
 ```
 
 ## Snapshots
