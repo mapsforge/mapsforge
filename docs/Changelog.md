@@ -2,6 +2,11 @@
 
 ## Next version
 
+- Minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.29.0)
+
+## Version 0.28.0 (2026-04-30)
+
 - Hillshading elevation API [#1777](https://github.com/mapsforge/mapsforge/pull/1777)
 - POI writer: way-filtering off by default [#1773](https://github.com/mapsforge/mapsforge/pull/1773)
 - Map theme improvements
