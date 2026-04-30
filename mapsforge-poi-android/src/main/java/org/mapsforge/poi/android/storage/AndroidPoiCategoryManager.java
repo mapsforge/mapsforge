@@ -16,8 +16,8 @@
  */
 package org.mapsforge.poi.android.storage;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import androidx.sqlite.SQLiteConnection;
+import androidx.sqlite.SQLiteStatement;
 import org.mapsforge.poi.storage.*;
 
 import java.util.HashMap;
@@ -35,13 +35,13 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
     private static final Logger LOGGER = Logger.getLogger(AndroidPoiCategoryManager.class.getName());
 
     /**
-     * @param db SQLite database object. (Using SQLite wrapper for Android).
+     * @param connection SQLite database object. (Using SQLite wrapper for Android).
      */
-    AndroidPoiCategoryManager(SQLiteDatabase db) {
+    AndroidPoiCategoryManager(SQLiteConnection connection) {
         this.categoryMap = new TreeMap<>();
 
         try {
-            loadCategories(db);
+            loadCategories(connection);
         } catch (UnknownPoiCategoryException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
@@ -52,21 +52,21 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
      *
      * @throws UnknownPoiCategoryException if a category cannot be retrieved by its ID or unique name.
      */
-    private void loadCategories(SQLiteDatabase db) throws UnknownPoiCategoryException {
+    private void loadCategories(SQLiteConnection connection) throws UnknownPoiCategoryException {
         // Maximum ID (for root node)
         int maxID = 0;
 
         // Maps categories to their parent IDs
         Map<PoiCategory, Integer> parentMap = new HashMap<>();
 
-        Cursor cursor = null;
+        SQLiteStatement statement = null;
         try {
-            cursor = db.rawQuery(SELECT_STATEMENT, null);
-            while (cursor.moveToNext()) {
+            statement = connection.prepare(SELECT_STATEMENT);
+            while (statement.step()) {
                 // Column values
-                int categoryID = cursor.getInt(0);
-                String categoryTitle = cursor.getString(1);
-                int categoryParentID = cursor.getInt(2);
+                int categoryID = statement.getInt(0);
+                String categoryTitle = statement.getText(1);
+                int categoryParentID = statement.getInt(2);
 
                 PoiCategory pc = new DoubleLinkedPoiCategory(categoryTitle, null, categoryID);
                 this.categoryMap.put(categoryID, pc);
@@ -83,8 +83,8 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         } finally {
             try {
-                if (cursor != null) {
-                    cursor.close();
+                if (statement != null) {
+                    statement.close();
                 }
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, e.toString(), e);

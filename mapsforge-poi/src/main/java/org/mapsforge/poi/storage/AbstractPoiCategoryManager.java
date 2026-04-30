@@ -23,7 +23,7 @@ import java.util.Map;
  * provides functionality for getting categories by their ID / name.
  */
 public abstract class AbstractPoiCategoryManager implements PoiCategoryManager {
-    protected static final String SELECT_STATEMENT = "SELECT * FROM poi_categories ORDER BY id ASC;";
+    protected static final String SELECT_STATEMENT = "SELECT * FROM poi_categories ORDER BY id;";
 
     /**
      * The hierarchies root category.

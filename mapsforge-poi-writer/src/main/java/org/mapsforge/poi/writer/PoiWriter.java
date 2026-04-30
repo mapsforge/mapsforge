@@ -307,10 +307,10 @@ public final class PoiWriter {
         this.conn.createStatement().execute(DbConstants.DROP_NODES_STATEMENT);
         this.conn.createStatement().execute(DbConstants.DROP_WAYNODES_STATEMENT);
         this.conn.createStatement().execute("VACUUM;");
-        //this.conn.createStatement().execute(DbConstants.CREATE_DATA_IDX_STATEMENT);
-        this.conn.createStatement().execute(DbConstants.CREATE_INDEX_IDX_LAT_STATEMENT);
-        this.conn.createStatement().execute(DbConstants.CREATE_INDEX_IDX_LON_STATEMENT);
-        this.conn.createStatement().execute("VACUUM;");
+        this.conn.createStatement().execute(DbConstants.CREATE_CATEGORY_MAP_IDX_STATEMENT);
+        this.conn.createStatement().execute(DbConstants.INSERT_DATA_FTS_REBUILD_STATEMENT);
+        this.conn.createStatement().execute(DbConstants.INSERT_DATA_FTS_OPTIMIZE_STATEMENT);
+        this.conn.createStatement().execute(DbConstants.INSERT_DATA_FTS_INTEGRITY_CHECK_STATEMENT);
         this.conn.close();
     }
 
@@ -324,19 +324,21 @@ public final class PoiWriter {
 
         Statement stmt = this.conn.createStatement();
 
-        // Create tables
+        // Drop tables
         stmt.execute(DbConstants.DROP_WAYNODES_STATEMENT);
         stmt.execute(DbConstants.DROP_NODES_STATEMENT);
         stmt.execute(DbConstants.DROP_METADATA_STATEMENT);
-        stmt.execute(DbConstants.DROP_INDEX_IDX_LAT_STATEMENT);
-        stmt.execute(DbConstants.DROP_INDEX_IDX_LON_STATEMENT);
         stmt.execute(DbConstants.DROP_INDEX_STATEMENT);
+        stmt.execute(DbConstants.DROP_CATEGORY_MAP_IDX_STATEMENT);
         stmt.execute(DbConstants.DROP_CATEGORY_MAP_STATEMENT);
-        //stmt.execute(DbConstants.DROP_DATA_IDX_STATEMENT);
+        stmt.execute(DbConstants.DROP_DATA_FTS_STATEMENT);
         stmt.execute(DbConstants.DROP_DATA_STATEMENT);
         stmt.execute(DbConstants.DROP_CATEGORIES_STATEMENT);
+
+        // Create tables
         stmt.execute(DbConstants.CREATE_CATEGORIES_STATEMENT);
         stmt.execute(DbConstants.CREATE_DATA_STATEMENT);
+        stmt.execute(DbConstants.CREATE_DATA_FTS_STATEMENT);
         stmt.execute(DbConstants.CREATE_CATEGORY_MAP_STATEMENT);
         stmt.execute(DbConstants.CREATE_INDEX_STATEMENT);
         stmt.execute(DbConstants.CREATE_METADATA_STATEMENT);
@@ -628,7 +630,7 @@ public final class PoiWriter {
         if (bb == null) {
             // Calculate bounding box from poi coordinates
             Statement stmt = this.conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT MIN(lat), MIN(lon), MAX(lat), MAX(lon) FROM poi_index;");
+            ResultSet rs = stmt.executeQuery("SELECT MIN(minLat), MIN(minLon), MAX(maxLat), MAX(maxLon) FROM poi_index;");
             rs.next();
             bb = new BoundingBox(rs.getDouble(1), rs.getDouble(2), rs.getDouble(3), rs.getDouble(4));
         }
@@ -706,7 +708,9 @@ public final class PoiWriter {
             // Index data
             this.pStmtIndex.setLong(1, id);
             this.pStmtIndex.setDouble(2, latitude);
-            this.pStmtIndex.setDouble(3, longitude);
+            this.pStmtIndex.setDouble(3, latitude);
+            this.pStmtIndex.setDouble(4, longitude);
+            this.pStmtIndex.setDouble(5, longitude);
             this.pStmtIndex.addBatch();
 
             // POI data

@@ -2,6 +2,9 @@
 
 ## Next version
 
+- POI: **v4** [#1804](https://github.com/mapsforge/mapsforge/pull/1804)
+  - R-Tree spatial search
+  - FTS5 full-text search
 - Map theme improvements
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.29.0)

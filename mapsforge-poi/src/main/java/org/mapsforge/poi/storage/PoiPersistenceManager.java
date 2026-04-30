@@ -48,7 +48,8 @@ public interface PoiPersistenceManager {
      * @param filter         POI category filter object that helps determining whether a POI should be added to
      *                       the set or not (may be null).
      * @param patterns       the patterns to search in points of interest data (may be null).
-     * @param orderBy        {@link LatLong} location of the sort.
+     * @param orderByRank    Ranking results by relevance.
+     * @param orderByPoint   {@link LatLong} location of the sort.
      * @param limit          max number of {@link PointOfInterest} to be returned.
      * @param findCategories find POI categories.
      * @return {@link Collection} of {@link PointOfInterest} matching a given
@@ -56,7 +57,7 @@ public interface PoiPersistenceManager {
      * the given {@link BoundingBox}.
      */
     Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter, List<Tag> patterns,
-                                           LatLong orderBy, int limit, boolean findCategories);
+                                           boolean orderByRank, LatLong orderByPoint, int limit, boolean findCategories);
 
     /**
      * Fetch {@link PointOfInterest} from underlying storage near a given position.
@@ -68,15 +69,15 @@ public interface PoiPersistenceManager {
      * @param filter         POI category filter object that helps determining whether a POI should be added to
      *                       the set or not (may be null).
      * @param patterns       the patterns to search in points of interest data (may be null).
-     * @param orderBy        {@link LatLong} location of the sort.
+     * @param orderByRank    Ranking results by relevance.
+     * @param orderByPoint   {@link LatLong} location of the sort.
      * @param limit          max number of {@link PointOfInterest} to be returned.
      * @param findCategories find POI categories.
      * @return {@link Collection} of {@link PointOfInterest} matching a given
      * {@link PoiCategoryFilter} and data pattern near the given position.
      */
-    Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
-                                                 PoiCategoryFilter filter, List<Tag> patterns,
-                                                 LatLong orderBy, int limit, boolean findCategories);
+    Collection<PointOfInterest> findNearPosition(LatLong point, int distance, PoiCategoryFilter filter, List<Tag> patterns,
+                                                 boolean orderByRank, LatLong orderByPoint, int limit, boolean findCategories);
 
     /**
      * @param poiID the id of the point of interest that shall be returned.

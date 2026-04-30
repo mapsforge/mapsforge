@@ -1466,9 +1466,9 @@
         <category title="Caravan sites">
             <mapping tag="tourism=caravan_site" />
         </category>
-        <category title="Water point">
+        <!--<category title="Water point">
             <mapping tag="amenity=water_point" />
-        </category>
+        </category>-->
         <category title="Chalets">
             <mapping tag="tourism=chalet" />
         </category>
