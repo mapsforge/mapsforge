@@ -6,7 +6,7 @@ This article describes how to use the POI API in mapsforge POI library (from `pr
 
 _Points of Interest_ (POIs) are points with a given position, category and data. A POI database is used to store a set of POIs and to search for POIs within a given area.
 
-The mapsforge POI library uses SQLite for storing POIs.
+The mapsforge POI library uses SQLite with [R-Tree](https://sqlite.org/rtree.html) and [FTS5](https://www.sqlite.org/fts5.html) for storing POIs.
 
 All reading and writing operations are done via classes implementing the `PoiPersistenceManager` interface. POI categories can be defined on creation time only. Categories are implemented as trees and can be accessed via classes implementing the `PoiCategoryManager` interface.
 
@@ -89,7 +89,7 @@ The DB schema consists of:
 - `poi_categories` with the categories tree
 - `poi_data` with the POI information
 - `poi_category_map` with the POI categories mapping
-- `poi_index` with the POI coordinates
+- Virtual & shadow correlated tables holding the R-Tree and FTS5 indexes
 - `metadata` with the DB metadata
 
 ## Version history
@@ -99,3 +99,4 @@ The DB schema consists of:
 | 1           | 2016-06-11 | Initial release of the specification            |
 | 2           | 2017-12-03 | <ul><li>POI multiple categories</li></ul>       |
 | 3           | 2023-01-12 | <ul><li>Android without external libs</li></ul> |
+| 4           | 2026-05-05 | <ul><li>R-Tree</li><li>FTS5</li></ul>           |
