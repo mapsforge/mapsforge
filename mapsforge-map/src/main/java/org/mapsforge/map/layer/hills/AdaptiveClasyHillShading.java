@@ -236,7 +236,7 @@ public class AdaptiveClasyHillShading extends HiResClasyHillShading implements I
      * @param zoomLevel   Zoom level (to determine shading quality requirements)
      * @param pxPerLat    Tile pixels per degree of latitude (to determine shading quality requirements)
      * @param pxPerLon    Tile pixels per degree of longitude (to determine shading quality requirements)
-     * @return The quality factor: If >0 that number is a multiplier, if <0 its absolute value is a divisor for scaling purposes.
+     * @return The quality factor: If {@code > 0} that number is a multiplier, if {@code < 0} its absolute value is a divisor for scaling purposes.
      * @see #scaleByQualityFactor(int, int)
      */
     @SuppressWarnings("unused")

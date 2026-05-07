@@ -56,9 +56,9 @@ public class DatabaseRenderer extends StandardRenderer {
     /**
      * Constructs a new DatabaseRenderer.
      * There are three possible configurations:
-     * 1) render labels directly onto tiles: renderLabels == true && tileCache != null
-     * 2) do not render labels but cache them: renderLabels == false && labelStore != null
-     * 3) do not render or cache labels: renderLabels == false && labelStore == null
+     * 1) render labels directly onto tiles: {@code renderLabels == true && tileCache != null}
+     * 2) do not render labels but cache them: {@code renderLabels == false && labelStore != null}
+     * 3) do not render or cache labels: {@code renderLabels == false && labelStore == null}
      *
      * @param mapDataStore      the data source.
      * @param graphicFactory    the graphic factory.

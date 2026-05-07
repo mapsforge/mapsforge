@@ -106,7 +106,7 @@ public class LineString {
 
     /**
      * Interpolates on the segment and returns the coordinate of the interpolation result.
-     * Returns null if distance is < 0 or > length().
+     * Returns null if distance is {@code < 0} or {@code > length()}.
      */
     public Point interpolate(double distance) {
         if (distance < 0) {
