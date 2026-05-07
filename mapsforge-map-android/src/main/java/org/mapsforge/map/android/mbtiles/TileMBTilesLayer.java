@@ -15,8 +15,12 @@
  */
 package org.mapsforge.map.android.mbtiles;
 
+import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -54,11 +58,11 @@ public class TileMBTilesLayer extends TileLayer<MBTilesRendererJob> implements O
     /**
      * Whether the tile is stale and should be refreshed.
      * <br />
-     * This method is called from {@link #draw(org.mapsforge.core.model.BoundingBox, byte, org.mapsforge.core.graphics.Canvas, org.mapsforge.core.model.Point)} to determine whether the tile needs to
+     * This method is called from {@link TileLayer#draw(BoundingBox, byte, Canvas, Point, Rotation)} to determine whether the tile needs to
      * be refreshed.
      * <br />
      * A tile is considered stale if the timestamp of the layer's {@link #renderer} is more recent than the
-     * {@code bitmap}'s {@link org.mapsforge.core.graphics.TileBitmap#getTimestamp()}.
+     * {@code bitmap}'s {@link TileBitmap#getTimestamp()}.
      * <br />
      * When a tile has become stale, the layer will first display the tile referenced by {@code bitmap} and attempt to
      * obtain a fresh copy in the background. When a fresh copy becomes available, the layer will replace is and update

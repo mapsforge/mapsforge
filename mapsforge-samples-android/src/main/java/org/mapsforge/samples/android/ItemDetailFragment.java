@@ -78,7 +78,7 @@ public class ItemDetailFragment extends Fragment {
                 container, false);
 
         if (this.dummyItem != null) {
-            this.mapView = (MapView) rootView.findViewById(R.id.mapView);
+            this.mapView = rootView.findViewById(R.id.mapView);
             this.mapView.getMapScaleBar().setVisible(true);
 
             createLayers();
@@ -114,6 +114,7 @@ public class ItemDetailFragment extends Fragment {
                 this.getMapFileName()));
     }
 
+    @SuppressWarnings("deprecation")
     protected File getMapFileDirectory() {
         return getContext().getExternalMediaDirs()[0];
     }

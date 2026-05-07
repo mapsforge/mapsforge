@@ -80,8 +80,8 @@ public class DoubleLinkedPoiCategory implements PoiCategory {
      * 'ID_'n at depth 'd' the following invariants must be true:
      * <ul>
      * <li>ID > max(ID of all child nodes)</li>
-     * <li>All nodes' IDs left of n must be < ID_n.</li>
-     * <li>All nodes' IDs right of n must be > ID_n.</li>
+     * <li>All nodes' IDs left of n must be {@code < ID_n}.</li>
+     * <li>All nodes' IDs right of n must be {@code > ID_n}.</li>
      * </ul>
      *
      * @param rootNode The tree's root node. (<strong>Any other node will result in invalid IDs!</strong>)
