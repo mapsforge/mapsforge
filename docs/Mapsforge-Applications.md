@@ -56,6 +56,7 @@
 | [SatStat](https://mvglasow.github.io/satstat) | Android location, sensor and radio network status | GPL3+/Free | Open |
 | [Serval Maps](http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page) | Collaborative Mapping using a Mesh Network | GPL3/Free | Open |
 | [TingBY](http://ting.by/) | City guide | Proprietary/Free | Closed |
+| [Trail Sense](https://github.com/kylecorry31/Trail-Sense) | Offline outdoor tools | MIT/Free | Open |
 | [Ultra GPS Logger](https://play.google.com/store/apps/details?id=com.flashlight.ultra.gps.logger) | GPS tracker | Proprietary/Commercial | Closed |
 | [Urban Biker](https://play.google.com/store/apps/details?id=com.sublimis.urbanbiker) | Activity tracker, maps, navigation, dashboard | Proprietary/Free | Closed |
 | [UtalTransitMap](https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap) | Transport Guide | Proprietary/Free | Closed |
