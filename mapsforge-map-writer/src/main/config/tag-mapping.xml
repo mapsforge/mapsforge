@@ -344,6 +344,7 @@
     <!-- PUBLIC TRANSPORT -->
     <ways>
         <osm-tag key="railway" value="disused" zoom-appear="15"/>
+        <osm-tag key="railway" value="abandoned" zoom-appear="15"/>
         <osm-tag key="railway" value="funicular" zoom-appear="12"/>
         <osm-tag key="railway" value="light_rail" zoom-appear="12"/>
         <osm-tag key="railway" value="miniature" zoom-appear="14"/>
