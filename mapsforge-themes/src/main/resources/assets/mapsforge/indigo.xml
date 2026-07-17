@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    VERSION 62, 5th March 2026
+    VERSION 63, 17th July 2026
     this is the "Indigo" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -668,7 +668,7 @@
 
         <!-- railway tunnel -->
         <rule e="way" k="railway"
-            v="tram|subway|light_rail|narrow_gauge|preserved|funicular|miniature|monorail">
+            v="tram|subway|light_rail|narrow_gauge|preserved|funicular|miniature|monorail|disused">
             <line stroke="#60999999" stroke-dasharray="4,6" stroke-linecap="butt" stroke-width="0.25" />
         </rule>
         <rule e="way" k="railway" v="rail">
@@ -1087,6 +1087,9 @@
                 <rule e="way" k="highway" v="cycleway" zoom-min="18">
                     <line stroke="#a6a6a6" stroke-width="1.0" />
                 </rule>
+                <rule e="way" k="highway" v="raceway" zoom-min="14">
+                    <line stroke="#808080" stroke-width="1.0" />
+                </rule>
                 <!--<rule e="way" k="highway" v="unclassified" zoom-min="12" zoom-max="12">
                     <line stroke="#a6a6a6" stroke-width="0.4" />
                 </rule>-->
@@ -1148,7 +1151,7 @@
             <!-- railway bridges -->
             <rule e="way" k="bridge" v="yes|true|viaduct|aqueduct|suspension|culvert|swing">
                 <rule e="way" k="railway"
-                    v="subway|narrow_gauge|preserved|funicular|miniature|tram|light_rail|monorail">
+                    v="subway|narrow_gauge|preserved|funicular|miniature|tram|light_rail|monorail|disused">
                     <line stroke="#666666" stroke-linecap="butt" stroke-width="1.2" />
                     <line stroke="#EEEEEE" stroke-linecap="butt" stroke-width="0.8" />
                 </rule>
@@ -1168,7 +1171,7 @@
                 <line stroke="#B7B7E6" stroke-dasharray="12,18" stroke-linecap="butt"
                     stroke-width="0.25" />
             </rule>
-            <rule e="way" k="railway" v="narrow_gauge|preserved|funicular|miniature|monorail">
+            <rule e="way" k="railway" v="narrow_gauge|preserved|funicular|miniature|monorail|disused">
                 <line stroke="#333333" stroke-linecap="butt" stroke-width="0.4" />
                 <line stroke="#E6E6E6" stroke-linecap="butt" stroke-width="0.25" />
                 <line stroke="#333333" stroke-dasharray="12,12" stroke-linecap="butt"
@@ -1226,10 +1229,10 @@
             <rule e="way" k="highway" v="bridleway" zoom-min="17">
                 <line stroke="#274e72" stroke-dasharray="10,12" stroke-linecap="round" stroke-width="0.6" />
             </rule>
-            <rule cat="map_detail" e="way" k="highway" v="cycleway|raceway" zoom-min="14">
+            <rule cat="map_detail" e="way" k="highway" v="cycleway" zoom-min="14">
                 <line stroke="#274e72" stroke-width="0.6" />
             </rule>
-            <rule e="way" k="highway" v="cycleway|raceway" zoom-min="16">
+            <rule e="way" k="highway" v="cycleway" zoom-min="16">
                 <line stroke="#274e72" stroke-width="0.6" />
             </rule>
             <rule e="way" k="highway" v="service" zoom-min="14" zoom-max="14">
@@ -1276,7 +1279,10 @@
             <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="10">
                 <line stroke="#274e72" stroke-width="2.2" />
             </rule>
-            <rule e="way" k="highway" v="primary|primary_link" zoom-min="8">
+            <rule e="way" k="highway" v="primary|primary_link" zoom-min="8" zoom-max="8">
+                <line stroke="#274e72" stroke-width="1.2" />
+            </rule>
+            <rule e="way" k="highway" v="primary|primary_link" zoom-min="9">
                 <line stroke="#274e72" stroke-width="2.2" />
             </rule>
             <rule e="way" k="highway" v="trunk|trunk_link" zoom-min="6" zoom-max="7">
@@ -1317,6 +1323,9 @@
     </rule>
     <rule e="way" k="highway" v="services" zoom-min="14">
         <caption k="name" fill="#FFFFFF" font-size="11" font-style="bold" priority="85" stroke="#804000" stroke-width="2"/>
+    </rule>
+    <rule e="way" k="tunnel" v="yes|true" zoom-min="14">
+		<pathText k="name" fill="#FFFFFF" font-size="10" font-style="bold" priority="80" repeat-gap="250" repeat-start="50" stroke="#000000" stroke-width="3" />
     </rule>
     <rule e="way" k="tunnel" v="~|no|false">
         <rule e="way" k="highway" v="footway|path|track|bridleway|steps|byway" zoom-min="17">
@@ -1456,6 +1465,9 @@
 
     <!-- provides additional road captions for Motorway, Trunk, Primary/Secondary at levels 10, 11 and 12 respectively -->
     <rule cat="map_detail" e="way" k="highway" v="*" zoom-min="8">
+		<rule e="way" k="tunnel" v="yes|true" zoom-min="13">
+			<pathText k="name" fill="#FFFFFF" font-size="10" font-style="bold" priority="80" repeat-gap="250" repeat-start="50" stroke="#000000" stroke-width="3" />
+		</rule>
         <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="12" zoom-max="12">
             <caption k="ref" fill="#ffe6cc" font-size="10" font-style="normal" priority="30" stroke="#000000" stroke-width="8"/>
         </rule>
@@ -1471,6 +1483,11 @@
     </rule>
 
     <!-- other transportation ways -->
+	<rule e="way" k="railway" v="abandoned">
+		<line stroke="#A04d4d4d" stroke-width="0.75" stroke-linecap="butt"/>
+		<line stroke="#8c8c8c" stroke-width="0.6" stroke-linecap="butt"/>
+		<line stroke="#A04d4d4d" stroke-width="0.3" scale="all" stroke-dasharray="2.4,2.4" stroke-linecap="butt"/>
+	</rule>
     <!-- aeroway runways cores - runway defined *after* taxiway so as to take priority -->
     <rule e="way" k="aeroway" v="taxiway" zoom-min="11">
         <line stroke="#737373" stroke-linecap="butt" stroke-width="1.8" />
@@ -2074,7 +2091,7 @@
     <!-- this makes toll roads (ie: France) easier to spot -->
     <rule e="any" k="barrier" v="*" zoom-min="15">
         <rule e="any" k="barrier" v="toll_booth">
-            <symbol src="jar:symbols/barrier/gate.svg" />
+            <symbol src="jar:symbols/barrier/lift_gate.svg" />
             <caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#FF0000" stroke-width="2.0" symbol-id="shop" />
         </rule>
     </rule>
