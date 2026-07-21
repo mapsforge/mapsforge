@@ -1,12 +1,12 @@
 plugins {
-    id 'com.android.application' version '9.0.1' apply false
+    id 'com.android.application' version '9.3.0' apply false
 }
 
 allprojects {
     group = 'org.mapsforge'
     version = 'master-SNAPSHOT'
 
-    ext.jUnitVersion = "4.12"
+    ext.jUnitVersion = '4.13.2'
 
     if (JavaVersion.current().isJava8Compatible()) {
         tasks.withType(Javadoc) {
@@ -17,11 +17,11 @@ allprojects {
     }
 }
 
-static def androidCompileSdk() { return 36 }
+static def androidCompileSdk() { return 37 }
 
 static def androidMinSdk() { return 23 }
 
-static def androidTargetSdk() { return 36 }
+static def androidTargetSdk() { return 37 }
 
 static def versionCode() { return 1 }
 
@@ -29,12 +29,12 @@ def versionName() { return version }
 
 subprojects {
     tasks.withType(JavaCompile) {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         options.encoding = 'UTF-8'
         if (JavaVersion.current().isJava9Compatible()) {
             if (!project.properties.containsKey('android')) {
-                options.compilerArgs.addAll(['--release', '8'])
+                options.compilerArgs.addAll(['--release', '17'])
             }
         }
     }

@@ -4,10 +4,10 @@ apply plugin: 'maven-publish'
 dependencies {
     api project(":mapsforge-core")
     compileOnly 'net.sf.kxml:kxml2:2.3.0'
-    testImplementation 'commons-io:commons-io:2.5'
+    testImplementation 'commons-io:commons-io:2.22.0'
     testImplementation "junit:junit:$jUnitVersion"
     testImplementation 'org.mortbay.jetty:jetty:6.1.26'
-    testImplementation 'org.slf4j:slf4j-log4j12:1.7.28'
+    testImplementation 'org.slf4j:slf4j-log4j12:2.0.18'
 }
 
 publishing {
