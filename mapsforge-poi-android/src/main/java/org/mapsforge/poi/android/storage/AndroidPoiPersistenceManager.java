@@ -213,7 +213,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                         if (!tag.key.equals("*") || text.contains("=")) {
                             text = "\"" + text + "\"";
                         }
-                        sb.append(text);
+                        sb.append(text).append("*"); // FTS5 prefix queries
                     }
                     selectionArgs.add(sb.toString());
                 }
