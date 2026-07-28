@@ -185,7 +185,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
         SQLiteStatement statement = null;
         try {
             int pSize = patterns == null ? 0 : patterns.size();
-            String sql = AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, orderByRank, orderByPoint, getPoiFileInfo().version);
+            String sql = AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, orderByRank, orderByPoint, limit, getPoiFileInfo().version);
 
             List<String> selectionArgs = new ArrayList<>();
             selectionArgs.add(String.valueOf(bb.maxLatitude));
@@ -218,7 +218,9 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     selectionArgs.add(sb.toString());
                 }
             }
-            selectionArgs.add(String.valueOf(limit));
+            if (limit > 0) {
+                selectionArgs.add(String.valueOf(limit));
+            }
 
             if (DEBUG)
                 LOGGER.info(sql + "\nparameters=" + Arrays.toString(selectionArgs.toArray(new String[0])));

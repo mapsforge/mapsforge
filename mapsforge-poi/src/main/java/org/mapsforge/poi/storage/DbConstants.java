@@ -61,7 +61,10 @@ public final class DbConstants {
             "SELECT poi_index.id, poi_index.lat, poi_index.lon, poi_data.data "
                     + "FROM poi_index ";
     public static final String FIND_IN_BOX_CLAUSE_SELECT =
-            "SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data_fts.rank "
+            "SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data_fts.data "
+                    + "FROM poi_index ";
+    public static final String FIND_IN_BOX_CLAUSE_SELECT_RANK =
+            "SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data_fts.data, poi_data_fts.rank "
                     + "FROM poi_index ";
     public static final String FIND_IN_BOX_CLAUSE_WHERE_V3 =
             "WHERE "

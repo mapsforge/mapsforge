@@ -99,7 +99,7 @@ public class PoiSearchViewer extends DefaultTheme {
                 PoiCategoryManager categoryManager = persistenceManager.getCategoryManager();
                 PoiCategoryFilter categoryFilter = new ExactMatchPoiCategoryFilter();
                 categoryFilter.addCategory(categoryManager.getPoiCategoryByTitle(category));
-                return persistenceManager.findInRect(params[0], categoryFilter, null, false, null, Integer.MAX_VALUE, true);
+                return persistenceManager.findInRect(params[0], categoryFilter, null, false, null, -1, false);
             } catch (Throwable t) {
                 Log.e(SamplesApplication.TAG, t.toString(), t);
             }
@@ -145,7 +145,10 @@ public class PoiSearchViewer extends DefaultTheme {
                 layerXY = mapView.getMapRotation().rotate(layerXY, true);
             }
             if (contains(layerXY, tapXY, mapView)) {
-                Toast.makeText(PoiSearchViewer.this, pointOfInterest.getName(), Toast.LENGTH_SHORT).show();
+                final String name = pointOfInterest.getName();
+                if (name != null && !name.isEmpty()) {
+                    Toast.makeText(PoiSearchViewer.this, name, Toast.LENGTH_SHORT).show();
+                }
                 return true;
             }
             return false;

@@ -307,7 +307,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         ResultSet rs = null;
         try {
             int pSize = patterns == null ? 0 : patterns.size();
-            stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, orderByRank, orderByPoint, getPoiFileInfo().version));
+            stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, orderByRank, orderByPoint, limit, getPoiFileInfo().version));
 
             stmt.clearParameters();
 
@@ -345,7 +345,9 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     i++;
                 }
             }
-            stmt.setInt(5 + i, limit);
+            if (limit > 0) {
+                stmt.setInt(5 + i, limit);
+            }
 
             if (DEBUG)
                 LOGGER.info(stmt.toString());

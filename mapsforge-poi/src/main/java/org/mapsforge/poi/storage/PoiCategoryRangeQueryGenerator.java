@@ -38,15 +38,17 @@ public final class PoiCategoryRangeQueryGenerator {
      * @param count        Count of patterns to search in points of interest names (may be 0).
      * @param orderByRank  Ranking results by relevance.
      * @param orderByPoint {@link LatLong} location of the sort.
+     * @param limit        Max number of records to be returned.
      * @param version      POI specification version.
      * @return The SQL query.
      */
-    public static String getSQLSelectString(PoiCategoryFilter filter, int count, boolean orderByRank, LatLong orderByPoint, int version) {
+    public static String getSQLSelectString(PoiCategoryFilter filter, int count, boolean orderByRank, LatLong orderByPoint, int limit, int version) {
         StringBuilder sb = new StringBuilder();
-        sb.append(version <= 3 ? DbConstants.FIND_IN_BOX_CLAUSE_SELECT_V3 : DbConstants.FIND_IN_BOX_CLAUSE_SELECT);
+        sb.append(version <= 3 ? DbConstants.FIND_IN_BOX_CLAUSE_SELECT_V3 : (orderByRank ? DbConstants.FIND_IN_BOX_CLAUSE_SELECT_RANK : DbConstants.FIND_IN_BOX_CLAUSE_SELECT));
         sb.append(DbConstants.JOIN_CATEGORY_CLAUSE);
-        sb.append(DbConstants.JOIN_DATA_CLAUSE);
-        if (version >= 4) {
+        if (version <= 3) {
+            sb.append(DbConstants.JOIN_DATA_CLAUSE);
+        } else {
             sb.append(DbConstants.JOIN_DATA_FTS_CLAUSE);
         }
         sb.append(version <= 3 ? DbConstants.FIND_IN_BOX_CLAUSE_WHERE_V3 : DbConstants.FIND_IN_BOX_CLAUSE_WHERE);
@@ -78,7 +80,10 @@ public final class PoiCategoryRangeQueryGenerator {
                 sb.append(" ORDER BY poi_data_fts.rank");
             }
         }
-        return (sb.append(" LIMIT ?;").toString());
+        if (limit > 0) {
+            sb.append(" LIMIT ?");
+        }
+        return sb.append(";").toString();
     }
 
     /**
