@@ -10,7 +10,7 @@ The mapsforge POI library uses SQLite with [R-Tree](https://sqlite.org/rtree.htm
 
 All reading and writing operations are done via classes implementing the `PoiPersistenceManager` interface. POI categories can be defined on creation time only. Categories are implemented as trees and can be accessed via classes implementing the `PoiCategoryManager` interface.
 
-Externally you can use your favorite SQLite manager for browsing the database, e.g. [spatialite-gui](https://www.gaia-gis.it/fossil/spatialite_gui/index).
+Externally you can use your favorite SQLite manager for browsing the database.
 
 ## Quick Start
 
@@ -94,9 +94,9 @@ The DB schema consists of:
 
 ## Version history
 
-| **Version** | **Date**   | **Changes**                                                           |
-|-------------|------------|-----------------------------------------------------------------------|
-| 1           | 2016-06-11 | Initial release of the specification                                  |
-| 2           | 2017-12-03 | <ul><li>POI multiple categories</li></ul>                             |
-| 3           | 2023-01-12 | <ul><li>Android without external libs</li></ul>                       |
-| 4           | 2026-07-21 | <ul><li>R-Tree spatial search</li><li>FTS5 full-text search</li></ul> |
+| **Version** |  **Date**  | **Changes**                                                           |
+|:-----------:|:----------:|-----------------------------------------------------------------------|
+|      1      | 2016-06-11 | Initial release of the specification                                  |
+|      2      | 2017-12-03 | <ul><li>POI multiple categories</li></ul>                             |
+|      3      | 2023-01-12 | <ul><li>Android without external libs</li></ul>                       |
+|      4      | 2026-07-21 | <ul><li>R-Tree spatial search</li><li>FTS5 full-text search</li></ul> |

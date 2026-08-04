@@ -52,7 +52,7 @@ implementation 'androidx.sqlite:sqlite-bundled:2.7.0'
 
 ```groovy
 implementation 'com.github.mapsforge.mapsforge:mapsforge-poi-awt:[CURRENT-VERSION]@jar'
-implementation 'org.xerial:sqlite-jdbc:3.53.2.0'
+implementation 'org.xerial:sqlite-jdbc:3.53.2.1'
 ```
 
 ## Snapshots

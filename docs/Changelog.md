@@ -2,7 +2,7 @@
 
 ## Next version
 
-- POI v4: FTS5 prefix queries [#1806](https://github.com/mapsforge/mapsforge/pull/1806)
+- POI v4: FTS5 trigram tokenizer [#1813](https://github.com/mapsforge/mapsforge/pull/1813)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.30.0)
 
