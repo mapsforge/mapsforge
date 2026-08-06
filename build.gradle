@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application' version '9.0.1' apply false
+    id 'com.android.application' version '9.1.1' apply false
 }
 
 allprojects {
@@ -17,11 +17,11 @@ allprojects {
     }
 }
 
-static def androidCompileSdk() { return 36 }
+static def androidCompileSdk() { return 37.0 }
 
 static def androidMinSdk() { return 23 }
 
-static def androidTargetSdk() { return 36 }
+static def androidTargetSdk() { return 37 }
 
 static def versionCode() { return 1 }
 

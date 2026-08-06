@@ -12,7 +12,7 @@ dependencies {
 
 android {
     namespace = 'org.mapsforge.samples.android'
-    compileSdkVersion androidCompileSdk()
+    compileSdkVersion "android-${androidCompileSdk()}"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
