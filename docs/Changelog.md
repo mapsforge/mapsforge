@@ -2,6 +2,11 @@
 
 ## Next version
 
+- Minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.31.0)
+
+## Version 0.30.0 (2026-08-20)
+
 - POI v4: FTS5 trigram tokenizer [#1813](https://github.com/mapsforge/mapsforge/pull/1813)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.30.0)
