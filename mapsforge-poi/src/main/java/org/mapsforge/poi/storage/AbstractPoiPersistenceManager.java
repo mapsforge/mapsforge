@@ -46,6 +46,22 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
      * {@inheritDoc}
      */
     @Override
+    public Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter, List<Tag> patterns) {
+        return findInRect(bb, filter, patterns, false, null, -1, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<PointOfInterest> findNearPosition(LatLong point, int distance, PoiCategoryFilter filter, List<Tag> patterns) {
+        return findNearPosition(point, distance, filter, patterns, false, null, -1, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Collection<PointOfInterest> findNearPosition(LatLong point, int distance, PoiCategoryFilter filter, List<Tag> patterns,
                                                         boolean orderByRank, LatLong orderByPoint, int limit, boolean findCategories) {
         double minLat = point.latitude - LatLongUtils.latitudeDistance(distance);
@@ -86,6 +102,7 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 
     /**
      * Gets the SQL query that looks up POI entries.
+     * First text search and then spatial search.
      *
      * @param filter       The filter object for determining all wanted categories (may be null).
      * @param count        Count of patterns to search in points of interest data (may be 0).
@@ -102,25 +119,24 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
         StringBuilder sb = new StringBuilder();
         sb.append(version <= 3 ? DbConstants.FIND_IN_BOX_CLAUSE_SELECT_V3 : (orderByRank ? DbConstants.FIND_IN_BOX_CLAUSE_SELECT_RANK : DbConstants.FIND_IN_BOX_CLAUSE_SELECT));
         if (version <= 3) {
-            sb.append(DbConstants.JOIN_DATA_CLAUSE);
+            sb.append(DbConstants.JOIN_INDEX_CLAUSE_V3);
         } else {
-            sb.append(DbConstants.JOIN_DATA_FTS_CLAUSE);
+            sb.append(DbConstants.JOIN_INDEX_CLAUSE);
         }
-        sb.append(version <= 3 ? DbConstants.FIND_IN_BOX_CLAUSE_WHERE_V3 : DbConstants.FIND_IN_BOX_CLAUSE_WHERE);
-        if (version <= 3) {
+        sb.append("WHERE ");
+        if (count > 0) {
             for (int i = 0; i < count; i++) {
-                sb.append(i == 0 ? " AND (" : " OR ");
-                sb.append(DbConstants.FIND_BY_DATA_CLAUSE_V3);
-                if (i == count - 1) {
+                if (count > 1) {
+                    sb.append(i == 0 ? "(" : " OR ");
+                }
+                sb.append(version <= 3 ? DbConstants.FIND_BY_DATA_CLAUSE_V3 : DbConstants.FIND_BY_DATA_CLAUSE);
+                if (count > 1 && i == count - 1) {
                     sb.append(")");
                 }
             }
-        } else {
-            if (count > 0) {
-                sb.append(" AND ");
-                sb.append(DbConstants.FIND_BY_DATA_CLAUSE);
-            }
+            sb.append(" AND ");
         }
+        sb.append(version <= 3 ? DbConstants.FIND_IN_BOX_CLAUSE_WHERE_V3 : DbConstants.FIND_IN_BOX_CLAUSE_WHERE);
         if (orderByPoint != null) {
             if (version <= 3) {
                 sb.append(" ORDER BY ((").append(orderByPoint.latitude).append(" - poi_index.lat) * (").append(orderByPoint.latitude).append(" - poi_index.lat))")

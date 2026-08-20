@@ -23,7 +23,7 @@ public final class DbConstants {
     public static final String CREATE_CATEGORY_MAP_STATEMENT = "CREATE TABLE poi_category_map (id INTEGER, category INTEGER, PRIMARY KEY (id, category)); ";
     public static final String CREATE_CATEGORY_MAP_IDX_STATEMENT = "CREATE INDEX poi_category_map_idx ON poi_category_map (category);";
     public static final String CREATE_DATA_STATEMENT = "CREATE TABLE poi_data (id INTEGER, data TEXT, PRIMARY KEY (id));";
-    public static final String CREATE_DATA_FTS_STATEMENT = "CREATE VIRTUAL TABLE poi_data_fts USING fts5(data, content='poi_data', content_rowid='id');";
+    public static final String CREATE_DATA_FTS_STATEMENT = "CREATE VIRTUAL TABLE poi_data_fts USING fts5(data, content='poi_data', content_rowid='id', tokenize='trigram', detail='none');";
     public static final String CREATE_INDEX_STATEMENT = "CREATE VIRTUAL TABLE poi_index USING rtree(id, minLat, maxLat, minLon, maxLon);";
     public static final String CREATE_METADATA_STATEMENT = "CREATE TABLE metadata (name TEXT, value TEXT);";
     public static final String CREATE_NODES_STATEMENT = "CREATE TABLE nodes (id INTEGER, lat REAL, lon REAL, PRIMARY KEY (id));";
@@ -43,12 +43,13 @@ public final class DbConstants {
     public static final String DROP_NODES_STATEMENT = "DROP TABLE IF EXISTS nodes;";
     public static final String DROP_WAYNODES_STATEMENT = "DROP TABLE IF EXISTS waynodes;";
 
-    public static final String JOIN_CATEGORY_CLAUSE = "JOIN poi_category_map ON poi_index.id = poi_category_map.id ";
-    public static final String JOIN_DATA_CLAUSE = "JOIN poi_data ON poi_index.id = poi_data.id ";
-    public static final String JOIN_DATA_FTS_CLAUSE = "JOIN poi_data_fts ON poi_index.id = poi_data_fts.rowid ";
+    public static final String JOIN_CATEGORY_CLAUSE_V3 = "JOIN poi_category_map ON poi_category_map.id = poi_data.id ";
+    public static final String JOIN_CATEGORY_CLAUSE = "JOIN poi_category_map ON poi_category_map.id = poi_data_fts.rowid ";
+    public static final String JOIN_INDEX_CLAUSE_V3 = "JOIN poi_index ON poi_index.id = poi_data.id ";
+    public static final String JOIN_INDEX_CLAUSE = "JOIN poi_index ON poi_index.id = poi_data_fts.rowid ";
 
     public static final String FIND_BY_DATA_CLAUSE_V3 = "poi_data.data LIKE ?";
-    public static final String FIND_BY_DATA_CLAUSE = "poi_data_fts.data MATCH ?";
+    public static final String FIND_BY_DATA_CLAUSE = "poi_data_fts.data LIKE ?";
     public static final String FIND_CATEGORIES_BY_ID_STATEMENT =
             "SELECT poi_category_map.id, poi_category_map.category "
                     + "FROM poi_category_map "
@@ -59,27 +60,26 @@ public final class DbConstants {
                     + "WHERE poi_data.id = ?;";
     public static final String FIND_IN_BOX_CLAUSE_SELECT_V3 =
             "SELECT poi_index.id, poi_index.lat, poi_index.lon, poi_data.data "
-                    + "FROM poi_index ";
+                    + "FROM poi_data ";
     public static final String FIND_IN_BOX_CLAUSE_SELECT =
             "SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data_fts.data "
-                    + "FROM poi_index ";
+                    + "FROM poi_data_fts ";
     public static final String FIND_IN_BOX_CLAUSE_SELECT_RANK =
             "SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data_fts.data, poi_data_fts.rank "
-                    + "FROM poi_index ";
+                    + "FROM poi_data_fts ";
     public static final String FIND_IN_BOX_CLAUSE_WHERE_V3 =
-            "WHERE "
-                    + "poi_index.lat <= ? AND "
+            "poi_index.lat <= ? AND "
                     + "poi_index.lon <= ? AND "
                     + "poi_index.lat >= ? AND "
                     + "poi_index.lon >= ?";
     public static final String FIND_IN_BOX_CLAUSE_WHERE =
-            "WHERE "
-                    + "poi_index.minLat <= ? AND "
+            "poi_index.minLat <= ? AND "
                     + "poi_index.minLon <= ? AND "
                     + "poi_index.minLat >= ? AND "
                     + "poi_index.minLon >= ?";
+    public static final String FIND_IN_BOX_CLAUSE_WHERE_CATEGORY_EQUALS = "poi_category_map.category = ";
     public static final String FIND_IN_BOX_CLAUSE_WHERE_CATEGORY_IN = "poi_category_map.category IN (";
-    public static final String FIND_IN_BOX_STATEMENT = FIND_IN_BOX_CLAUSE_SELECT + JOIN_DATA_CLAUSE + FIND_IN_BOX_CLAUSE_WHERE;
+    public static final String FIND_IN_BOX_STATEMENT = FIND_IN_BOX_CLAUSE_SELECT + JOIN_INDEX_CLAUSE + "WHERE " + FIND_IN_BOX_CLAUSE_WHERE;
     public static final String FIND_LOCATION_BY_ID_STATEMENT_V3 =
             "SELECT poi_index.id, poi_index.lat, poi_index.lon "
                     + "FROM poi_index "

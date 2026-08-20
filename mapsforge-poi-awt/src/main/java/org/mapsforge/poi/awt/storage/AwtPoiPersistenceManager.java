@@ -311,42 +311,22 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
             stmt.clearParameters();
 
-            stmt.setDouble(1, bb.maxLatitude);
-            stmt.setDouble(2, bb.maxLongitude);
-            stmt.setDouble(3, bb.minLatitude);
-            stmt.setDouble(4, bb.minLongitude);
-
             int i = 0; // i is only counted, if pattern is not null
             if (pSize > 0) {
-                if (getPoiFileInfo().version <= 3) {
-                    for (Tag tag : patterns) {
-                        if (tag == null) {
-                            continue;
-                        }
-                        stmt.setString(5 + i, "%" + (tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value + "%");
-                        i++;
+                for (Tag tag : patterns) {
+                    if (tag == null) {
+                        continue;
                     }
-                } else {
-                    StringBuilder sb = new StringBuilder();
-                    for (Tag tag : patterns) {
-                        if (tag == null) {
-                            continue;
-                        }
-                        if (sb.length() > 0) {
-                            sb.append(" OR ");
-                        }
-                        String text = (tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value;
-                        if (!tag.key.equals("*") || text.contains("=")) {
-                            text = "\"" + text + "\"";
-                        }
-                        sb.append(text).append("*"); // FTS5 prefix queries
-                    }
-                    stmt.setString(5, sb.toString());
+                    stmt.setString(1 + i, "%" + (tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value + "%");
                     i++;
                 }
             }
+            stmt.setDouble(i + 1, bb.maxLatitude);
+            stmt.setDouble(i + 2, bb.maxLongitude);
+            stmt.setDouble(i + 3, bb.minLatitude);
+            stmt.setDouble(i + 4, bb.minLongitude);
             if (limit > 0) {
-                stmt.setInt(5 + i, limit);
+                stmt.setInt(i + 5, limit);
             }
 
             if (DEBUG)

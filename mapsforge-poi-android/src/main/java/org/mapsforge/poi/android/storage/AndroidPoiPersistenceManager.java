@@ -188,36 +188,18 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
             String sql = AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, orderByRank, orderByPoint, limit, getPoiFileInfo().version);
 
             List<String> selectionArgs = new ArrayList<>();
+            if (pSize > 0) {
+                for (Tag tag : patterns) {
+                    if (tag == null) {
+                        continue;
+                    }
+                    selectionArgs.add("%" + (tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value + "%");
+                }
+            }
             selectionArgs.add(String.valueOf(bb.maxLatitude));
             selectionArgs.add(String.valueOf(bb.maxLongitude));
             selectionArgs.add(String.valueOf(bb.minLatitude));
             selectionArgs.add(String.valueOf(bb.minLongitude));
-            if (pSize > 0) {
-                if (getPoiFileInfo().version <= 3) {
-                    for (Tag tag : patterns) {
-                        if (tag == null) {
-                            continue;
-                        }
-                        selectionArgs.add("%" + (tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value + "%");
-                    }
-                } else {
-                    StringBuilder sb = new StringBuilder();
-                    for (Tag tag : patterns) {
-                        if (tag == null) {
-                            continue;
-                        }
-                        if (sb.length() > 0) {
-                            sb.append(" OR ");
-                        }
-                        String text = (tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value;
-                        if (!tag.key.equals("*") || text.contains("=")) {
-                            text = "\"" + text + "\"";
-                        }
-                        sb.append(text).append("*"); // FTS5 prefix queries
-                    }
-                    selectionArgs.add(sb.toString());
-                }
-            }
             if (limit > 0) {
                 selectionArgs.add(String.valueOf(limit));
             }

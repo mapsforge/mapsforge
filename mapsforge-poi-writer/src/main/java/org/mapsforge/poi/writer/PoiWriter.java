@@ -306,8 +306,8 @@ public final class PoiWriter {
         this.conn = DriverManager.getConnection("jdbc:sqlite:" + this.configuration.getOutputFile().getAbsolutePath());
         this.conn.createStatement().execute(DbConstants.DROP_NODES_STATEMENT);
         this.conn.createStatement().execute(DbConstants.DROP_WAYNODES_STATEMENT);
-        this.conn.createStatement().execute("VACUUM;");
         this.conn.createStatement().execute(DbConstants.CREATE_CATEGORY_MAP_IDX_STATEMENT);
+        this.conn.createStatement().execute("VACUUM;");
         this.conn.createStatement().execute(DbConstants.INSERT_DATA_FTS_REBUILD_STATEMENT);
         this.conn.createStatement().execute(DbConstants.INSERT_DATA_FTS_OPTIMIZE_STATEMENT);
         this.conn.createStatement().execute(DbConstants.INSERT_DATA_FTS_INTEGRITY_CHECK_STATEMENT);
