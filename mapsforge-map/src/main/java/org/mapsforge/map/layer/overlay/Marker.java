@@ -52,6 +52,11 @@ public class Marker extends Layer {
     }
 
     public synchronized boolean contains(Point center, Point point, MapView mapView) {
+        if (this.bitmap == null || this.bitmap.isDestroyed()) {
+            // nothing is drawn for such a marker, see draw()
+            return false;
+        }
+
         double scaleFactor = Math.pow(2, mapView.getModel().mapViewPosition.getZoom())
                 / Math.pow(2, mapView.getModel().mapViewPosition.getZoomLevel());
         // Touch min 20x20 px at baseline mdpi (160dpi)
