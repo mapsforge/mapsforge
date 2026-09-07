@@ -397,6 +397,7 @@
         <osm-tag key="building" label-position="true" value="house" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="hut" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="industrial" zoom-appear="15"/>
+        <osm-tag key="building" label-position="true" value="kindergarten" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="library" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="manufacture" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="monastery" zoom-appear="15"/>
@@ -415,8 +416,11 @@
         <osm-tag key="building" label-position="true" value="shed" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="shelter" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="shop" zoom-appear="15"/>
-        <osm-tag key="building" label-position="true" value="sports" zoom-appear="15"/>
+        <osm-tag key="building" label-position="true" value="sports_centre" zoom-appear="15"/>
+        <osm-tag key="building" label-position="true" value="sports_hall" zoom-appear="15"/>
+        <osm-tag key="building" label-position="true" value="stadium" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="supermarket" zoom-appear="15"/>
+        <osm-tag key="building" label-position="true" value="synagogue" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="terrace" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="transportation" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="train_station" zoom-appear="14"/>
