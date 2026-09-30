@@ -22,7 +22,6 @@ import org.mapsforge.poi.storage.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,8 +36,8 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
     /**
      * @param connection SQLite database object. (Using SQLite wrapper for Android).
      */
-    AndroidPoiCategoryManager(SQLiteConnection connection) {
-        this.categoryMap = new TreeMap<>();
+    AndroidPoiCategoryManager(SQLiteConnection connection, PoiFileInfo poiFileInfo) {
+        super(poiFileInfo);
 
         try {
             loadCategories(connection);
@@ -68,7 +67,7 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
                 String categoryTitle = statement.getText(1);
                 int categoryParentID = statement.getInt(2);
 
-                PoiCategory pc = new DoubleLinkedPoiCategory(categoryTitle, null, categoryID);
+                PoiCategory pc = createPoiCategory(categoryTitle, categoryID);
                 this.categoryMap.put(categoryID, pc);
 
                 // category --> parent ID

@@ -5,14 +5,21 @@
 
     <complexType name="category">
         <sequence>
+            <element name="name" maxOccurs="unbounded" minOccurs="0" type="tns:name" />
             <element maxOccurs="unbounded" minOccurs="0" ref="tns:category" />
             <element name="mapping" maxOccurs="unbounded" minOccurs="0" type="tns:mapping" />
         </sequence>
         <attribute name="title" use="required" />
+        <attribute name="defaultlang" default="en" />
     </complexType>
 
     <complexType name="mapping">
         <attribute name="tag" use="required" />
+    </complexType>
+
+    <complexType name="name">
+        <attribute name="lang" use="required" />
+        <attribute name="value" use="required" />
     </complexType>
 
 </schema>
