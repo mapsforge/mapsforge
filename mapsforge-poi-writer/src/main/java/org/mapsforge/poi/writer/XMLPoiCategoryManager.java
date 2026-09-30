@@ -19,17 +19,18 @@ import org.mapsforge.poi.storage.DoubleLinkedPoiCategory;
 import org.mapsforge.poi.storage.PoiCategory;
 import org.mapsforge.poi.storage.PoiCategoryManager;
 import org.mapsforge.poi.writer.jaxb.Category;
-
-import java.net.URL;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.mapsforge.poi.writer.jaxb.Name;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A {@link PoiCategoryManager} implementation that reads a category configuration from an XML file.
@@ -67,7 +68,7 @@ class XMLPoiCategoryManager implements PoiCategoryManager {
         currentXMLNode.push(xmlRootCategory);
         DoubleLinkedPoiCategory parent, child;
         while (!currentXMLNode.isEmpty()) {
-            parent = createOrGetPoiCategory(currentXMLNode.getFirst().getTitle());
+            parent = createOrGetPoiCategory(currentXMLNode.getFirst());
             titleMap.put(parent.getTitle(), parent);
 
             // Set root node
@@ -76,7 +77,7 @@ class XMLPoiCategoryManager implements PoiCategoryManager {
             }
 
             for (Category c : currentXMLNode.pop().getCategory()) {
-                child = createOrGetPoiCategory(c.getTitle());
+                child = createOrGetPoiCategory(c);
                 child.setParent(parent);
 
                 currentXMLNode.add(c);
@@ -89,14 +90,20 @@ class XMLPoiCategoryManager implements PoiCategoryManager {
         // System.out.println(DoubleLinkedPoiCategory.getGraphVizString(this.root));
     }
 
-    private DoubleLinkedPoiCategory createOrGetPoiCategory(String title) {
-        DoubleLinkedPoiCategory ret = this.titleMap.get(title);
+    private DoubleLinkedPoiCategory createOrGetPoiCategory(Category category) {
+        DoubleLinkedPoiCategory ret = this.titleMap.get(category.getTitle());
 
         // Category does not exist -> create it
         if (ret == null) {
-            ret = new DoubleLinkedPoiCategory(title, null);
+            ret = new DoubleLinkedPoiCategory(category.getTitle(), null);
+            ret.getTitles().put(category.getDefaultlang().toLowerCase(Locale.ENGLISH), ret.getTitle());
+            if (category.getName() != null) {
+                for (Name name : category.getName()) {
+                    ret.getTitles().put(name.getLang().toLowerCase(Locale.ENGLISH), name.getValue());
+                }
+            }
             LOGGER.finer("Added category: " + ret);
-            this.titleMap.put(title, ret);
+            this.titleMap.put(category.getTitle(), ret);
         }
 
         return ret;

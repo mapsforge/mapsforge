@@ -44,10 +44,10 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Mapping }
+     * Create an instance of {@link Name }
      */
-    public Mapping createMapping() {
-        return new Mapping();
+    public Name createName() {
+        return new Name();
     }
 
     /**
@@ -55,5 +55,12 @@ public class ObjectFactory {
      */
     public Category createCategory() {
         return new Category();
+    }
+
+    /**
+     * Create an instance of {@link Mapping }
+     */
+    public Mapping createMapping() {
+        return new Mapping();
     }
 }

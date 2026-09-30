@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<category xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" title="root"
-    xmlns="http://mapsforge.org/poi-mapping"
-    xsi:schemaLocation="http://mapsforge.org/poi-mapping https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/poi-mapping.xsd">
+<category xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" title="root" xmlns="http://mapsforge.org/poi-mapping" xsi:schemaLocation="http://mapsforge.org/poi-mapping https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/poi-mapping.xsd">
 
     <!-- http://wiki.openstreetmap.org/wiki/Map_Features -->
 
     <!-- Amenities -->
     <category title="Amenities">
         <category title="Food">
+            <name lang="de" value="Essen" />
+            <name lang="es" value="Alimentación" />
+            <name lang="fr" value="Alimentation" />
+            <name lang="it" value="Ristorazione" />
+            <name lang="nl" value="Eten" />
             <category title="Restaurants">
+                <name lang="de" value="Restaurants" />
+                <name lang="es" value="Restaurantes" />
+                <name lang="fr" value="Restaurants" />
+                <name lang="it" value="Ristoranti" />
+                <name lang="nl" value="Restaurants" />
                 <mapping tag="amenity=restaurant" />
             </category>
             <category title="Food counter areas">
