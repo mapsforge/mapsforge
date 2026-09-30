@@ -59,7 +59,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         createOrOpenDBFile(dbFilePath, readOnly);
 
         // Load categories from database
-        this.categoryManager = new AwtPoiCategoryManager(this.conn);
+        this.categoryManager = new AwtPoiCategoryManager(this.conn, getPoiFileInfo());
     }
 
     /**
@@ -547,6 +547,15 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                         String bounds = rs.getString(2);
                         if (bounds != null) {
                             poiFileInfoBuilder.bounds = BoundingBox.fromString(bounds);
+                        }
+                        break;
+                    case DbConstants.METADATA_CAT_LANGUAGE:
+                        poiFileInfoBuilder.catLanguage = rs.getString(2);
+                        break;
+                    case DbConstants.METADATA_CAT_LANGUAGES:
+                        String catLanguages = rs.getString(2);
+                        if (catLanguages != null) {
+                            poiFileInfoBuilder.catLanguages = catLanguages.split(",");
                         }
                         break;
                     case DbConstants.METADATA_COMMENT:
