@@ -51,7 +51,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
         createOrOpenDBFile(dbFilePath, readOnly);
 
         // Load categories from database
-        this.categoryManager = new AndroidPoiCategoryManager(this.connection);
+        this.categoryManager = new AndroidPoiCategoryManager(this.connection, getPoiFileInfo());
     }
 
     /**
@@ -388,6 +388,15 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                         String bounds = statement.getText(1);
                         if (bounds != null) {
                             poiFileInfoBuilder.bounds = BoundingBox.fromString(bounds);
+                        }
+                        break;
+                    case DbConstants.METADATA_CAT_LANGUAGE:
+                        poiFileInfoBuilder.catLanguage = statement.getText(1);
+                        break;
+                    case DbConstants.METADATA_CAT_LANGUAGES:
+                        String catLanguages = statement.getText(1);
+                        if (catLanguages != null) {
+                            poiFileInfoBuilder.catLanguages = catLanguages.split(",");
                         }
                         break;
                     case DbConstants.METADATA_COMMENT:

@@ -357,7 +357,7 @@ public final class PoiWriter {
         PreparedStatement pStmt = this.conn.prepareStatement(DbConstants.INSERT_CATEGORIES_STATEMENT);
         PoiCategory root = this.categoryManager.getRootCategory();
         pStmt.setLong(1, root.getID());
-        pStmt.setString(2, root.getTitle());
+        pStmt.setString(2, root.getDefaultLang().toLowerCase(Locale.ENGLISH) + "=" + root.getTitle());
         pStmt.setNull(3, 0);
         pStmt.addBatch();
 
@@ -366,7 +366,17 @@ public final class PoiWriter {
         while (!children.isEmpty()) {
             for (PoiCategory c : children.pop().getChildren()) {
                 pStmt.setLong(1, c.getID());
-                pStmt.setString(2, c.getTitle());
+                StringBuilder sb = new StringBuilder();
+                for (Map.Entry<String, String> entry : c.getTitles().entrySet()) {
+                    if (entry.getValue() == null || entry.getValue().trim().isEmpty()) {
+                        continue;
+                    }
+                    if (sb.length() > 0) {
+                        sb.append('\r');
+                    }
+                    sb.append(entry.getKey().toLowerCase(Locale.ENGLISH)).append('=').append(entry.getValue());
+                }
+                pStmt.setString(2, sb.toString());
                 pStmt.setInt(3, c.getParent().getID());
                 pStmt.addBatch();
                 children.push(c);
@@ -652,13 +662,34 @@ public final class PoiWriter {
         pStmtMetadata.addBatch();
 
         // Language
-        pStmtMetadata.setString(1, DbConstants.METADATA_LANGUAGE);
         if (!this.configuration.isAllTags() && this.configuration.getPreferredLanguage() != null) {
+            pStmtMetadata.setString(1, DbConstants.METADATA_LANGUAGE);
             pStmtMetadata.setString(2, this.configuration.getPreferredLanguage());
-        } else {
-            pStmtMetadata.setNull(2, Types.NULL);
+            pStmtMetadata.addBatch();
         }
-        pStmtMetadata.addBatch();
+
+        // Category default language
+        try {
+            pStmtMetadata.setString(1, DbConstants.METADATA_CAT_LANGUAGE);
+            pStmtMetadata.setString(2, this.categoryManager.getRootCategory().getDefaultLang());
+            pStmtMetadata.addBatch();
+        } catch (UnknownPoiCategoryException e) {
+            LOGGER.warning("Could not add category default language to metadata: " + e);
+        }
+
+        // Category languages
+        try {
+            pStmtMetadata.setString(1, DbConstants.METADATA_CAT_LANGUAGES);
+            final Set<String> languages = new TreeSet<>();
+            final Collection<PoiCategory> categories = this.categoryManager.getRootCategory().deepChildren();
+            for (PoiCategory category : categories) {
+                languages.addAll(category.getTitles().keySet());
+            }
+            pStmtMetadata.setString(2, languages.toString().replace("[", "").replace("]", "").replace(" ", ""));
+            pStmtMetadata.addBatch();
+        } catch (UnknownPoiCategoryException e) {
+            LOGGER.warning("Could not add category languages to metadata: " + e);
+        }
 
         // Version
         pStmtMetadata.setString(1, DbConstants.METADATA_VERSION);

@@ -26,6 +26,16 @@ public class PoiFileInfo {
     public final BoundingBox bounds;
 
     /**
+     * The category default language.
+     */
+    public final String catLanguage;
+
+    /**
+     * The category languages.
+     */
+    public final String[] catLanguages;
+
+    /**
      * The comment field of the POI file (may be null).
      */
     public final String comment;
@@ -57,6 +67,8 @@ public class PoiFileInfo {
 
     PoiFileInfo(PoiFileInfoBuilder poiFileInfoBuilder) {
         this.bounds = poiFileInfoBuilder.bounds;
+        this.catLanguage = poiFileInfoBuilder.catLanguage;
+        this.catLanguages = poiFileInfoBuilder.catLanguages;
         this.comment = poiFileInfoBuilder.comment;
         this.date = poiFileInfoBuilder.date;
         this.language = poiFileInfoBuilder.language;
