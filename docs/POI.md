@@ -97,6 +97,7 @@ The DB schema consists of:
 | **Version** |  **Date**  | **Changes**                                                           |
 |:-----------:|:----------:|-----------------------------------------------------------------------|
 |      1      | 2016-06-11 | Initial release of the specification                                  |
-|      2      | 2017-12-03 | <ul><li>POI multiple categories</li></ul>                             |
+|      2      | 2017-12-03 | <ul><li>Multiple categories</li></ul>                                 |
 |      3      | 2023-01-12 | <ul><li>Android without external libs</li></ul>                       |
 |      4      | 2026-07-21 | <ul><li>R-Tree spatial search</li><li>FTS5 full-text search</li></ul> |
+|      5      | 2026-09-17 | <ul><li>Multilingual categories</li></ul>                             |

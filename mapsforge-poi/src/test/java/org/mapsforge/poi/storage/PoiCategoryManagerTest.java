@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Stack;
-import java.util.TreeMap;
 
 /**
  * Tests the {@link AbstractPoiCategoryManager}'s functionality
@@ -113,9 +112,9 @@ public class PoiCategoryManagerTest {
         private PoiCategory localRoot;
 
         MockPoiCategoryManager(PoiCategory root) {
+            super(null);
             this.rootCategory = root;
             this.localRoot = root;
-            this.categoryMap = new TreeMap<>();
 
             loadCategoryHierarchy();
         }
