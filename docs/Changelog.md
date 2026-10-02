@@ -13,7 +13,7 @@
 
 ## Version 0.29.0 (2026-07-24)
 
-- POI: **v4** [#1804](https://github.com/mapsforge/mapsforge/pull/1804)
+- POI v4: [#1804](https://github.com/mapsforge/mapsforge/pull/1804)
   - R-Tree spatial search
   - FTS5 full-text search
 - Map theme improvements
@@ -64,7 +64,7 @@
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.25.0)
 
 ## Version 0.24.1 (2025-03-07)
- 
+
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.24.1)
 
@@ -126,7 +126,7 @@
 
 ## Version 0.20.0 (2023-08-15)
 
-- POI: **v3** Android without external libs [#1411](https://github.com/mapsforge/mapsforge/pull/1411)
+- POI v3: Android without external libs [#1411](https://github.com/mapsforge/mapsforge/pull/1411)
 - Polygon layer: support holes [#1432](https://github.com/mapsforge/mapsforge/pull/1432)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.20.0)
@@ -219,7 +219,7 @@
 
 ## Version 0.10.0 (2018-08-28)
 
-- Mapsforge maps **v5**: custom tag keys [#1041](https://github.com/mapsforge/mapsforge/issues/1041)
+- Mapsforge maps v5: custom tag keys [#1041](https://github.com/mapsforge/mapsforge/issues/1041)
 - Read & render polygon label/symbol position [#1064](https://github.com/mapsforge/mapsforge/issues/1064)
 - Map writer: polygon label/symbol centroid [#1061](https://github.com/mapsforge/mapsforge/issues/1061)
 - POI: SQLite Android Bindings [#1079](https://github.com/mapsforge/mapsforge/issues/1079)
@@ -246,8 +246,8 @@
 
 ## Version 0.9.0 (2017-12-03)
 
-- Mapsforge maps **v5**: variable tag values [#1006](https://github.com/mapsforge/mapsforge/pull/1006)
-- Mapsforge maps **v5**: implicit relations of building parts [#1014](https://github.com/mapsforge/mapsforge/pull/1014)
+- Mapsforge maps v5: variable tag values [#1006](https://github.com/mapsforge/mapsforge/pull/1006)
+- Mapsforge maps v5: implicit relations of building parts [#1014](https://github.com/mapsforge/mapsforge/pull/1014)
 - Map frame buffer improvements [#977](https://github.com/mapsforge/mapsforge/issues/977)
 - Hillshading improvements [#923](https://github.com/mapsforge/mapsforge/issues/923)
 - Polyline overlay touch events [#998](https://github.com/mapsforge/mapsforge/issues/998)
@@ -256,7 +256,7 @@
 - MapFile supports FileChannel as input [#982](https://github.com/mapsforge/mapsforge/issues/982)
 - XmlPullParser different implementations [#974](https://github.com/mapsforge/mapsforge/issues/974)
 - Desktop: fix blurred map view [#978](https://github.com/mapsforge/mapsforge/issues/978)
-- POI: **v2** with multiple categories [#950](https://github.com/mapsforge/mapsforge/issues/950)
+- POI v2: multiple categories [#950](https://github.com/mapsforge/mapsforge/issues/950)
 - POI: multiple patterns in search [#988](https://github.com/mapsforge/mapsforge/issues/988)
 - POI: add non-closed ways [#947](https://github.com/mapsforge/mapsforge/issues/947)
 - POI: add geo tagging [#946](https://github.com/mapsforge/mapsforge/issues/946)
@@ -312,7 +312,7 @@
 
 ## Version 0.6.1 (2016-06-11)
 
-- [POI Search](POI.md) **v1** [#728](https://github.com/mapsforge/mapsforge/issues/728)
+- [POI Search](POI.md) [#728](https://github.com/mapsforge/mapsforge/issues/728)
 - Render Theme v5: pathText repeat options [#473](https://github.com/mapsforge/mapsforge/issues/473)
 - Render Theme v5: scale options [#814](https://github.com/mapsforge/mapsforge/issues/814)
 - Render Theme v5: deprecate 'symbol-scaling' option [#815](https://github.com/mapsforge/mapsforge/issues/815)
@@ -339,7 +339,7 @@
 
 ## Version 0.6.0 (2015-11-25)
 
-- Mapsforge maps **v4**: multilingual names [#624](https://github.com/mapsforge/mapsforge/issues/624)
+- Mapsforge maps v4: multilingual names [#624](https://github.com/mapsforge/mapsforge/issues/624)
 - Writer language improved parsing [#663](https://github.com/mapsforge/mapsforge/issues/663)
 - MapDataStore extensibility [#668](https://github.com/mapsforge/mapsforge/issues/668)
 - Android gestures total overhaul [#688](https://github.com/mapsforge/mapsforge/issues/688)
