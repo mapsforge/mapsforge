@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rendertheme xmlns="http://mapsforge.org/renderTheme" version="3" map-background="#111111"
-    base-stroke-width="2.2" base-text-size="3.3">
+<rendertheme xmlns="http://mapsforge.org/renderTheme" version="3" map-background="#111111" base-stroke-width="2.2" base-text-size="3.3">
 
     <rule e="way" k="amenity" v="parking" closed="yes">
         <area fill="#444444" />
@@ -26,4 +25,5 @@
     <rule e="node" k="highway" v="turning_circle">
         <circle radius="1.5" fill="#888888" />
     </rule>
+
 </rendertheme>

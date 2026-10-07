@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--suppress XmlDefaultAttributeValue -->
-<xs:schema xmlns:tns="http://mapsforge.org/renderTheme" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    elementFormDefault="qualified" targetNamespace="http://mapsforge.org/renderTheme" xml:lang="en">
+<xs:schema xmlns:tns="http://mapsforge.org/renderTheme" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://mapsforge.org/renderTheme" xml:lang="en">
+
     <!-- attribute types -->
     <xs:simpleType name="cap">
         <xs:restriction base="xs:string">
@@ -115,8 +114,7 @@
 
     <xs:simpleType name="strokeDasharray">
         <xs:restriction base="xs:string">
-            <xs:pattern
-                value="([0-9]+(\.[0-9]+)? *, *[0-9]+(\.[0-9]+)? *, *)*[0-9]+(\.[0-9]+)? *, *[0-9]+(\.[0-9]+)?" />
+            <xs:pattern value="([0-9]+(\.[0-9]+)? *, *[0-9]+(\.[0-9]+)? *, *)*[0-9]+(\.[0-9]+)? *, *[0-9]+(\.[0-9]+)?" />
         </xs:restriction>
     </xs:simpleType>
 
@@ -338,12 +336,9 @@
         </xs:sequence>
         <xs:attribute name="version" fixed="5" type="xs:positiveInteger" />
         <xs:attribute name="map-background" default="#ffffff" type="tns:color" use="optional" />
-        <xs:attribute name="map-background-outside" default="#ffffff" type="tns:color"
-            use="optional" />
-        <xs:attribute name="base-stroke-width" default="1" type="tns:nonNegativeFloat"
-            use="optional" />
-        <xs:attribute name="base-text-size" default="1" type="tns:nonNegativeFloat"
-            use="optional" />
+        <xs:attribute name="map-background-outside" default="#ffffff" type="tns:color" use="optional" />
+        <xs:attribute name="base-stroke-width" default="1" type="tns:nonNegativeFloat" use="optional" />
+        <xs:attribute name="base-text-size" default="1" type="tns:nonNegativeFloat" use="optional" />
     </xs:complexType>
 
     <!-- stylemenu element -->
@@ -358,4 +353,5 @@
 
     <!-- root element -->
     <xs:element name="rendertheme" type="tns:rendertheme" />
+
 </xs:schema>
