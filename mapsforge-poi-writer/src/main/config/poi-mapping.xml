@@ -58,7 +58,7 @@
             </category>
             <category title="Pubs">
                 <name lang="de" value="Kneipen" />
-                <name lang="es" value="Pubs" />
+                <name lang="es" value="Bares" />
                 <name lang="fr" value="Pubs" />
                 <name lang="it" value="Pub" />
                 <name lang="nl" value="Pubs" />
@@ -66,7 +66,7 @@
             </category>
             <category title="Bars">
                 <name lang="de" value="Bars" />
-                <name lang="es" value="Bares" />
+                <name lang="es" value="Bares de copas" />
                 <name lang="fr" value="Bars" />
                 <name lang="it" value="Bar" />
                 <name lang="nl" value="Bars" />
@@ -82,7 +82,7 @@
             </category>
             <category title="Beer gardens">
                 <name lang="de" value="Biergärten" />
-                <name lang="es" value="Terrazas de cerveza" />
+                <name lang="es" value="Patios cerveceros" />
                 <name lang="fr" value="Jardins de bière" />
                 <name lang="it" value="Birrerie all'aperto" />
                 <name lang="nl" value="Biertuinen" />
@@ -101,7 +101,7 @@
         </category>
         <category title="Education institutes">
             <name lang="de" value="Bildungseinrichtungen" />
-            <name lang="es" value="Institutos educativos" />
+            <name lang="es" value="Centros de enseñanza" />
             <name lang="fr" value="Établissements d'enseignement" />
             <name lang="it" value="Istituti educativi" />
             <name lang="nl" value="Onderwijsinstellingen" />
@@ -194,8 +194,8 @@
             </category>
             <category title="Car sharing stations">
                 <name lang="de" value="Carsharing" />
-                <name lang="es" value="Compartir coche (Carsharing)" />
-                <name lang="fr" value="Covoiturage / Auto-partage" />
+                <name lang="es" value="Estaciones de coches compartidos" />
+                <name lang="fr" value="Stations d'autopartage" />
                 <name lang="it" value="Car sharing" />
                 <name lang="nl" value="Autodelen" />
                 <mapping tag="amenity=car_sharing" />
@@ -226,7 +226,7 @@
             </category>-->
             <category title="Car parking places">
                 <name lang="de" value="Parkplätze" />
-                <name lang="es" value="Aparcamientos de coches" />
+                <name lang="es" value="Aparcamientos" />
                 <name lang="fr" value="Parkings" />
                 <name lang="it" value="Parcheggi per auto" />
                 <name lang="nl" value="Parkeerplaatsen" />
@@ -284,7 +284,7 @@
             <category title="ATMs and cash points">
                 <name lang="de" value="Geldautomaten" />
                 <name lang="es" value="Cajeros automáticos" />
-                <name lang="fr" value="Guichets automatiques bancaires" />
+                <name lang="fr" value="Distributeurs automatiques de billets" />
                 <name lang="it" value="Bancomat" />
                 <name lang="nl" value="Geldautomaten" />
                 <mapping tag="amenity=atm" />
@@ -299,7 +299,7 @@
             </category>
             <category title="Currency exchange places">
                 <name lang="de" value="Wechselstuben" />
-                <name lang="es" value="Casas de cambio" />
+                <name lang="es" value="Oficina de cambio" />
                 <name lang="fr" value="Bureaux de change" />
                 <name lang="it" value="Uffici di cambio valuta" />
                 <name lang="nl" value="Wisselkantoren" />
@@ -517,7 +517,7 @@
             <category title="Fire stations">
                 <name lang="de" value="Feuerwachen" />
                 <name lang="es" value="Parques de bomberos" />
-                <name lang="fr" value="Casiers de pompiers" />
+                <name lang="fr" value="Casernes de pompiers" />
                 <name lang="it" value="Stazioni dei vigili del fuoco" />
                 <name lang="nl" value="Brandweerkazernes" />
                 <mapping tag="amenity=fire_station" />
@@ -723,7 +723,7 @@
         <category title="Helipads">
             <name lang="de" value="Hubschrauberlandeplätze" />
             <name lang="es" value="Helipuertos" />
-            <name lang="fr" value="Hélisurfaces / Héliports" />
+            <name lang="fr" value="Héliports" />
             <name lang="it" value="Eliporti" />
             <name lang="nl" value="Helipads" />
             <mapping tag="aeroway=helipad" />
@@ -1328,7 +1328,7 @@
         <category title="Tinsmiths">
             <name lang="de" value="Spengler / Flaschner" />
             <name lang="es" value="Hojalateros" />
-            <name lang="fr" value="Zingueurs / Ferblantiers" />
+            <name lang="fr" value="Zingueurs / Tôliers" />
             <name lang="it" value="Lattonieri" />
             <name lang="nl" value="Blikslagers / Dakdekkers in metaal" />
             <mapping tag="craft=tinsmith" />
@@ -1336,7 +1336,7 @@
         <category title="Upholsterers">
             <name lang="de" value="Raumausstatter / Polsterer" />
             <name lang="es" value="Tapiceros" />
-            <name lang="fr" value="Routiers / Tapissiers" />
+            <name lang="fr" value="Tapissiers" />
             <name lang="it" value="Tappezzieri" />
             <name lang="nl" value="Stoffeerders" />
             <mapping tag="craft=upholsterer" />
@@ -2057,7 +2057,7 @@
     <!-- Man Made -->
     <category title="Man Made">
         <name lang="de" value="Künstliche Anlagen / Bauwerke" />
-        <name lang="es" value="Elementos artificiales / Obras" />
+        <name lang="es" value="Estructuras artificiales" />
         <name lang="fr" value="Installations artificielles" />
         <name lang="it" value="Opere artificiali" />
         <name lang="nl" value="Door mens gemaakte objecten" />
@@ -2179,7 +2179,7 @@
         </category>
         <category title="Wastewater plants">
             <name lang="de" value="Kläranlagen" />
-            <name lang="es" value="Depuradoras / Plantas de aguas residuales" />
+            <name lang="es" value="Depuradoras de aguas residuales" />
             <name lang="fr" value="Stations d'épuration" />
             <name lang="it" value="Depuratori / Impianti di depurazione" />
             <name lang="nl" value="Rioleringswaterzuiveringsinstallaties" />
@@ -2203,7 +2203,7 @@
         </category>
         <category title="Water works">
             <name lang="de" value="Wasserwerke" />
-            <name lang="es" value="Obras hidráulicas / Plantas potabilizadoras" />
+            <name lang="es" value="Plantas potabilizadoras" />
             <name lang="fr" value="Stations de traitement des eaux" />
             <name lang="it" value="Acquedotti / Impianti idrici" />
             <name lang="nl" value="Waterzuiveringsbedrijven / Waterwerken" />
@@ -2263,7 +2263,7 @@
         <category title="Barracks">
             <name lang="de" value="Kasernen" />
             <name lang="es" value="Cuarteles" />
-            <name lang="fr" value="Cernes / Casernes" />
+            <name lang="fr" value="Casernes" />
             <name lang="it" value="Caserme" />
             <name lang="nl" value="Kazernes" />
             <mapping tag="military=barrack" />
@@ -2971,7 +2971,7 @@
         </category>
         <category title="Hardware">
             <name lang="de" value="Eisenwarengeschäfte / Baumärkte (klein)" />
-            <name lang="es" value="Freterías / Artículos de ferretería" />
+            <name lang="es" value="Ferreterías / Artículos de ferretería" />
             <name lang="fr" value="Quincailleries" />
             <name lang="it" value="Ferramenta" />
             <name lang="nl" value="Ijzerwarenwinkels" />
@@ -3068,14 +3068,14 @@
         <category title="Mobile phones">
             <name lang="de" value="Handyläden / Mobilfunkgeschäfte" />
             <name lang="es" value="Tiendas de telefonía móvil" />
-            <name lang="fr" value="Boutiques de téléphonie mobile" />
+            <name lang="fr" value="Magasins de téléphonie mobile" />
             <name lang="it" value="Negozi di telefonia mobile" />
             <name lang="nl" value="Telefoonwinkels" />
             <mapping tag="shop=mobile_phone" />
         </category>
         <category title="Money lenders">
             <name lang="de" value="Geldverleiher / Pfandleiher" />
-            <name lang="es" value="Preamistas / Casas de empeño" />
+            <name lang="es" value="Prestamistas / Casas de empeño" />
             <name lang="fr" value="Prêteurs sur gages" />
             <name lang="it" value="Prestiti / Compro oro e pegni" />
             <name lang="nl" value="Geldverstrekkers / Kredietbanken" />
@@ -3462,11 +3462,11 @@
             <mapping tag="sport=cycling" />
         </category>
         <category title="Diving">
-            <name lang="de" value="Wasserspringen / Tauchen" />
-            <name lang="es" value="Saltos de trampolín / Buceo" />
-            <name lang="fr" value="Plongeon / Plongée" />
-            <name lang="it" value="Tuffi / Immersioni" />
-            <name lang="nl" value="Schoonspringen / Duiken" />
+            <name lang="de" value="Wasserspringen" />
+            <name lang="es" value="Salto de trampolín" />
+            <name lang="fr" value="Plongeon" />
+            <name lang="it" value="Tuffi" />
+            <name lang="nl" value="Schoonspringen" />
             <mapping tag="sport=diving" />
         </category>
         <category title="Dog racing">
