@@ -18,6 +18,7 @@
 package org.mapsforge.poi.storage;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * This class represents a category for {@link PointOfInterest}. Every {@link PoiCategory} should
@@ -36,6 +37,11 @@ public interface PoiCategory {
     Collection<PoiCategory> getChildren();
 
     /**
+     * @return The category's default language.
+     */
+    String getDefaultLang();
+
+    /**
      * @return The category's id.
      */
     int getID();
@@ -46,9 +52,26 @@ public interface PoiCategory {
     PoiCategory getParent();
 
     /**
-     * @return The title of this category.
+     * @return The title of this category at default language.
      */
     String getTitle();
+
+    /**
+     * @return The title of this category at preferred language.
+     */
+    String getTitle(String language);
+
+    /**
+     * @return The title of this category at all languages.
+     */
+    Map<String, String> getTitles();
+
+    /**
+     * Sets the category's default language.
+     *
+     * @param defaultLang The category's default language.
+     */
+    void setDefaultLang(String defaultLang);
 
     /**
      * Sets the category's parent category.

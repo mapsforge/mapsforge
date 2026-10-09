@@ -14,11 +14,7 @@
  */
 package org.mapsforge.poi.awt.storage;
 
-import org.mapsforge.poi.storage.AbstractPoiCategoryManager;
-import org.mapsforge.poi.storage.DoubleLinkedPoiCategory;
-import org.mapsforge.poi.storage.PoiCategory;
-import org.mapsforge.poi.storage.PoiCategoryManager;
-import org.mapsforge.poi.storage.UnknownPoiCategoryException;
+import org.mapsforge.poi.storage.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,7 +22,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,8 +36,8 @@ class AwtPoiCategoryManager extends AbstractPoiCategoryManager {
     /**
      * @param conn SQLite connection. (Using SQLite JDBC for AWT).
      */
-    AwtPoiCategoryManager(Connection conn) {
-        this.categoryMap = new TreeMap<>();
+    AwtPoiCategoryManager(Connection conn, PoiFileInfo poiFileInfo) {
+        super(poiFileInfo);
 
         try {
             loadCategories(conn);
@@ -74,7 +69,7 @@ class AwtPoiCategoryManager extends AbstractPoiCategoryManager {
                 String categoryTitle = rs.getString(2);
                 int categoryParentID = rs.getInt(3);
 
-                PoiCategory pc = new DoubleLinkedPoiCategory(categoryTitle, null, categoryID);
+                PoiCategory pc = createPoiCategory(categoryTitle, categoryID);
                 this.categoryMap.put(categoryID, pc);
 
                 // category --> parent ID
