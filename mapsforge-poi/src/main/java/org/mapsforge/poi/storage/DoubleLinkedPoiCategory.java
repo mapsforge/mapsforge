@@ -16,10 +16,7 @@
  */
 package org.mapsforge.poi.storage;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * A POI category representation that stores a node, its parent node and its child nodes.
@@ -28,6 +25,8 @@ public class DoubleLinkedPoiCategory implements PoiCategory {
     private final String title;
     private PoiCategory parent;
 
+    private String defaultLang = "en";
+    private final Map<String, String> titles;
     private final Vector<PoiCategory> childCategories;
 
     // The category's id
@@ -59,6 +58,7 @@ public class DoubleLinkedPoiCategory implements PoiCategory {
         this.parent = parent;
         this.id = id;
 
+        this.titles = new HashMap<>();
         this.childCategories = new Vector<>();
 
         if (parent != null) {
@@ -129,6 +129,14 @@ public class DoubleLinkedPoiCategory implements PoiCategory {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDefaultLang() {
+        return this.defaultLang;
+    }
+
+    /**
      * Generates a GraphViz source representation as a tree having the current node as its root.
      *
      * @param rootNode The resulting graph's root node. (You can use any sub node to get a sub-graph).
@@ -182,6 +190,36 @@ public class DoubleLinkedPoiCategory implements PoiCategory {
     @Override
     public String getTitle() {
         return this.title;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTitle(String language) {
+        if (language != null && !language.trim().isEmpty()) {
+            String name = titles.get(language.toLowerCase(Locale.ENGLISH));
+            if (name != null) {
+                return name;
+            }
+        }
+        return this.title;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, String> getTitles() {
+        return this.titles;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setDefaultLang(String defaultLang) {
+        this.defaultLang = defaultLang;
     }
 
     /**

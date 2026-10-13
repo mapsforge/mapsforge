@@ -18,6 +18,8 @@ import org.mapsforge.core.model.BoundingBox;
 
 public class PoiFileInfoBuilder {
     public BoundingBox bounds;
+    public String catLanguage;
+    public String[] catLanguages;
     public String comment;
     public long date;
     public String language;
