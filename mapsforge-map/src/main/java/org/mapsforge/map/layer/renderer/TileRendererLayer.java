@@ -28,6 +28,7 @@ import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.labels.LabelStore;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
+import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.Observer;
@@ -36,6 +37,7 @@ import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
 public class TileRendererLayer extends TileLayer<RendererJob> implements Observer {
     private final DatabaseRenderer databaseRenderer;
+    private JobQueue<RendererJob> firstJobQueue;
     private final GraphicFactory graphicFactory;
     private final MapDataStore mapDataStore;
     private MapWorkerPool mapWorkerPool;
@@ -140,6 +142,11 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
                 this.mapWorkerPool = new MapWorkerPool(this.tileCache, this.jobQueue, this.databaseRenderer, this);
             }
             this.mapWorkerPool.start();
+            if (this.firstJobQueue == null) {
+                this.firstJobQueue = this.jobQueue;
+            } else {
+                this.jobQueue = this.firstJobQueue;
+            }
         } else {
             // if we do not have a displayModel any more we can stop rendering.
             if (this.mapWorkerPool != null) {
