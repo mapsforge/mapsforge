@@ -2,6 +2,7 @@
 
 ## Next version
 
+- POI v5: multilingual categories [#1823](https://github.com/mapsforge/mapsforge/pull/1823)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.31.0)
 
