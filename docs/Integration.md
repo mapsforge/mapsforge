@@ -1,35 +1,35 @@
-[![](https://jitpack.io/v/mapsforge/mapsforge.svg)](https://jitpack.io/#mapsforge/mapsforge)
-
 # Integration guide
 
-This article describes how to integrate the library in your project with [JitPack](https://jitpack.io/#mapsforge/mapsforge).
+Clone the project and run the Gradle task `publishToMavenLocal`.
+
+Add the repository:
 
 ```groovy
 repositories {
-    maven { url 'https://jitpack.io' }
+    mavenLocal()
 }
 ```
 
 ## Map
 
 ```groovy
-implementation 'com.github.mapsforge.mapsforge:mapsforge-core:[CURRENT-VERSION]@jar'
-implementation 'com.github.mapsforge.mapsforge:mapsforge-map:[CURRENT-VERSION]@jar'
-implementation 'com.github.mapsforge.mapsforge:mapsforge-map-reader:[CURRENT-VERSION]@jar'
-implementation 'com.github.mapsforge.mapsforge:mapsforge-themes:[CURRENT-VERSION]@jar'
+implementation 'org.mapsforge:mapsforge-core:master-SNAPSHOT@jar'
+implementation 'org.mapsforge:mapsforge-map:master-SNAPSHOT@jar'
+implementation 'org.mapsforge:mapsforge-map-reader:master-SNAPSHOT@jar'
+implementation 'org.mapsforge:mapsforge-themes:master-SNAPSHOT@jar'
 ```
 
 ### Android
 
 ```groovy
-implementation 'com.github.mapsforge.mapsforge:mapsforge-map-android:[CURRENT-VERSION]@jar'
+implementation 'org.mapsforge:mapsforge-map-android:master-SNAPSHOT@jar'
 implementation 'com.caverock:androidsvg:1.4'
 ```
 
 ### Desktop
 
 ```groovy
-implementation 'com.github.mapsforge.mapsforge:mapsforge-map-awt:[CURRENT-VERSION]@jar'
+implementation 'org.mapsforge:mapsforge-map-awt:master-SNAPSHOT@jar'
 implementation 'guru.nidi.com.kitfox:svgSalamander:1.1.3'
 implementation 'net.sf.kxml:kxml2:2.3.0'
 ```
@@ -37,24 +37,20 @@ implementation 'net.sf.kxml:kxml2:2.3.0'
 ## POI
 
 ```groovy
-implementation 'com.github.mapsforge.mapsforge:mapsforge-core:[CURRENT-VERSION]@jar'
-implementation 'com.github.mapsforge.mapsforge:mapsforge-poi:[CURRENT-VERSION]@jar'
+implementation 'org.mapsforge:mapsforge-core:master-SNAPSHOT@jar'
+implementation 'org.mapsforge:mapsforge-poi:master-SNAPSHOT@jar'
 ```
 
 ### Android
 
 ```groovy
-implementation 'com.github.mapsforge.mapsforge:mapsforge-poi-android:[CURRENT-VERSION]@jar'
+implementation 'org.mapsforge:mapsforge-poi-android:master-SNAPSHOT@jar'
 implementation 'androidx.sqlite:sqlite-bundled:2.7.0'
 ```
 
 ### Desktop
 
 ```groovy
-implementation 'com.github.mapsforge.mapsforge:mapsforge-poi-awt:[CURRENT-VERSION]@jar'
+implementation 'org.mapsforge:mapsforge-poi-awt:master-SNAPSHOT@jar'
 implementation 'org.xerial:sqlite-jdbc:3.53.4.0'
 ```
-
-## Snapshots
-
-See the instructions on [JitPack](https://jitpack.io/#mapsforge/mapsforge).
