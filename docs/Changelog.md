@@ -2,6 +2,7 @@
 
 ## Next version
 
+- Fix map writer POI bytes [#1829](https://github.com/mapsforge/mapsforge/pull/1829) 
 - Map theme improvements
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.32.0)
