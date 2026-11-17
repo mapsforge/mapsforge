@@ -24,32 +24,12 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.CacheStats;
 import com.google.common.cache.LoadingCache;
-
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.MultiLineString;
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.*;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.writer.model.Encoding;
-import org.mapsforge.map.writer.model.MapWriterConfiguration;
-import org.mapsforge.map.writer.model.OSMTag;
-import org.mapsforge.map.writer.model.TDNode;
-import org.mapsforge.map.writer.model.TDWay;
-import org.mapsforge.map.writer.model.TileBasedDataProcessor;
-import org.mapsforge.map.writer.model.TileCoordinate;
-import org.mapsforge.map.writer.model.TileData;
-import org.mapsforge.map.writer.model.TileInfo;
-import org.mapsforge.map.writer.model.WayDataBlock;
-import org.mapsforge.map.writer.model.ZoomIntervalConfiguration;
-import org.mapsforge.map.writer.util.Constants;
-import org.mapsforge.map.writer.util.GeoUtils;
-import org.mapsforge.map.writer.util.JTSUtils;
-import org.mapsforge.map.writer.util.OSMUtils;
-import org.mapsforge.map.writer.util.PolyLabel;
+import org.mapsforge.map.writer.model.*;
+import org.mapsforge.map.writer.util.*;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -60,11 +40,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -118,7 +94,7 @@ public final class MapFileWriter {
          * @param configuration    the {@link MapWriterConfiguration}
          */
         WayPreprocessingCallable(TDWay way, TileCoordinate tile, Geometry tileAsGeometry, byte maxZoomInterval,
-                LoadingCache<TDWay, Geometry> jtsGeometryCache, MapWriterConfiguration configuration) {
+                                 LoadingCache<TDWay, Geometry> jtsGeometryCache, MapWriterConfiguration configuration) {
             super();
             this.way = way;
             this.tile = tile;
@@ -539,7 +515,7 @@ public final class MapFileWriter {
             // write optional tag values (all values are null if tag values are disabled)
             for (Object value : values) {
                 if (value instanceof Byte) {
-                    poiBuffer.putShort((Byte) value);
+                    poiBuffer.put((Byte) value);
                 } else if (value instanceof Integer) {
                     poiBuffer.putInt((Integer) value);
                 } else if (value instanceof Float) {
